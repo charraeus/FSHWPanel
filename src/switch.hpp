@@ -48,7 +48,12 @@ public:
      * @param [in] newName Ein String mit dem Namen des Schalters. 
      * @note       newName sollte nicht allzu lang sein, um den Arduino-Speicher nicht so schnell zu füllen. 
      * */
-    Switch(const String &newName) : switchName {newName} {}
+    Switch(const String &newName) : switchName {newName} {
+        Serial.print("newName|switchName=");
+        Serial.print(newName);
+        Serial.print("|");
+        Serial.println(switchName);
+    }
     
     /**
      * @brief Setzt den Status des Schalters auf "on" und setzt den Zeitstempel, wann der Schalter eingeschaltet wurde.

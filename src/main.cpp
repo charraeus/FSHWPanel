@@ -27,7 +27,6 @@
 //callbackEventClock = &ClockDavtronM803.event();  ///< geht das so? Welcher Typ?
 Dispatcher dispatcher;          ///< Dispatcher-Objekt anlegen
 LedMatrix leds;                 ///< LedMatrix anlegen
-SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
 ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 
@@ -66,6 +65,7 @@ void setup() {
         }
         Serial.println("Los gehts.");
     }
+    SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
     switches.printMatrix();
     leds.initHardware(); ///< LED-Hardware initialisieren
     //switches.setCallback;
@@ -88,9 +88,9 @@ void setup() {
  * 
  ******************************************************************************/
 void loop() {
-    switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
-    switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
+    // switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
+    // switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
-    leds.display();     ///< LEDs anzeigen bzw. refreshen
+//    leds.display();     ///< LEDs anzeigen bzw. refreshen
 }
