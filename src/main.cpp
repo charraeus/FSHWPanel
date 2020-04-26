@@ -19,15 +19,16 @@
 // Include user and local libraries
 #include "ledmatrix.hpp"
 #include "Switchmatrix.hpp"
-#include "xpdr.hpp"
 #include "dispatcher.hpp"
-#include "commands.hpp"
+//#include "xpdr.hpp"
+//#include "commands.hpp"
 
 
 //callbackEventClock = &ClockDavtronM803.event();  ///< geht das so? Welcher Typ?
+SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
+//LedMatrix leds;                 ///< LedMatrix anlegen
 Dispatcher dispatcher;          ///< Dispatcher-Objekt anlegen
-LedMatrix leds;                 ///< LedMatrix anlegen
-ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
+//ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 
 /******************************************************************************
@@ -65,18 +66,17 @@ void setup() {
         }
         Serial.println("Los gehts.");
     }
-    SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
     switches.printMatrix();
-    leds.initHardware(); ///< LED-Hardware initialisieren
+ //   leds.initHardware(); ///< LED-Hardware initialisieren
     //switches.setCallback;
      
     /// Initiale Schalterstände abfragen und übertragen
     switches.scanSwitchPins();
     switches.transmitStatus(TRANSMIT_ALL_SWITCHES);
 
-    leds.powerOnSelfTest();
+    //leds.powerOnSelfTest();
     
-    davtron803.init();
+    //davtron803.init();
     //davtron803.event("XPDR_BTN OAT ON");
     
 }
