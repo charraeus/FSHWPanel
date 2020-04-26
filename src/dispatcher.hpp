@@ -9,11 +9,10 @@
  * 
  **************************************************************************************************/
 
-#if not defined(dispatcher_hpp)
+#ifndef dispatcher_hpp
 #define dispatcher_hpp
 
 #include <Arduino.h>
-
 
 /**
  * @brief Geparste Daten vom Flugsimulator

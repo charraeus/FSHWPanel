@@ -17,18 +17,18 @@
 #endif // end IDE
 
 // Include user and local libraries
-#include "ledmatrix.hpp"
 #include "Switchmatrix.hpp"
-#include "dispatcher.hpp"
-//#include "xpdr.hpp"
+#include "ledmatrix.hpp"
+//#include "dispatcher.hpp"
+#include "xpdr.hpp"
 //#include "commands.hpp"
 
 
 //callbackEventClock = &ClockDavtronM803.event();  ///< geht das so? Welcher Typ?
 SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
-//LedMatrix leds;                 ///< LedMatrix anlegen
-Dispatcher dispatcher;          ///< Dispatcher-Objekt anlegen
-//ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
+LedMatrix leds;                 ///< LedMatrix anlegen
+//Dispatcher dispatcher;          ///< Dispatcher-Objekt anlegen
+ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 
 /******************************************************************************
@@ -42,7 +42,7 @@ void serialEvent() {
         // gültige Zeichen zum Parser senden, ungültige Zeichen ignorieren
         // gültig sind: <CR>, Space, '_' und alle alfanumerischen Zeichen
         if ((inChar == '\r') || isSpace(inChar) || (inChar == '_') || isAlphaNumeric(inChar)) {
-            dispatcher.parseSerial(inChar);
+//            dispatcher.parseSerial(inChar);
         }
         #ifdef DEBUG
         Serial.print(inChar);
@@ -67,16 +67,16 @@ void setup() {
         Serial.println("Los gehts.");
     }
     switches.printMatrix();
- //   leds.initHardware(); ///< LED-Hardware initialisieren
+    leds.initHardware(); ///< LED-Hardware initialisieren
     //switches.setCallback;
      
     /// Initiale Schalterstände abfragen und übertragen
     switches.scanSwitchPins();
     switches.transmitStatus(TRANSMIT_ALL_SWITCHES);
 
-    //leds.powerOnSelfTest();
+    leds.powerOnSelfTest();
     
-    //davtron803.init();
+    davtron803.init();
     //davtron803.event("XPDR_BTN OAT ON");
     
 }
@@ -88,9 +88,9 @@ void setup() {
  * 
  ******************************************************************************/
 void loop() {
-    // switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
-    // switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
+    switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
+    switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
-//    leds.display();     ///< LEDs anzeigen bzw. refreshen
+    leds.display();     ///< LEDs anzeigen bzw. refreshen
 }

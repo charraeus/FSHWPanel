@@ -20,7 +20,9 @@ const uint8_t DSTATE_WAIT_FOR_DEVICE = 3;       ///< Als nächstes muss das Devi
 const uint8_t DSTATE_WAIT_FOR_PARA1 = 4;        ///< Als nächstes muss Parameter 1 eingelesen werden.
 const uint8_t DSTATE_WAIT_FOR_PARA2 = 5;        ///< Als nächstes muss Parameter 2 eingelesen werden.
 
-Dispatcher::Dispatcher() : status(DSTATE_WAIT_FOR_SOURCE) {}
+Dispatcher::Dispatcher() {
+    status = DSTATE_WAIT_FOR_SOURCE;
+}
 
 
 /**************************************************************************************************/
