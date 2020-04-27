@@ -15,13 +15,6 @@
 #include <Arduino.h>
 
 /**
- * @brief Geparste Daten vom Flugsimulator
- * @todo Doku ergänzen
- * @todo warum kein Objekt?
- */
-
-
-/**
  * @brief Daten vom Flugsimulator entgegennehmen und verarbeiten.
  * @todo Doku ergänzen
  */

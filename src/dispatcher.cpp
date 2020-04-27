@@ -10,7 +10,7 @@
  **************************************************************************************************/
 
 #include "dispatcher.hpp"
-//#include <Arduino.h>
+#include "error.hpp"
 
 // Zustands-Konstanten für den Dispatcher
 const uint8_t DSTATE_WAIT_FOR_SOURCE = 0;       ///< Als nächstes muss die Source eingelesen werden.
@@ -45,7 +45,7 @@ void Dispatcher::parseSerial(const char inChar) {
     if ((inChar != ' ') && (inChar != '\r') && (inChar != '\n') && (inChar != '\0')) {
         // gültiges "normales" Zeichen empfangen => zum command-String hinzufügen
         //if (! command.concat(inChar)) {
-        //    Serial.println("Fehler in parseSerial.");
+        //    Serial.println(_ERR_DISPATCHER_001);
         //}
         command += inChar;
     } else {    // "Trennzeichen" empfangen
@@ -53,7 +53,7 @@ void Dispatcher::parseSerial(const char inChar) {
             // Blank oder <CR> empfangen => ist ein Trennzeichen.
             // Die bisher eingelesenen Zeichen speichern und den Zustand ändern.
             if ((inChar == '\n') && (status < DSTATE_PARA2_AVAILABLE)) {
-                Serial.println("Fehler - zuwenig Eingaben. Abbruch.");
+                Serial.println(_ERR_DISPATCHER_002);
                 commandData.source = "";
                 commandData.device = "";
                 commandData.devEvent = "";
@@ -65,7 +65,7 @@ void Dispatcher::parseSerial(const char inChar) {
                 status = DSTATE_WAIT_FOR_SOURCE;
             } else {
                 if (command.length() > static_cast<int>(MAX_COMMAND_LENGTH)) {
-                    Serial.println("Fehler: zu langer Parsereingabeparameter.");
+                    Serial.println(_ERR_DISPATCHER_003);
                 } else {                        
                     switch (status) {
                         case DSTATE_WAIT_FOR_SOURCE: {
