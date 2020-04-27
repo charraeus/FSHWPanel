@@ -1,5 +1,4 @@
 /**************************************************************************************************
- * 
  * @file main.cpp
  * @brief Hauptprogramm XPanino.
  * X-Plane-Panel mit Arduino - Proof of concept.
@@ -10,12 +9,17 @@
  * @version 0.1
  **************************************************************************************************/
 
+/// Headerdateien der Objekte includen
 #include "Switchmatrix.hpp"
 #include "ledmatrix.hpp"
 #include "dispatcher.hpp"
 //#include "xpdr.hpp"
 //#include "commands.hpp"
 
+/// Makros für serielle Schnittstelle definieren
+#define _SERIAL_BAUDRATE 115200     /// Baudrate für den seriellen Port. Nur hier ändern!!
+
+/// Objekte anlegen
 LedMatrix leds;                 ///< LedMatrix anlegen
 Dispatcher dispatcher;          ///< Dispatcher-Objekt anlegen
 SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
@@ -56,7 +60,7 @@ void serialEvent() {
 void setup() {  
     /// Serielle Schnittstelle initialisieren                           
     if (Serial) {
-        Serial.begin(115200, SERIAL_8N1);
+        Serial.begin(_SERIAL_BAUDRATE, SERIAL_8N1);
         // wait for serial port to connect. Needed for native USB
         while (!Serial) {
             ; 

@@ -17,4 +17,13 @@
 #define _ERR_DISPATCHER_002 2   ///< "Fehler - zuwenig Eingaben. Abbruch."
 #define _ERR_DISPATCHER_003 3   ///< "Fehler: zu langer Parsereingabeparameter."
 
+#ifndef ARDUINO
+#include <string>
 
+std::string errorMsg[ ] {
+    "Dispatcher-Fehler 1: Fehler in parseSerial.", 
+    "Dispatcher-Fehler 2: Zu wenig Eingaben. Abbruch.", 
+    "Dispatcher-Fehler 3: Zu langer Parsereingabeparameter."  
+}
+#else
+#endif
