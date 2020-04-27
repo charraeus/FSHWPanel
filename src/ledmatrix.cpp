@@ -10,7 +10,6 @@
  **************************************************************************************************/
 
 #include "ledmatrix.hpp"
-#include <Arduino.h>
 
 /** Konstanten für die Zuordnung der Arduino-Pins zu den MIC5891- und MIC5821-Schieberegister-Leitungen */
 const uint8_t CLOCK = PIN4;     ///< Arduino-Pin für CLOCK des MIC5891/5821
@@ -87,6 +86,7 @@ const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bi
 
 /**************************************************************************************************/
 LedMatrix::LedMatrix() {
+    Serial.println("Konstruktor");
     /// Die Matrizen initalisieren
     for (uint32_t row = 0; row != LED_ROWS; ++row) {
         hwMatrix[row] = 0;                  // Alle LEDs ausschalten
@@ -103,6 +103,31 @@ LedMatrix::LedMatrix() {
     /// Defaultwerte für die Blinkdauern der nächsten anstehenden Hellphase
     nextBlinkInterval[BLINK_NORMAL] = BLINK_INTERVAL_BRIGHT[BLINK_NORMAL];    // Dauer der Hellphase als Initialwert
     nextBlinkInterval[BLINK_SLOW] = BLINK_INTERVAL_BRIGHT[BLINK_SLOW];
+}
+
+void LedMatrix::initHardware() {
+    /// Die eingebaute LED als Status aktivieren.
+    pinMode(LED_BUILTIN, OUTPUT);
+    for (unsigned int i = 1; i != 4; ++i) {
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(500);
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(500);
+    }
+    
+    /// Die benötigten Pins für die Ansteuerung der Schieberegister initialisieren.
+    pinMode(CLOCK, OUTPUT);
+    pinMode(DATA_IN, OUTPUT);
+    pinMode(STRB, OUTPUT);
+    pinMode(OE, OUTPUT);
+    delay(1);
+    digitalWrite(CLOCK, LOW);
+    digitalWrite(DATA_IN, LOW);
+    digitalWrite(STRB, LOW);
+    delayMicroseconds(500);
+    digitalWrite(STRB, HIGH);       // Latches umgehen --> immer auf HIGH setzen
+    digitalWrite(OE, LOW);
+    delayMicroseconds(500);
 
 
     // - Auf den 7 Digits des XPDR die Ziffernfolge 0..6 anzeigen
@@ -133,33 +158,6 @@ LedMatrix::LedMatrix() {
 //    matrix[7] = 0b00000000001101100000000000010000;  
 }
 
-
-/**************************************************************************************************/
-void LedMatrix::initHardware() {
-    /// Die eingebaut LED als Status aktivieren.
-    pinMode(LED_BUILTIN, OUTPUT);
-    for (unsigned int i = 1; i != 4; ++i) {
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(500);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(500);
-    }
-    
-    /// Die benötigten Pins für die Ansteuerung der Schieberegister initialisieren.
-    pinMode(CLOCK, OUTPUT);
-    pinMode(DATA_IN, OUTPUT);
-    pinMode(STRB, OUTPUT);
-    pinMode(OE, OUTPUT);
-    delay(1);
-    digitalWrite(CLOCK, LOW);
-    digitalWrite(DATA_IN, LOW);
-    digitalWrite(STRB, LOW);
-    delayMicroseconds(500);
-    digitalWrite(STRB, HIGH);       // Latches umgehen --> immer auf HIGH setzen
-    digitalWrite(OE, LOW);
-    delayMicroseconds(500);
-}
-    
 
 /**************************************************************************************************/
 uint8_t LedMatrix::get7SegBits(const unsigned char character) {
@@ -366,7 +364,7 @@ int LedMatrix::ledBlinkOff(const uint8_t row, const uint8_t col, const uint8_t b
     if (isValidRowCol(row, col) && isValidBlinkSpeed(blinkSpeed)) {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (blinkSpeed == speedClass) {
-                blinkStatus[speedClass][row] &= ~ (static_cast<uint32_t>(1) << col);
+                blinkStatus[speedClass][row] &= ~ (static_cast<uint32_t>(1) << col); 
                 break;
             }
         }
@@ -491,7 +489,7 @@ void LedMatrix::powerOnSelfTest() {
 }
 
 
-#ifndef NDEBUG_LEDS
+#ifdef DEBUG
 /**************************************************************************************************/
 void LedMatrix::printMatrix() {
     Serial.println(); Serial.println("Die Bytes der Matrix:");
@@ -512,6 +510,5 @@ void LedMatrix::printMatrix() {
     Serial.println();
     Serial.print("Matrixspaltensize="); Serial.println(sizeof(hwMatrix[0]) * 8);
 }
-
 #endif
 

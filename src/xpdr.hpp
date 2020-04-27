@@ -64,7 +64,7 @@ enum Event {
 class ClockDavtronM803 {
 public:
     // Initialisiert die Uhr
-    void init();
+    ClockDavtronM803();
     // Verarbeitet die Tastendrücke und Daten
     void process();
     Event event(const String &eventString);

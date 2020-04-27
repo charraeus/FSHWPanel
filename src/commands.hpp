@@ -9,7 +9,7 @@
  * 
  **************************************************************************************************/
 
-#if not defined(commands_hpp)
+#ifndef commands_hpp
 #define commands_hpp
 
 #include <Arduino.h>
@@ -31,4 +31,4 @@ const uint16_t TIME_VOLTS        = 0xF107;    ///< Spannung in V
 const uint16_t QNH_XPLANE        = 0xF201;    ///< Aktuelles QNH des X-Plane-Wetters
 const uint16_t OAT_XPLANE        = 0xF202;    ///< OAT in °C
 
-#endif // if not defined(commands_hpp)
+#endif // ifndef

@@ -19,14 +19,6 @@
  * @todo Doku ergänzen
  * @todo warum kein Objekt?
  */
-struct Parser {
-public:
-    String source = "";         ///< ??
-    String device = "";         ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
-    String devEvent = "";       ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
-    String parameter1 = "";     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-    String parameter2 = "";     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-};
 
 
 /**
@@ -52,7 +44,7 @@ public:
      * - parameter1,
      * - parameter2 - Werte zu dem device/Ereignis
      * 
-     * @param [in] inChar 
+     * @param [in] inInt Byte (Zeichen), das von der seriellen Schnittstelle gelesen wurde. 
      */
     void parseSerial(const char inChar);
 
@@ -63,10 +55,20 @@ public:
      */
     void parseString(const String inCommandString);
 
+    #ifdef DEBUG
+    void printData();
+    #endif
+
 private:
     uint8_t status = 0;
-    String command = "";
-    Parser commandData;
+    String command;
+    struct Parser {
+        String source;         ///< ??
+        String device;         ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
+        String devEvent;       ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
+        String parameter1;     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+        String parameter2;     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+    } commandData {"source", "device", "devevent", "para1", "para2"};
     
     void dispatch();
     void dispatch(const String &inSource, const String &inDevice, const String &inEvent,

@@ -10,9 +10,9 @@
  * @todo Müssen die Konstanten global sein?
 **************************************************************************************************/
 
-#if not defined(ledmatrix_hpp)
-#define ledmatrix_hpp
-#define DEBUG_LEDS
+#ifndef LEDMATRIX_HPP
+#define LEDMATRIX_HPP
+
 #include <Arduino.h>
 
 /* Konstanten für den (gewünschten) Status des Dezimalpunkts der 7-Segment-Anzeigen */
@@ -116,18 +116,13 @@ private:
      */
     void doBlink();
     
-public:
+public:    
     /**
-     * @brief Construct a new LedMatrix object.
-     * 
-     */
-    LedMatrix();
-    
-    /**
-     * @brief Hardware des Arduino initialisieren.
+     * @brief Konstruktor: Hardware des Arduino initialisieren.
      * Erst die Hardware und I/O-Pins des Arduino initialisieren und dann die eingebaute LED 
      * als Status-Feedback ein paar mal blinken lassen und die Arduino-Pins initialisieren.
      */
+    LedMatrix();
     void initHardware();
     
     /**
@@ -255,10 +250,10 @@ public:
      */
     void powerOnSelfTest();
 
-    #if defined(DEBUG_LEDS)
+    #ifdef DEBUG
     void printMatrix();
-    #endif /* if defined(DEBUG_LEDS) */
+    #endif /* ifdef DEBUG */
 };
 
 
-#endif /* #if not defined(ledmatrix_hpp) */
+#endif /* #ifndef */

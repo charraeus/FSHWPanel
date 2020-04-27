@@ -13,7 +13,6 @@
 #ifndef Switchmatrix_hpp
 #define Switchmatrix_hpp
 
-#include <Arduino.h>
 #include "switch.hpp"
 
 // Konstanten
@@ -91,7 +90,7 @@ public:
      */
     void findMatrixRowColByName(const String &switchName, size_t &matrixRow, size_t &matrixCol);
 
-    #ifdef DEBUG    
+    #ifdef DEBUG 
     /**
      * Die Namen aller Schalter ausgeben.
      *

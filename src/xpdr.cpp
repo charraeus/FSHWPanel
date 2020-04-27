@@ -22,7 +22,7 @@ const String eventStrings[NO_OF_EVENT_STRINGS] = {
 
 
 /**************************************************************************************************/
-void ClockDavtronM803::init() {
+ClockDavtronM803::ClockDavtronM803() {
     // hier müssen noch Initialisierungen 'rein
 };
 
@@ -36,7 +36,7 @@ void ClockDavtronM803::process() {
 /**************************************************************************************************/
 Event ClockDavtronM803::event(const String &eventString) {
     Serial.print("CLOCK hat ein Event erhalten: "); Serial.println(eventString);
-    
+    Event ereignis = BTN_SEL_ON;    
     
 //    // Event zurückgeben
 //    for (uint8_t es = 0; es != NO_OF_EVENT_STRINGS; ++es) {
@@ -45,5 +45,5 @@ Event ClockDavtronM803::event(const String &eventString) {
 //            break;
 //        }
 //    }
-return 0;
+    return ereignis;
 };
