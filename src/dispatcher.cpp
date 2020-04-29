@@ -24,6 +24,19 @@ const uint8_t MAX_COMMAND_LENGTH = 100;         ///< Maximale Zeichenanzahl der 
 
 
 /**************************************************************************************************/
+uint8_t BufferClass::addChar(const char inChar) {
+    if (actPos < _BUFFER_LENGTH - 1) {
+        buffer[actPos] = inChar;
+        actPos += 1;
+        buffer[actPos] = '\0';
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+
+/**************************************************************************************************/
 Dispatcher::Dispatcher() {
     status = DSTATE_WAIT_FOR_SOURCE;
     command.reserve(MAX_COMMAND_LENGTH);
@@ -109,7 +122,7 @@ void Dispatcher::parseSerial(const char inChar) {
 }
 
 
-void Dispatcher::parseString(const String inCommandString) {
+void Dispatcher::parseString(const char *inBuffer) {
     // eventString parsen
     // Ergebnis des Parsens ist sourceName, switchName, eventName
     // z.B.                       XP FL CHANGE MAX_PARSER_LENGTH1    oder
@@ -121,12 +134,8 @@ void Dispatcher::parseString(const String inCommandString) {
     // Schnittstelle läuft.
     // in der Switchmatrix direkt dispatch(source, device, event, parameter1, parameter2) aufrufen
     // das muss aber noch geschaut werden, wie das gehen kann
-    int blankPos = inCommandString.indexOf(" ");
-    int startPos = 0;
-    while (blankPos != -1) {
-        startPos = blankPos + 1;
-        blankPos = inCommandString.indexOf(" ", startPos);
-    }
+    Serial.print("Dispatcher::parseString:");
+    Serial.println(inBuffer);
 }
 
 

@@ -15,8 +15,7 @@
 #include "Arduino.h"
 
 /******************************************************************************/
-SwitchMatrix::SwitchMatrix() {
-    printMatrix();
+void SwitchMatrix::initHardware() {
     /// Alle Matrixzeilen-Pins als Output einstellen und auf HIGH setzen.
     for (uint8_t row = HW_MATRIX_ROWS_LSB_PIN; row <= HW_MATRIX_ROWS_MSB_PIN; ++row) {
         pinMode(row, OUTPUT); // die Pins 2 und 3 auf Output setzen.
@@ -26,6 +25,9 @@ SwitchMatrix::SwitchMatrix() {
     for (uint8_t col = HW_MATRIX_COLS_LSB_PIN; col <= HW_MATRIX_COLS_MSB_PIN; ++col) {
         pinMode(col, INPUT_PULLUP);
     }
+    #ifdef DEBUG
+    printMatrix();
+    #endif
 }
 
 

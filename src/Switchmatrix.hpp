@@ -48,11 +48,17 @@ private:
     
 public:
     /**
-     * @brief Konstruktor. Die Hardware des Arduino initialisieren.
+     * @brief Konstruktor. Keine Funktion. Es wird der implizite Konstruktor verwendet.
      * 
      * Initialisiert die Ports/Pins, an denen die Schalter angeschlossen sind.
      */
-    SwitchMatrix();
+    //SwitchMatrix();
+
+    /**
+     * @brief Die Hardware, d.h. die Pins, an denen die Schalter angeschlossen sind, initialisieren.
+     * 
+     */
+    void initHardware();
 
     /**
      * Den Status aller Hardware-Schalter in die SwitchMatrix einlesen.

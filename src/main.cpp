@@ -23,6 +23,7 @@
 LedMatrix leds;                 ///< LedMatrix anlegen
 Dispatcher dispatcher;          ///< Dispatcher-Objekt anlegen
 SwitchMatrix switches;          ///< Schaltermatrix - SwitchMatrix - anlegen
+BufferClass inBuffer;           ///< Eingabepuffer
 
 //ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
@@ -35,19 +36,24 @@ void serialEvent() {
     while (Serial.available() > 0) { 
         char inChar = char(Serial.read());
         // prüfen auf gültige Zeichen.
-        // gültige Zeichen zum Parser senden, ungültige Zeichen ignorieren
-        // gültig sind: <CR>, Space, '_' und alle alfanumerischen Zeichen
-        if ((inChar == '\r') || isSpace(inChar) || (inChar == '_') || isAlphaNumeric(inChar)) {
-            dispatcher.parseSerial(inChar);
+        // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
+        // gültig sind: Space, '_' und alle alfanumerischen Zeichen
+        if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (inChar == '_') || (inChar == ' ')) {
+            inBuffer.addChar(inChar);
             #ifdef DEBUG
-            Serial.print(inChar);
+            Serial.println(inChar);
+            Serial.println(inBuffer.get());
             #endif        
-        } 
-        #ifdef DEBUG
-        else {
-            Serial.print(inChar);
-        }    
-        #endif
+        } else {
+            if (((inChar == '\n') || (inChar == '\r')) && (! inBuffer.isEmpty())) {
+                // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde kein '\r' bzw. '\n' gelesen,
+                // was dann den inBuffer geleert hätte.
+                // Buffer zum Parsen zum Dispatcher senden.
+                dispatcher.parseString(inBuffer.get());
+                inBuffer.wipe();
+            } 
+            // alle anderen Zeichen werden ignoriert.
+        }
     }
 }
 
@@ -76,12 +82,12 @@ void setup() {
 
     leds.initHardware();
     leds.powerOnSelfTest();
-    switches.printMatrix();
-     
+    switches.initHardware();
+      
     /// Initiale Schalterstände abfragen und übertragen
     switches.scanSwitchPins();
     switches.transmitStatus(TRANSMIT_ALL_SWITCHES);
-
+    switches.printMatrix();
     
 }
 

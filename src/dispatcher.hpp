@@ -13,6 +13,22 @@
 #define dispatcher_hpp
 
 #include <Arduino.h>
+#define _BUFFER_LENGTH 100  ///< Der Buffer kann max. 99 Zeichen zzgl. Zeilenende '\0' aufnehmen.
+
+/**
+ * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle
+ * 
+ */
+class BufferClass {
+public:
+    char *get() { return buffer; }
+    uint8_t addChar(const char inChar);
+    void wipe() { actPos = 0; buffer[actPos] = '\0'; }
+    bool isEmpty() { return strlen(buffer) == 0; }
+private:
+    char buffer[_BUFFER_LENGTH]{'\0'};      ///< Zeichenpuffer der Länge _BUFFER_LENGTH
+    unsigned int actPos{0};                ///< aktuelles Ende des Buffers; zeigt auf die Position nach dem letzten Zeichen
+};
 
 /**
  * @brief Daten vom Flugsimulator entgegennehmen und verarbeiten.
@@ -46,7 +62,7 @@ public:
      * @todo Doku ergänzen
      * @param [in] inCommandString 
      */
-    void parseString(const String inCommandString);
+    void parseString(const char *inBuffer);
 
     #ifdef DEBUG
     void printData();
