@@ -9,13 +9,6 @@
  * 
  */
 
-/**
- * @brief Fehlerkonstantenmakros für dispatcher
- * 
- */
-#define _ERR_DISPATCHER_001 1   ///< "Fehler in parseSerial."
-#define _ERR_DISPATCHER_002 2   ///< "Fehler - zuwenig Eingaben. Abbruch."
-#define _ERR_DISPATCHER_003 3   ///< "Fehler: zu langer Parsereingabeparameter."
 
 #ifndef ARDUINO
 #include <string>

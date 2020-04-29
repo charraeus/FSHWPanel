@@ -13,7 +13,8 @@
 #define dispatcher_hpp
 
 #include <Arduino.h>
-#define _BUFFER_LENGTH 100  ///< Der Buffer kann max. 99 Zeichen zzgl. Zeilenende '\0' aufnehmen.
+#define _MAX_BUFFER_LENGTH 100  ///< Der Buffer kann max. 99 Zeichen zzgl. Zeilenende '\0' aufnehmen.
+#define _MAX_PARA_LENGTH 10     ///< Max. Länge der geparsten Kommandoparameter.
 
 /**
  * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle
@@ -26,7 +27,7 @@ public:
     void wipe() { actPos = 0; buffer[actPos] = '\0'; }
     bool isEmpty() { return strlen(buffer) == 0; }
 private:
-    char buffer[_BUFFER_LENGTH]{'\0'};      ///< Zeichenpuffer der Länge _BUFFER_LENGTH
+    char buffer[_MAX_BUFFER_LENGTH]{'\0'};      ///< Zeichenpuffer der Länge _BUFFER_LENGTH
     unsigned int actPos{0};                ///< aktuelles Ende des Buffers; zeigt auf die Position nach dem letzten Zeichen
 };
 
@@ -36,8 +37,6 @@ private:
  */
 class Dispatcher {
 public:
-    Dispatcher();
-
     /**
      * @brief Den vom Flugsimulator erhaltenen String parsen und in 5 Parameter zerlegen.
      * Im vom Flugsimulator enthaltenen String werden folgende Informationen erwartet, 
@@ -53,16 +52,12 @@ public:
      * - parameter1,
      * - parameter2 - Werte zu dem device/Ereignis
      * 
-     * @param [in] inInt Byte (Zeichen), das von der seriellen Schnittstelle gelesen wurde. 
+     * @param [in, out] inBuffer Zeiger auf die eingelesenen Zeichen (String), die von der seriellen Schnittstelle gelesen wurden.
+     *                  Der inBuffer wird dabei zerstört.
+     * @return true  Parsen wurde fehlerfrei abgeschlossen.
+     *         false Fehler beim Parsen aufgetreten.
      */
-    void parseSerial(const char inChar);
-
-    /**
-     * @brief 
-     * @todo Doku ergänzen
-     * @param [in] inCommandString 
-     */
-    void parseString(const char *inBuffer);
+    bool parseString(char *inBuffer);
 
     #ifdef DEBUG
     void printData();
@@ -72,11 +67,11 @@ private:
     uint8_t status = 0;
     String command;
     struct Parser {
-        String source;         ///< ??
-        String device;         ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
-        String devEvent;       ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
-        String parameter1;     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-        String parameter2;     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+        char source[_MAX_PARA_LENGTH];         ///< ??
+        char device[_MAX_PARA_LENGTH];         ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
+        char devEvent[_MAX_PARA_LENGTH];       ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
+        char parameter1[_MAX_PARA_LENGTH];     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+        char parameter2[_MAX_PARA_LENGTH];     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
     } commandData {"source", "device", "devevent", "para1", "para2"};
     
     void dispatch();
