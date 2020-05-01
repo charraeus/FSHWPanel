@@ -45,33 +45,38 @@ void Switch::checkLongOn() {
 
 
 /******************************************************************************/
-void Switch::updateOnTime(const unsigned long newOnTime) {
+void Switch::updateOnTime(const unsigned long &newOnTime) {
     onTime = calcTimeDiff(onTimeStart, newOnTime);
 }
 
 
 /******************************************************************************/
 void Switch::transmitStatus() {
-    String charsToSend{""};
+    char charsToSend[100];;
 
-    charsToSend = "XPDR BTN " + switchName + " ";
- 	if ((! longOnSent) && longOn) {
+    strcpy(charsToSend, "XPDR BTN ");
+    strcat(charsToSend, switchName); 
+    strcat(charsToSend, " ");
+    if ((! longOnSent) && longOn) {
         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
         changed = false;
-        charsToSend += "LON";
+        strcat(charsToSend, "LON");
     } else {
         // Den An-/Aus-Status des Schalters übertragen.
-        charsToSend += (getStatus() == LOW) ? "ON" : "OFF";
+        strcat(charsToSend, (getStatus() == LOW) ? "ON" : "OFF");
     }
+    #ifdef DEBUG
     Serial.println(charsToSend);
+    ///@todo Switch::transmitStatus ausprogrammieren.
+    #endif
 }
 
 // ab hier beginnen die privaten Methoden
 
 /******************************************************************************/
-unsigned long Switch::calcTimeDiff(const unsigned long onTime, const unsigned long offTime) {
+unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned long &offTime) {
     const unsigned long maxLong = 4294967295;  /** @todo besser sizeOf(unsigned long) nehmen */
     // Einschaltzeit ausrechnen. millis() kann überlaufen; das muss berücksichtigt werden
     if (offTime >= onTime) {

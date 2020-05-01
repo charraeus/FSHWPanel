@@ -1,7 +1,7 @@
 /**************************************************************************************************
- * @file dispatcher.hpp
+ * @file parser.hpp
  * @author Christian Harraeus <christian@harraeus.de>
- * @brief Interface der Klasse @em Dispatcher
+ * @brief Interface der Klassen @em ParserClass und @em BufferClass.
  * @version 0.1
  * @date 2017-11-17
  * 
@@ -9,33 +9,59 @@
  * 
  **************************************************************************************************/
 
-#ifndef dispatcher_hpp
-#define dispatcher_hpp
+#ifndef parser_hpp
+#define parser_hpp
 
 #include <Arduino.h>
 #define _MAX_BUFFER_LENGTH 100  ///< Der Buffer kann max. 99 Zeichen zzgl. Zeilenende '\0' aufnehmen.
 #define _MAX_PARA_LENGTH 10     ///< Max. Länge der geparsten Kommandoparameter.
 
 /**
- * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle
+ * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle.
  * 
  */
 class BufferClass {
 public:
+    /**
+     * @brief Inhalt des Zeichenpuffers ausgeben
+     * 
+     * @return char* Zeichenpuffer
+     */
     char *get() { return buffer; }
+
+    /**
+     * @brief Zeichen an das Ende des Zeichenpuffers anhängen.
+     * 
+     * @param [in] inChar Das anzuhängende Zeichen.
+     * @return uint8_t @em 1: erfolgreich durchgeführt.
+     *                 @em 0: Fehler aufgetreten. Wahrscheinlich, weil buffer voll ist.
+     */
     uint8_t addChar(const char inChar);
+
+    /**
+     * @brief Zeichenpuffer löschen.
+     * 
+     */
     void wipe() { actPos = 0; buffer[actPos] = '\0'; }
+
+    /**
+     * @brief Prüfung, ob der Zeichenpuffer leer ist.
+     * 
+     * @return true     Der Zeichenpuffer ist leer.
+     * @return false    Der Zeichenpuffer ist nicht leer.
+     */
     bool isEmpty() { return strlen(buffer) == 0; }
+
 private:
     char buffer[_MAX_BUFFER_LENGTH]{'\0'};      ///< Zeichenpuffer der Länge _BUFFER_LENGTH
     unsigned int actPos{0};                ///< aktuelles Ende des Buffers; zeigt auf die Position nach dem letzten Zeichen
 };
 
 /**
- * @brief Daten vom Flugsimulator entgegennehmen und verarbeiten.
+ * @brief Vom Flugsimulator kommenden Kommandstring parsen und zerlegen.
  * @todo Doku ergänzen
  */
-class Dispatcher {
+class ParserClass {
 public:
     /**
      * @brief Den vom Flugsimulator erhaltenen String parsen und in 5 Parameter zerlegen.
@@ -64,19 +90,13 @@ public:
     #endif
 
 private:
-    uint8_t status = 0;
-    String command;
-    struct Parser {
-        char source[_MAX_PARA_LENGTH];         ///< ??
-        char device[_MAX_PARA_LENGTH];         ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
-        char devEvent[_MAX_PARA_LENGTH];       ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
-        char parameter1[_MAX_PARA_LENGTH];     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-        char parameter2[_MAX_PARA_LENGTH];     ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-    } commandData {"source", "device", "devevent", "para1", "para2"};
-    
-    void dispatch();
-    void dispatch(const String &inSource, const String &inDevice, const String &inEvent,
-                  const String &inParameter1, const String &inParameter2);
+    char source[_MAX_PARA_LENGTH] = "source";       ///< Quelle der Nachricht, z.B. "X-Plane" oder "Arduino" oder ...
+    char device[_MAX_PARA_LENGTH] = "device";       ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
+    char devEvent[_MAX_PARA_LENGTH] = "devEvent";   ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
+    char parameter1[_MAX_PARA_LENGTH] = "para1";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+    char parameter2[_MAX_PARA_LENGTH] = "para2";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+   
+    void dispatch();    ///< Dispatcher aufrufen. @todo Dispatcher in eine eigene Klasse auslagern.
 };
 
-#endif /* dispatcher_hpp */
+#endif /* parser_hpp */

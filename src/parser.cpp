@@ -1,7 +1,7 @@
 /**************************************************************************************************
- * @file dispatcher.cpp
+ * @file parser.cpp
  * @author Christian Harraeus <christian@harraeus.de>
- * @brief Implementierung der Klasse @em Dispatcher.
+ * @brief Implementierung der Klasse @em Parser.
  * @version 0.1
  * @date 2017-11-17
  * 
@@ -9,7 +9,7 @@
  * 
  **************************************************************************************************/
 
-#include "dispatcher.hpp"
+#include "parser.hpp"
 #include "error.hpp"
 
 
@@ -27,7 +27,7 @@ uint8_t BufferClass::addChar(const char inChar) {
 
 
 /**************************************************************************************************/
-bool Dispatcher::parseString(char *inBuffer) {
+bool ParserClass::parseString(char *inBuffer) {
     /// @todo Kommentar anpassen.
     // Vom Flugsimulator eingelesene Zeile parsen
     // Ergebnis des Parsens ist sourceName, switchName, eventName
@@ -40,53 +40,50 @@ bool Dispatcher::parseString(char *inBuffer) {
     // Schnittstelle läuft.
     // in der Switchmatrix direkt dispatch(source, device, event, parameter1, parameter2) aufrufen
     // das muss aber noch geschaut werden, wie das gehen kann
-    Serial.print("Dispatcher::parseString:");
-    Serial.println(inBuffer);
-
     char *ptrParameter;
-    uint8_t paramCount = 1;                 // Zähler für die richtige Variable der struct commandData.
+    uint8_t paramCount = 1;                 // Zähler für die richtige Variable der struct 
     
     ptrParameter = strtok (inBuffer, " ");       // ptrChar enthält jetzt den Stringabschnitt bis zum ersten Blank.
     if (ptrParameter != nullptr) {               // Vorsichtshalber testen, ob was gefunden wurde.
-        strcpy(commandData.source, ptrParameter);    // Diesen in commandData.source kopieren.
+        strcpy(source, ptrParameter);    // Diesen in source kopieren.
         while (ptrParameter != nullptr) {            // Das Zerlegen fortsetzen bis nichts mehr da ist.
             #ifdef DEBUG
             Serial.println (ptrParameter);
             #endif
-            paramCount++;                       // Zähler hochzählen, für die richtige Variable der struct commandData.
+            paramCount++;                       // Zähler hochzählen, für die richtige Variable der struct 
             ptrParameter = strtok (nullptr, " ");    // In die richtige Variable den Teilstring bis zum jeweils
             switch (paramCount) {               // nächsten Blank hineinkopieren. 
-                case 2: { strcpy(commandData.device, ptrParameter); break; }
-                case 3: { strcpy(commandData.devEvent, ptrParameter); break; }
-                case 4: { strcpy(commandData.parameter1, ptrParameter); break; }
-                case 5: { strcpy(commandData.parameter2, ptrParameter); break; }
+                case 2: { strcpy(device, ptrParameter); break; }
+                case 3: { strcpy(devEvent, ptrParameter); break; }
+                case 4: { strcpy(parameter1, ptrParameter); break; }
+                case 5: { strcpy(parameter2, ptrParameter); break; }
             }
         }
     }
     #ifdef DEBUG
-    Serial.print("Source="); Serial.print(commandData.source); Serial.println("|");
-    Serial.print("Device="); Serial.print(commandData.device); Serial.println("|");
-    Serial.print("Event="); Serial.print(commandData.devEvent); Serial.println("|");
-    Serial.print("Parameter1="); Serial.print(commandData.parameter1); Serial.println("|");
-    Serial.print("Parameter2="); Serial.print(commandData.parameter2); Serial.println("|");
+    Serial.print("Source="); Serial.print(source); Serial.println("|");
+    Serial.print("Device="); Serial.print(device); Serial.println("|");
+    Serial.print("Event="); Serial.print(devEvent); Serial.println("|");
+    Serial.print("Parameter1="); Serial.print(parameter1); Serial.println("|");
+    Serial.print("Parameter2="); Serial.print(parameter2); Serial.println("|");
     #endif
     return (paramCount == 5);   // Falls paramCount nicht 5 ist, wurden nicht ausreichend viele Werte eingelesen.
 }
 
 
-void Dispatcher::dispatch() {
+void ParserClass::dispatch() {
     // Events je nach Quelle verteilen
-    // if (commandData.source == "CLOCK") {
+    // if (source == "CLOCK") {
         // rufe eine Callback-Funktion von ClockDavtronM802 auf. Die Adresse dieser Funktion muss 
         // aber zuerst von ClockDavtronM803 gesetzt worden sein.
         // Hierzu muss wahrscheinlich noch eine SetCallbackFunction implementiert werden.
         // callbackEventClock(switchName, eventName); --> Sollte die function ClockDavtronM803.event() aufrufen
     // } else {
-    //     if (commandData.source == "XPDR") {
+    //     if (source == "XPDR") {
             // analog zu "CLOCK"
             // callbackEventClock(switchName, eventName);
     //     } else {
-    //         if (commandData.source == "XP") {
+    //         if (source == "XP") {
                 // Daten vom X-Plane sind angekommen
     //         }
     //     }
@@ -94,33 +91,20 @@ void Dispatcher::dispatch() {
     Serial.println("Hier wird jetzt dispatscht...");
     
     // Kommandovariablen wieder putzen
-    // commandData.source = "";
-    // commandData.device = "";
-    // commandData.devEvent = "";
-    // commandData.parameter1 = "";
-    // commandData.parameter2 = "";
-}
-
-
-void Dispatcher::dispatch(const String &inSource, const String &inDevice, const String &inEvent,
-                          const String &inParameter1, const String &inParameter2) {
-    // commandData.source = inSource;
-    // commandData.device = inDevice;
-    // commandData.devEvent = inEvent;
-    // commandData.parameter1 = inParameter1;
-    // commandData.parameter2 = inParameter2;
-    //dispatch();
+    // source = "";
+    // device = "";
+    // devEvent = "";
+    // parameter1 = "";
+    // parameter2 = "";
 }
 
 
 #ifdef DEBUG
-void Dispatcher::printData() {
-    Serial.println(commandData.source);
-    Serial.println(commandData.device);
-    Serial.println(commandData.devEvent);
-    Serial.println(commandData.parameter1);
-    Serial.println(commandData.parameter2);
-    Serial.println(status);
-    Serial.println(command);
+void ParserClass::printData() {
+    Serial.println(source);
+    Serial.println(device);
+    Serial.println(devEvent);
+    Serial.println(parameter1);
+    Serial.println(parameter2);
 }
 #endif

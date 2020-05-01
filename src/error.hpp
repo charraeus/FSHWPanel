@@ -14,9 +14,9 @@
 #include <string>
 
 std::string errorMsg[ ] {
-    "Dispatcher-Fehler 1: Fehler in parseSerial.", 
-    "Dispatcher-Fehler 2: Zu wenig Eingaben. Abbruch.", 
-    "Dispatcher-Fehler 3: Zu langer Parsereingabeparameter."  
+    "Parser-Fehler 1: Fehler in parseSerial.", 
+    "Parser-Fehler 2: Zu wenig Eingaben. Abbruch.", 
+    "Parser-Fehler 3: Zu langer Parsereingabeparameter."  
 }
 #else
 #endif

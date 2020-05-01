@@ -14,6 +14,21 @@
 #include "Switchmatrix.hpp"
 #include "Arduino.h"
 
+
+/******************************************************************************/
+bool SwitchMatrix::setSwitchName(const uint8_t &row, const uint8_t &col, const char* newName) {
+    if (row < SWITCH_MATRIX_ROWS && col < SWITCH_MATRIX_COLS) {
+        switchMatrix[row][col].setName(newName);
+        #ifdef DEBUG
+        //Serial.print(newName); Serial.print("|"); Serial.println(switchMatrix[row][col].getName());
+        #endif
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 /******************************************************************************/
 void SwitchMatrix::initHardware() {
     /// Alle Matrixzeilen-Pins als Output einstellen und auf HIGH setzen.
@@ -26,7 +41,7 @@ void SwitchMatrix::initHardware() {
         pinMode(col, INPUT_PULLUP);
     }
     #ifdef DEBUG
-    printMatrix();
+    //printMatrix();
     #endif
 }
 
@@ -87,7 +102,7 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
 
 
 /******************************************************************************/
-void SwitchMatrix::findMatrixRowColByName(const String &switchName, size_t &matrixRow, size_t &matrixCol) {
+void SwitchMatrix::findMatrixRowColByName(const char* switchName, size_t &matrixRow, size_t &matrixCol) {
     // Eingabe: Schaltername
     // Ausgabe: Row und Col der Matrix (nicht die Pin-Nummern!)
     // Wenn Row und Col den Wert 9999 haben, wurde der Name nicht gefunden
@@ -95,7 +110,7 @@ void SwitchMatrix::findMatrixRowColByName(const String &switchName, size_t &matr
     matrixCol = 9999;
     for (unsigned int row = 0; row != SWITCH_MATRIX_ROWS; ++row) {
         for (unsigned int col = 0; col != SWITCH_MATRIX_COLS; ++col) {
-            if ((switchMatrix[row][col]).getName() == switchName) {
+            if (strcmp(switchMatrix[row][col].getName(), switchName) == 0) {
                 matrixRow = row;
                 matrixCol = col;
                 break;
@@ -107,7 +122,10 @@ void SwitchMatrix::findMatrixRowColByName(const String &switchName, size_t &matr
 #ifdef DEBUG
 /******************************************************************************/
 void SwitchMatrix::printMatrix() {
+    uint8_t r{0};
     for (auto &row : switchMatrix) {
+        Serial.print("Row "); Serial.print(r); Serial.print(":\t");
+        r++;
         for (auto &col : row) {
             Serial.print(col.getName());
             Serial.print("\t");

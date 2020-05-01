@@ -22,7 +22,7 @@
 class Switch {
 private:
     uint8_t status {HIGH};          ///< Status 0 --> eingeschaltet, Status 1 --> ausgeschaltet
-    String switchName{""};          ///< Name des Schalters; wird durch Konstruktor gesetzt
+    char switchName[11];            ///< Name des Schalters; wird durch Konstruktor gesetzt
     bool longOn {false};            ///< true => falls Schalter ist länger als 3 Sek\. an
     bool longOnSent {true};         ///< true => Ereignis wurde schon gesetzt und muss nicht nochmal gefeuert werden
     unsigned long onTimeStart {0};  ///< Zeitstempel wann Schalter eingeschaltet wurde
@@ -39,16 +39,9 @@ private:
      * @param [in] offTime Ausschaltzeitstempel in Millisekunden, z.B. millis(). Dieser Parameter ist i.d.R. der neuere Zeitstempel.
      * @return unsigned long Zeitdifferenz in Millisekunden
      */
-    unsigned long calcTimeDiff(const unsigned long onTime, const unsigned long offTime);    
+    unsigned long calcTimeDiff(const unsigned long &onTime, const unsigned long &offTime);    
    
-public:
-    /**  
-     * @brief Constructor zum Anlegen eines Schalterobjekts.
-     *  Initialisiert den Schalter.
-     * @param [in] newName Ein String mit dem Namen des Schalters. 
-     * @note       newName sollte nicht allzu lang sein, um den Arduino-Speicher nicht so schnell zu füllen. 
-     * */
-    explicit Switch(const String newName) : switchName {newName} {}
+public:    
     
     /**
      * @brief Setzt den Status des Schalters auf "on" und setzt den Zeitstempel, wann der Schalter eingeschaltet wurde.
@@ -56,11 +49,13 @@ public:
      */
     void setOn();
     
+    
     /**
      * @brief Setzt den Status des Schalters auf "off" und berechnet die Zeit, wie lange der Schalter eingeschaltet war.
      * 
      */
     void setOff();
+    
     
     /** 
      * Prüfen, ob ein Schalter länger als 3 Sekunden eingeschaltet ist.
@@ -70,6 +65,7 @@ public:
      */
     void checkLongOn();
     
+    
     /**
      * Einschaltzeit berechnen und sichern.
      *
@@ -78,7 +74,8 @@ public:
      * 
      * @param [in] newOnTime: Aktueller Zeitstempel in Millisekunden, z.B. millis()
      */
-    void updateOnTime(const unsigned long newOnTime); 
+    void updateOnTime(const unsigned long &newOnTime); 
+    
     
     /**
      * Den Status eines Schalters (@em ON oder @em off) übertragen.
@@ -88,12 +85,14 @@ public:
      */
     void transmitStatus();
     
+   
     /** 
      * Fragt ab, ob der Schalter eingeschaltet ist.
      * Nach Rückgabe des Status wird die @em changed Eigenschaft auf @em false gesetzt.
      * @return true wenn der Schalter eingeschaltet ist. 
      */ 
      bool isOn() { return getStatus() == 0; }
+    
     
     /** 
      * Gibt den Änderungstatus des Schalters zurück.
@@ -102,11 +101,27 @@ public:
      */ 
     bool isChanged() { return changed; }    
     
+    
     /** 
      * Gibt den Namen des Schalters zurück.
-     * @return Name des Schalters.
+     * @return String Name des Schalters.
      */ 
-    String getName() { return switchName; }
+    char* getName() { return switchName; }
+    
+    
+    /** 
+     * Setzt den Namen des Schalters.
+     * @param [in] newName Name des Schalters.
+     */ 
+    bool setName(const char* &newName) { 
+        if (strlen(newName) < sizeof(switchName)) {
+            strcpy(switchName, newName);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     
     /** 
      * Fragt den Schalterstatus ab und setzt den Änderungsstatus des Schalters zurück. 
@@ -117,6 +132,7 @@ public:
      * @see getStatusNoChange()
      */
     uint8_t getStatus() { changed = false; return status; } 
+    
     
     /**
      * Fragt den Schalterstatus ab ohne den Änderungsstatus des Schalters zurückzusetzen. 

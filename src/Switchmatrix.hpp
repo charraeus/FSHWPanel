@@ -26,8 +26,8 @@ const unsigned int HW_MATRIX_ROWS_LSB_PIN = 14;    ///< Pin-Nummer des niederstw
 const unsigned int HW_MATRIX_ROWS_MSB_PIN = 17;    ///< Pin-Nummer des höchstwertigen Pins der Matrixzeilen Y
 const unsigned int HW_MATRIX_COLS_LSB_PIN = 6;     ///< Pin-Nummer des niederstwertigen Pins der Matrixspalten X
 const unsigned int HW_MATRIX_COLS_MSB_PIN = 13;    ///< Pin-Nummer des höchstwertigen Pins der Matrixspalten X 
-constexpr size_t SWITCH_MATRIX_ROWS = HW_MATRIX_ROWS_MSB_PIN - HW_MATRIX_ROWS_LSB_PIN + 1;  ///< Anzahl Matrixzeilen
-constexpr size_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_LSB_PIN + 1;  ///< Anzahl Matrixspalten
+constexpr uint8_t SWITCH_MATRIX_ROWS = HW_MATRIX_ROWS_MSB_PIN - HW_MATRIX_ROWS_LSB_PIN + 1;  ///< Anzahl Matrixzeilen
+constexpr uint8_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_LSB_PIN + 1;  ///< Anzahl Matrixspalten
 
 /**************************************************************************************************
  * @brief Schaltermatrix zur Aufnahme von Schaltern der Klasse @em switch.
@@ -36,23 +36,22 @@ constexpr size_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_LS
  **************************************************************************************************/
 class SwitchMatrix {
 private:
-    Switch switchMatrix[SWITCH_MATRIX_ROWS][SWITCH_MATRIX_COLS]
-        {   
-            { Switch{"0"},   Switch{"1"},   Switch{"2"},   Switch{"3"},   Switch{"4"},   Switch{"5"},   Switch{"6"},  Switch{"7"}},
-            { Switch{"IDT"}, Switch{"VFR"}, Switch{"CLR"}, Switch{"OFF"}, Switch{"SBY"}, Switch{"TST"}, Switch{"ON"}, Switch{"ALT"}},
-            { Switch{"2-0"}, Switch{"2-1"}, Switch{"2-2"}, Switch{"2-3"}, Switch{"2-4"}, Switch{"2-5"}, Switch{"OAT"}, Switch{"2-7"}},
-            { Switch{"3-0"}, Switch{"3-1"}, Switch{"3-2"}, Switch{"3-3"}, Switch{"3-4"}, Switch{"3-5"}, Switch{"SEL"}, Switch{"CTL"}}
-        };  ///< Schaltermatrix anlegen und mit neu erzeugten Schaltern der Klasse @em Switch füllen. Dabei werden auch die Schalternamen vergeben.
+    Switch switchMatrix[SWITCH_MATRIX_ROWS][SWITCH_MATRIX_COLS];    ///< Switchmatrix anlegen.
     bool changed = false;   ///< Änderungsstatus der gesamten Matrix. Sobald sich ein Schalter ändert, ist @em changed @em true.
     unsigned int debounceTime = 2;  ///< Zeit in Millisekunden zum Entprellen
     
 public:
     /**
-     * @brief Konstruktor. Keine Funktion. Es wird der implizite Konstruktor verwendet.
+     * @brief Set the Switch Name object
      * 
-     * Initialisiert die Ports/Pins, an denen die Schalter angeschlossen sind.
+     * @param [in,out] row      Zeilennummer: [0..SWITCH_MATRIX_ROWS - 1].
+     * @param [in,out] col      Spaltennummer: [0.. SWITCH_MATRIX_COLS -1].
+     * @param [in,out] newName  Name des Schalters. 
+     * @return true     Der Name wurde erfolgreich gesetzt. 
+     * @return false    Der Name wurde nicht gesetzt, weil die Zeilen- und Spaltennummer unzulässig ist. 
      */
-    //SwitchMatrix();
+    bool setSwitchName(const uint8_t &row, const uint8_t &col, const char* newName);
+    
 
     /**
      * @brief Die Hardware, d.h. die Pins, an denen die Schalter angeschlossen sind, initialisieren.
@@ -60,6 +59,7 @@ public:
      */
     void initHardware();
 
+    
     /**
      * Den Status aller Hardware-Schalter in die SwitchMatrix einlesen.
      *
@@ -71,6 +71,7 @@ public:
      */
     void scanSwitchPins();
         
+    
     /**
      * Den Status aller Schalter in der Matrix ablegen.
      *
@@ -83,6 +84,7 @@ public:
      */
     void transmitStatus(const bool changedOnly);
     
+    
     /**
      * Schalter per Name finden und die zugehörige Row und Col der Matrix zurückgeben.
      *
@@ -94,8 +96,9 @@ public:
      * @param [out]  matrixCol  Nummer der Spalte des Schalters [0..n]
      * @note        Wenn Row oder Col den Wert 9999 haben, wurde der Name nicht gefunden.
      */
-    void findMatrixRowColByName(const String &switchName, size_t &matrixRow, size_t &matrixCol);
+    void findMatrixRowColByName(const char* switchName, size_t &matrixRow, size_t &matrixCol);
 
+    
     #ifdef DEBUG 
     /**
      * Die Namen aller Schalter ausgeben.
