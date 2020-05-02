@@ -1,7 +1,7 @@
 /**************************************************************************************************
  * @file xpdr.hpp
  * @author Christian Harraeus (christian@harraeus.de)
- * @brief Interface der Klasse @em ClockDavtronM803 sowie diverse Aufzählungstypen
+ * @brief Interface der Klassen @em Transponder @em ClockDavtronM803 sowie diverse Aufzählungstypen
  * @version 0.1
  * @date 2017-11-12
  * 
@@ -19,27 +19,28 @@
  * @brief Aufzählungstyp für Powerstatus
  * 
  */
-enum StatusPower {POWER_OFF, POWER_ON};
+enum PowerStatusTyp {POWER_OFF, POWER_ON};
 
 /**
  * @brief Aufzählungstyp für die nur alternativ möglichen Anzeigen.
  * 
  */
-enum StatusOatVolts {
-    OAT_VOLTAGE, 
-    OAT_FAHRENHEIT, 
-    OAT_CELSIUS
+enum class OatVoltsModeTyp {
+    OAT_VOLTAGE,        ///< Im oberen Display wird die Spannung angezeigt. 
+    OAT_FAHRENHEIT,     ///< Im oberen Display wird die Temperatur in Fahrenheit angezeigt. 
+    OAT_CELSIUS,        ///< Im oberen Display wird die Temperatur in Celsius angezeigt.
+    OAT_QNH             ///< Im oberen Display wird das akt. QNH angezeigt.
 };
 
 /**
  * @brief Aufzählungstyp für die verschiedenen Zeitvarianten, die angezeigt werden.
  * 
  */
-enum StatusTime {
-    TIME_LT,            // Als Uhrzeit ist Local Time eingestellt/angezeigt
-    TIME_UT,            // Als Uhrzeit ist UTC eingestellt/angezeigt 
-    TIME_ET,            // Als Uhrzeit wird die Elapsed Time seit 
-    TIME_FT
+enum class TimeModeTyp {
+    TIME_LT,            ///< Local Time
+    TIME_UT,            ///< Universal Time 
+    TIME_ET,            ///< Elapsed Time (seit Avionics on) 
+    TIME_FT             ///< Flight Time
 };
 
 /**
@@ -63,25 +64,44 @@ enum Event {
  */
 class ClockDavtronM803 {
 public:
-    // Initialisiert die Uhr
-    ClockDavtronM803();
+    void setLocalTime(uint32_t &lt) { localTime = lt; };
+
+    void setFlightTime(uint32_t &ft) { flightTime = ft; };
+
+    void setElapsedTime(uint32_t &et) { elapsedTime = et; };
+
+    void setTimeMode(TimeModeTyp &tm) { timeMode = tm; };
+
+    void setTemperature(int8_t &temp) { temperatureC = temp; };
+
+    void setPowerStatus(PowerStatusTyp &ps) { powerStatus = ps; };
+
+    /**
+     * @brief Durch die verschiedenen Modi des oberen Displays schalten.
+     * 
+     */
+    void toggleOatVoltMode();
+
+    void toggleTimeMode();
+
     // Verarbeitet die Tastendrücke und Daten
     void process();
+
     Event event(const String &eventString);
+
+
 
     // Die local Time in UTC umrechnen
     uint32_t utc(const uint32_t localTime);
     
 private:
-    StatusPower statusPower {POWER_OFF};
-    StatusOatVolts statusOatVolts {OAT_CELSIUS};
-    StatusTime statusTime {TIME_LT};
-    bool batteryOn {false};
-    bool alternatorOn {false};
-    uint32_t localTime {0};                         ///< Die lokale Zeit im Format 00HHMMSS checken wies vom Flusi kommt
-    uint32_t flightTime {0};                        ///< Die Flighttime im Format 00HHMMSS checken wies vom Flusi kommt
-    uint32_t elapsedTime {0};                       ///< Die elapsed time im Format 00HHMMSS
-    uint8_t temperatureC {0};                       ///< Die Temperatur in Grad Celsius  checken wies vom Flus kommt
+    uint32_t localTime{0};                          ///< Die lokale Zeit im Format 00HHMMSS checken wies vom Flusi kommt
+    uint32_t flightTime{0};                         ///< Die Flighttime im Format 00HHMMSS checken wies vom Flusi kommt
+    uint32_t elapsedTime{0};                        ///< Die elapsed time im Format 00HHMMSS
+    TimeModeTyp timeMode{TimeModeTyp::TIME_LT};     ///< Initial wird die lokale Zeit im unteren Display angezeigt.
+    int8_t temperatureC{0};                         ///< Die Temperatur in Grad Celsius  checken wies vom Flus kommt
+    PowerStatusTyp powerStatus{POWER_ON};           ///< Initial ist die Power off. @todo Ändern auf POWER_OFF.
+    OatVoltsModeTyp oatVoltsStatus{OatVoltsModeTyp::OAT_CELSIUS};   ///< Initial wird die Temeperatur in Celsius im oberen Display angezeigt.
 };
 
 

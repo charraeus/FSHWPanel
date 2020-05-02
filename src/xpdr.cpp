@@ -22,9 +22,29 @@ const String eventStrings[NO_OF_EVENT_STRINGS] = {
 
 
 /**************************************************************************************************/
-ClockDavtronM803::ClockDavtronM803() {
-    // hier müssen noch Initialisierungen 'rein
+void ClockDavtronM803::toggleOatVoltMode() {
+    int nextStatus{static_cast<int>(oatVoltsStatus)};
+
+    nextStatus++;
+    if (nextStatus > static_cast<int>(OatVoltsModeTyp::OAT_QNH)) { 
+        oatVoltsStatus = OatVoltsModeTyp::OAT_VOLTAGE; 
+    } else {
+        oatVoltsStatus = static_cast<OatVoltsModeTyp>(nextStatus);
+    }
 };
+
+
+/**************************************************************************************************/
+void ClockDavtronM803::toggleTimeMode() {
+    int nextStatus{static_cast<int>(timeMode)};
+
+    nextStatus++;
+    if (nextStatus > static_cast<int>(TimeModeTyp::TIME_FT)) { 
+        timeMode = TimeModeTyp::TIME_LT; 
+    } else {
+        timeMode = static_cast<TimeModeTyp>(nextStatus);
+    }
+}
 
 
 /**************************************************************************************************/

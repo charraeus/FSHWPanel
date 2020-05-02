@@ -13,7 +13,7 @@
 #include "Switchmatrix.hpp"
 #include "ledmatrix.hpp"
 #include "parser.hpp"
-//#include "xpdr.hpp"
+#include "xpdr.hpp"
 //#include "commands.hpp"
 
 /// Makros für serielle Schnittstelle definieren
@@ -25,7 +25,7 @@ ParserClass parser;         ///< Parser-Objekt anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
 
-//ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
+ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 
 /******************************************************************************
@@ -107,10 +107,8 @@ void setup() {
     #endif
 }
 
-// loop code
-
 /******************************************************************************
- * @brief Lfd.\ Verarbeitung
+ * @brief Lfd.\ Verarbeitung im loop().
  * 
  ******************************************************************************/
 void loop() {

@@ -49,7 +49,7 @@ const unsigned long int BLINK_INTERVAL_DARK[NO_OF_SPEED_CLASSES] = {
 * segmentBits enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
 * a wird dabei durch das niederstwertige Bit repräsentiert, g durch das höchstwertige Bit.
  */
-const uint32_t SEGMENT_CHARS = 29;              ///< Anzahl verfügbare Zeichen
+const uint32_t SEGMENT_CHARS = 30;              ///< Anzahl verfügbare Zeichen
 const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
     //gfedcba
     0b0111111, ///<  "0": Segmente f, e, d, c, b, a    --> 0x3f   --> segmentBits[0]
@@ -80,7 +80,8 @@ const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bi
     0b0011100, ///<  "u": Segmente e, d, c                        --> segmentBits[25]
     0b1000000, ///<  "-": Segment g                    --> 0x40   --> segmentBits[26]
     0b1100011, ///<  "°": Segment g, f, b, a                      --> segmentBits[27]
-    0b1011000  ///<  "c": Segment g, e, d, c                      --> segmentBits[28]
+    0b1011000, ///<  "c": Segment g, e, d, c                      --> segmentBits[28]
+    0b0001000  ///<  "_": Segment d                               --> segmentBits[29]
 };
 
 
@@ -266,7 +267,7 @@ void LedMatrix::doBlink() {
 void LedMatrix::display() {
     // Alle Berechnungen zum Blinken erledigen
     doBlink();
-    // Die hwMatrix serialisieren und in die Schieberegister schieben und die Outputs scharf schalten
+    // Die hwMatrix serialisieren, in die Schieberegister schieben und die Outputs scharf schalten
     for (uint8_t row = 0; row != LED_ROWS; ++row) {
         digitalWrite(STRB, LOW);    // STROBE unbedingt auf LOW setzen damit die Registerinhalte in die Latches übernommen werden
         
@@ -440,7 +441,7 @@ int LedMatrix:: set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool
 
 
 /**************************************************************************************************/
-int LedMatrix:: set7SegBlinkOff(const uint8_t row, const uint8_t col0, const bool dpBlink, 
+int LedMatrix::set7SegBlinkOff(const uint8_t row, const uint8_t col0, const bool dpBlink, 
                                const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts ausschalten
     // Dabei nach Blinkgeschwindigkeiten unterscheiden
@@ -467,6 +468,7 @@ int LedMatrix:: set7SegBlinkOff(const uint8_t row, const uint8_t col0, const boo
 
 /**************************************************************************************************/
 void LedMatrix::powerOnSelfTest() {
+    //Low-Level-Ansteuerung der Anzeigen
     for (uint8_t row = 1; row != 7; ++row) {
         set7SegValue(row, 8, row - 1);      // FL 123 und XPDR-Code 2345
     }
@@ -484,31 +486,10 @@ void LedMatrix::powerOnSelfTest() {
     set7SegValue(1, 16, 7);
     set7SegValue(2, 16, CHAR_DEGREE);
     set7SegValue(3, 16, CHAR_C);
-    ledOn(3, 4);        // UT-LED an
-    
+    ledOn(3, 4);        // UT-LED an 
 }
 
 
-#ifdef DEBUG
 /**************************************************************************************************/
-void LedMatrix::printMatrix() {
-    Serial.println(); Serial.println("Die Bytes der Matrix:");
-    uint8_t row = 0;
-    for (uint32_t col : hwMatrix) {   // col enthält jetzt alle 32 Bits der Column; wird für alle Rows durchlaufen
-        Serial.print("Row "); Serial.print(row); Serial.print(":  ");
-        Serial.print(col); Serial.print(" --> ");
-        uint8_t col1 = col >> 24;
-        Serial.print(col1); Serial.print(" ");
-        col1 = col >> 16;
-        Serial.print(col1); Serial.print(" ");
-        col1 = col >> 8;
-        Serial.print(col1); Serial.print(" ");
-        col1 = col;
-        Serial.print(col1); Serial.println(" ");
-        ++row;
-    }
-    Serial.println();
-    Serial.print("Matrixspaltensize="); Serial.println(sizeof(hwMatrix[0]) * 8);
-}
-#endif
+
 

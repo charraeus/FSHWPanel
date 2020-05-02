@@ -50,6 +50,7 @@ const uint8_t CHAR_u = 25;   ///< Zeichen "u"
 const uint8_t CHAR_MINUS = 26;   ///< Zeichen "-"
 const uint8_t CHAR_DEGREE = 27;   ///< Zeichen "°" (Grad)
 const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler. 
+const uint8_t CHAR_UNDERSCORE = 29; ///< Zeichen "_"
 
 /* Konstanten für Blinkrate und Blinken */
 const uint8_t BLINK_NORMAL = 0;     ///< Normale Blinkgeschwindigkeit.
@@ -249,10 +250,6 @@ public:
      * 
      */
     void powerOnSelfTest();
-
-    #ifdef DEBUG
-    void printMatrix();
-    #endif /* ifdef DEBUG */
 };
 
 
