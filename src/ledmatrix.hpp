@@ -19,38 +19,17 @@
 const bool DP_ON = true;    ///< Dezimalpunkt wird angezeigt.
 const bool DP_OFF = false;  ///< Dezimalpunkt wird nicht angezeigt.
 
-/* Konstanten für die Anzeige von Zeichen auf den 7-Segment-Anzeigen */
-const uint8_t CHAR_0 = 0;   ///< Zeichen "0"
-const uint8_t CHAR_1 = 1;   ///< Zeichen "1"
-const uint8_t CHAR_2 = 2;   ///< Zeichen "2"
-const uint8_t CHAR_3 = 3;   ///< Zeichen "3"
-const uint8_t CHAR_4 = 4;   ///< Zeichen "4"
-const uint8_t CHAR_5 = 5;   ///< Zeichen "5"
-const uint8_t CHAR_6 = 6;   ///< Zeichen "6"
-const uint8_t CHAR_7 = 7;   ///< Zeichen "7"
-const uint8_t CHAR_8 = 8;   ///< Zeichen "8"
-const uint8_t CHAR_9 = 9;   ///< Zeichen "9"
-const uint8_t CHAR_BANK = 10;   ///< Zeichen "0"
-const uint8_t CHAR_3_DASH_HORIZ = 11;   ///< Zeichen Drei "-" übereinander
-const uint8_t CHAR_2_DASH_VERT = 12;   ///< Zeichen "||"
-const uint8_t CHAR_A = 13;   ///< Zeichen "A"
-const uint8_t CHAR_b = 14;   ///< Zeichen "b"
-const uint8_t CHAR_C = 15;   ///< Zeichen "C"
-const uint8_t CHAR_c = 28;   ///< Zeichen "c"
-const uint8_t CHAR_d = 16;   ///< Zeichen "d"
-const uint8_t CHAR_E = 17;   ///< Zeichen "D"
-const uint8_t CHAR_F = 18;   ///< Zeichen "F"
-const uint8_t CHAR_H = 19;   ///< Zeichen "H"
-const uint8_t CHAR_L = 20;   ///< Zeichen "L"
-const uint8_t CHAR_o = 21;   ///< Zeichen "o"
-const uint8_t CHAR_P = 22;   ///< Zeichen "P"
-const uint8_t CHAR_r = 23;   ///< Zeichen "r"
-const uint8_t CHAR_U = 24;   ///< Zeichen "U"
-const uint8_t CHAR_u = 25;   ///< Zeichen "u"
-const uint8_t CHAR_MINUS = 26;   ///< Zeichen "-"
-const uint8_t CHAR_DEGREE = 27;   ///< Zeichen "°" (Grad)
-const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler. 
-const uint8_t CHAR_UNDERSCORE = 29; ///< Zeichen "_"
+/* Konstanten für die Anzeige von Sonderzeichen auf den 7-Segment-Anzeigen */
+#define _CHAR_BLANK 10          ///< Zeichen " " (Blank)
+#define _CHAR_c 32              ///< Zeichen "c"
+#define _CHAR_o 33              ///< Zeichen "o"
+#define _CHAR_u 34              ///< Zeichen "u"
+#define _CHAR_MINUS 35          ///< Zeichen "-"
+#define _CHAR_DEGREE 36         ///< Zeichen "°" (Grad)
+#define _CHAR_UNDERSCORE 37     ///< Zeichen "_"
+#define _CHAR_3_DASH_HORIZ 38   ///< Zeichen Drei "-" übereinander
+#define _CHAR_2_DASH_VERT 39    ///< Zeichen "||"
+#define _CHAR_ERROR 38          ///< Zeichen für Fehler. 
 
 /* Konstanten für Blinkrate und Blinken */
 const uint8_t BLINK_NORMAL = 0;     ///< Normale Blinkgeschwindigkeit.
@@ -61,6 +40,27 @@ const uint8_t NO_OF_SPEED_CLASSES = 2;  ///< Anzahl Blinkgeschwindigkeiten.
 constexpr const uint8_t LED_ROWS = 8;
 constexpr const uint32_t LED_COLS = sizeof(uint32_t) * 8;  //Achtung: durch Verwendung von uint32_t ist die Spaltenzahl immer 32
 
+/* Konstanten für Display-Felder */
+const uint8_t MAX_DISPLAY_FIELDS = 4;       ///< Maximal mögliche Anzahl Display-Felder.
+const uint8_t MAX_7SEGMENT_UNITS = 6;       ///< Maximal mögliche Anzahl 7-Segment-Anzeigen je Display-Feld.
+
+
+/**
+ * @brief Ein Display-Feld fasst mehrere 7-Segment-Anzeigen zusammen.
+ * 
+ */
+struct DisplayField {
+    uint8_t led7SegmentRows[MAX_7SEGMENT_UNITS];    ///< Rows in der LED-Matrix für die einzelnen 7-Segment-Anzeigen.
+    uint8_t led7SegmentCol0s[MAX_7SEGMENT_UNITS];   ///< Cols des Segment a in der LED-Matrix für die einzelnen 7-Segment-Anzeigen.
+    uint8_t count7SegmentUnits;                     ///< Anzahl 7-Segment-Anzeigen, aus denen das Display-Feld besteht.
+};
+
+struct LedMatrixPos {
+    uint8_t row;    ///< Row der Led.
+    uint8_t col;    ///< Col der Led.
+};
+
+
 /**************************************************************************************************
  * LEDs, die in einer Matrix angeordnet sind.
  * 
@@ -70,12 +70,11 @@ class LedMatrix {
 private:
     uint32_t matrix[LED_ROWS];                              ///< Matrix für den Status (ein oder aus) je LED.
     uint32_t hwMatrix[LED_ROWS];                            ///< akt. Status ein/aus je LED. Diese Matrix steuert direkt die Hardware.
+    DisplayField displays[MAX_DISPLAY_FIELDS];              ///< Display-Felder (= Zusammenfassung von 7-Segment-Anzeigen).
     uint32_t blinkStatus[NO_OF_SPEED_CLASSES][LED_ROWS];    ///< Status ob geblinkt werden soll je Geschwindigkeitsklasse und LED.
     unsigned long int blinkStartTime[NO_OF_SPEED_CLASSES];  ///< Gibt den Takt des normal-schnellen Blinkens für alle LEDs vor.
     bool isBlinkDarkPhase[NO_OF_SPEED_CLASSES];             ///< Flag für die Dunkelphase beim normalen Blinken.
     unsigned long int nextBlinkInterval[NO_OF_SPEED_CLASSES];  ///< Dauer des nächsten Blink-Intervalls (abhängig von BLINK_INTERVAL_NORMAL_BRIGHT und ..._DARK.
-//    uint32_t blinkStatusNormal[LED_ROWS];                 ///< Status ob geblinkt werden soll je LED; normale Blinkgeschwindigkeit.
-//    uint32_t blinkStatusSlow[LED_ROWS];                   ///< Status ob geblinkt werden soll je LED; langsame Blinkgeschwindigkeit.
 //    unsigned long int blinkStartTimeNormal;               ///< Gibt den Takt des normal-schnellen Blinkens für alle LEDs vor.
 //    unsigned long int blinkStartTimeSlow;                 ///< Gibt den Takt des langsamen Blinkens für alle LEDs vor.
 //    bool isBlinkDarkPhaseNormal;                          ///< Flag für die Dunkelphase beim normalen Blinken.
@@ -250,6 +249,14 @@ public:
      * 
      */
     void powerOnSelfTest();
+
+
+    void defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const uint8_t &matrixRow, const uint8_t &matrixCol0);
+
+    void defineDisplayFieldLength(const uint8_t &fieldId, const uint8_t &count7Segments) { displays[fieldId].count7SegmentUnits = count7Segments; };
+
+    void display(const uint8_t &fieldId, const char* outString);
+
 };
 
 

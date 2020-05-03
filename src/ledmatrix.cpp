@@ -49,7 +49,7 @@ const unsigned long int BLINK_INTERVAL_DARK[NO_OF_SPEED_CLASSES] = {
 * segmentBits enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
 * a wird dabei durch das niederstwertige Bit repräsentiert, g durch das höchstwertige Bit.
  */
-const uint32_t SEGMENT_CHARS = 30;              ///< Anzahl verfügbare Zeichen
+const uint8_t SEGMENT_CHARS = 40;              ///< Anzahl verfügbare Zeichen
 const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
     //gfedcba
     0b0111111, ///<  "0": Segmente f, e, d, c, b, a    --> 0x3f   --> segmentBits[0]
@@ -63,25 +63,35 @@ const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bi
     0b1111111, ///<  "8": Segmente g, f, e, d, c, b, a --> 0x7f   --> segmentBits[8]
     0b1101111, ///<  "9": Segmente g, f, d, c, b, a    --> 0x6f   --> segmentBits[9]
     0b0000000, ///<  " ": alle Segmente aus            --> 0x00   --> segmentBits[10]
-    0b1001001, ///< Drei waagerechte Striche: Segmente g, d, a  --> 0x49 --> segementBits[11]
-    0b0110110, ///< Zwei senkrechte Striche:  Segmente f, e, c, b --> segmentBits[12]
-    0b1110111, ///<  "A": Segmente g, f, e, b, c, a .  -->        --> segmentBits[13]
-    0b1111100, ///<  "b": Segmente g, f, e, d, c                  --> segmentBits[14]
-    0b0111001, ///<  "C": Segmente f, e, d, a                     --> segmentBits[15]
-    0b1011110, ///<  "d": Segmente g, e, d, c, b                  --> segmentBits[16]
-    0b1111001, ///<  "E": Segmente g, f, e, d, a       --> 0x79   --> segmentBits[17]
-    0b1110001, ///<  "F": Segmente g, f, e, a                     --> segmentBits[18]
-    0b0110110, ///<  "H": Segmente g, f, e, c, b                  --> segmentBits[19]
-    0b0111000, ///<  "L": Segmente f, e, d                        --> segmentBits[20]
-    0b1011100, ///<  "o": Segmente g, e, d, c                     --> segmentBits[21]
-    0b1110011, ///<  "P": Segmente g, f, e, b, a                  --> segmentBits[22]
-    0b1010000, ///<  "r": Segmente g, e                --> 0x50   --> segmentBits[23]
-    0b0111110, ///<  "U": Segmente f, e, d, c, b                  --> segmentBits[24]
-    0b0011100, ///<  "u": Segmente e, d, c                        --> segmentBits[25]
-    0b1000000, ///<  "-": Segment g                    --> 0x40   --> segmentBits[26]
-    0b1100011, ///<  "°": Segment g, f, b, a                      --> segmentBits[27]
-    0b1011000, ///<  "c": Segment g, e, d, c                      --> segmentBits[28]
-    0b0001000  ///<  "_": Segment d                               --> segmentBits[29]
+    0b1110111, ///<  "A": Segmente g, f, e, b, c, a .  -->        --> segmentBits[11]
+    0b1111100, ///<  "b": Segmente g, f, e, d, c                  --> segmentBits[12]
+    0b0111001, ///<  "C": Segmente f, e, d, a                     --> segmentBits[13]
+    0b1011110, ///<  "d": Segmente g, e, d, c, b                  --> segmentBits[14]
+    0b1111001, ///<  "E": Segmente g, f, e, d, a       --> 0x79   --> segmentBits[15]
+    0b1110001, ///<  "F": Segmente g, f, e, a                     --> segmentBits[16]
+    0b0110110, ///<  "G": Segmente g, f, e, c, b                  --> segmentBits[17]
+    0b1110110, ///<  "H": Segmente g, f, e, c, b    --> 0x7d      --> segmentBits[18] 
+    0b0000110, ///<  "I": Wie "1"                                 --> segmentBits[19]
+    0b0001110, ///<  "J": Segmente d, c, b                        --> segmentBits[20]
+    0b1001001, ///<  "K": Drei waagerechte Striche: Segmente g, d, a  --> 0x49 --> segmentBits[21]
+    0b0111000, ///<  "L": Segmente f, e, d                        --> segmentBits[22]
+    0b1001001, ///<  "M": Drei waagerechte Striche: Segmente g, d, a  --> 0x49 --> segmentBits[23]
+    0b1001001, ///<  "N": Drei waagerechte Striche: Segmente g, d, a  --> 0x49 --> segmentBits[24]
+    0b0111111, ///<  "O": Segmente f, e, d, c, b, a    --> 0x3f   --> segmentBits[25]
+    0b1110011, ///<  "P": Segmente g, f, e, b, a                  --> segmentBits[26]
+    0b1100111, ///<  "q": Segmente g, f, c, b, a                  --> segmentBits[27]
+    0b1010000, ///<  "r": Segmente g, e                --> 0x50   --> segmentBits[28]
+    0b1101101, ///<  "S": Wie "5"                      --> 0x6d   --> segmentBits[29]
+    0b0110001, ///<  "T": egmente  f, e, a                         --> segmentBits[30]
+    0b0111110, ///<  "U": Segmente f, e, d, c, b                  --> segmentBits[31]
+    0b1011000, ///<  "c": Segment g, e, d, c                      --> segmentBits[32]
+    0b1011100, ///<  "o": Segmente g, e, d, c                     --> segmentBits[33]
+    0b0011100, ///<  "u": Segmente e, d, c                        --> segmentBits[34]
+    0b1000000, ///<  "-": Segment g                    --> 0x40   --> segmentBits[35]
+    0b1100011, ///<  "°": Segment g, f, b, a                      --> segmentBits[36]
+    0b0001000, ///<  "_": Segment d                               --> segmentBits[37]
+    0b1001001, ///< Drei waagerechte Striche: Segmente g, d, a  --> 0x49 --> segmentBits[38]
+    0b0110110  ///< Zwei senkrechte Striche:  Segmente f, e, c, b --> segmentBits[39]
 };
 
 
@@ -172,7 +182,7 @@ uint8_t LedMatrix::get7SegBits(const unsigned char character) {
             // ASCII-Code 48 = '0'; diese abziehen um den Wert zu erhalten.
             return segmentBits[character - 48];
         } else {
-            return segmentBits[CHAR_ERROR];
+            return segmentBits[_CHAR_ERROR];
         }
     } else {
         return segmentBits[character];
@@ -472,7 +482,7 @@ void LedMatrix::powerOnSelfTest() {
     for (uint8_t row = 1; row != 7; ++row) {
         set7SegValue(row, 8, row - 1);      // FL 123 und XPDR-Code 2345
     }
-    set7SegValue(0, 8, CHAR_MINUS);
+    set7SegValue(0, 8, _CHAR_MINUS);
     for (uint8_t row = 4; row != 8; ++row) {     // alte Form: for (uint8_t row = 4; row != 8; ++row, DP_ON)
         set7SegValue(row, 16, row - 3);     // 12:34 Uhr 
     }
@@ -482,14 +492,73 @@ void LedMatrix::powerOnSelfTest() {
     ledOn(1, 4);        // Stunden-Minuten-Trenner
     ledBlinkOn(0, 4);   // Beide Stunden-Minuten-Trenner sollen normal-schnell blinken
     ledBlinkOn(1, 4);
-    set7SegValue(0, 16, 2);     // 27°C 
-    set7SegValue(1, 16, 7);
-    set7SegValue(2, 16, CHAR_DEGREE);
-    set7SegValue(3, 16, CHAR_C);
+    // set7SegValue(0, 16, 2);     // 27°C 
+    // set7SegValue(1, 16, 7);
+    // set7SegValue(2, 16, CHAR_DEGREE);
+    // set7SegValue(3, 16, CHAR_C);
     ledOn(3, 4);        // UT-LED an 
 }
 
 
 /**************************************************************************************************/
+void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const uint8_t &matrixRow, const uint8_t &matrixCol0) {
+    if ((fieldId <= MAX_DISPLAY_FIELDS) && (led7SegmentId <= MAX_7SEGMENT_UNITS)) {
+        displays[fieldId].led7SegmentRows[led7SegmentId] = matrixRow;
+        displays[fieldId].led7SegmentCol0s[led7SegmentId] = matrixCol0;
+        displays[fieldId].count7SegmentUnits = max(led7SegmentId, displays[fieldId].count7SegmentUnits);
+    }
+};
 
+
+/**************************************************************************************************/
+void LedMatrix::display(const uint8_t &fieldId, const char* outString) {
+    char ch;
+    bool dpOn = false;          // Flag, ob Dezimalpunkt im aktuellen 7-Segment-Display angezeigt werden soll.
+    uint8_t dpKorrektur = 0;    // Korrektur zum Positionszähler, falls Dezimalpunkt(e) gefunden.
+    
+    for (uint8_t c = 0; c != strlen(outString); ++c) {
+        if (outString[c] != '.') {      // Falls das aktuelle Zeichen ein Dezimalpunkt ist, dieses übergehen, da es bereits verarbeitet wurde.
+            if (((outString[c] - 48) >= 0) && ((outString[c] - 48) <= 9)) {     // Prüfen auf Ziffer 0...9
+                ch = outString[c] - 48;
+            } else {
+                if (((outString[c] - 54) >= 11) && ((outString[c] - 54) <= 31)) {   // Prüfen auf Buchstabe A..U
+                    ch = outString[c] - 54;
+                } else {                                        // weder Ziffer, noch Buchstabe => auf Sonderzeichen prüfen
+                    switch (outString[c]) {
+                        case ' ': ch = _CHAR_BLANK; break;
+                        case 'c': ch = _CHAR_c; break;
+                        case 'o': ch = _CHAR_o; break;
+                        case 'u': ch = _CHAR_u; break;
+                        case '-': ch = _CHAR_MINUS; break;
+                        case '_': ch = _CHAR_UNDERSCORE; break;
+                        case _CHAR_DEGREE:          ch = _CHAR_DEGREE; break;
+                        case _CHAR_3_DASH_HORIZ:    ch = _CHAR_3_DASH_HORIZ; break;
+                        case _CHAR_2_DASH_VERT:     ch = _CHAR_2_DASH_VERT; break;
+                        default: ch = _CHAR_ERROR;
+                    }
+                }
+            }
+            // Prüfen, ob das dem aktuellen Zeichen folgende Zeichen ein Dezimalpunkt ist und Flag entsprechend setzen.
+            if ((c <= strlen(outString) - 1) && (outString[c + 1] == '.')) {
+                dpOn = true;
+            } else {
+                dpOn = false;
+            }
+            if (c - dpKorrektur <= static_cast<uint8_t>(displays[fieldId].count7SegmentUnits)) {     // Index sicherheitshalber prüfen.
+                set7SegValue(displays[fieldId].led7SegmentRows[c - dpKorrektur], displays[fieldId].led7SegmentCol0s[c - dpKorrektur], ch, dpOn);  
+            } else {
+                // Fehlerbedingung. "Err" ausgeben.
+                set7SegValue(displays[fieldId].led7SegmentRows[0], displays[fieldId].led7SegmentCol0s[0], 'E' - 54);
+                set7SegValue(displays[fieldId].led7SegmentRows[1], displays[fieldId].led7SegmentCol0s[1], 'R' - 54);
+                set7SegValue(displays[fieldId].led7SegmentRows[2], displays[fieldId].led7SegmentCol0s[2], 'R' - 54);
+                set7SegValue(displays[fieldId].led7SegmentRows[3], displays[fieldId].led7SegmentCol0s[3], _CHAR_BLANK);
+            }
+        } else {
+            dpKorrektur++;
+        }
+    }
+};
+
+
+ 
 

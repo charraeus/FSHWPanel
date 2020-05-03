@@ -98,6 +98,12 @@ void setup() {
 
     leds.initHardware();                                ///< Arduino-Hardware der LED-Matrix initialisieren.
     leds.powerOnSelfTest();                             ///< Startmuster von LEDs anzeigen.
+    #define _OATVOLTS 0
+    leds.defineDisplayField(_OATVOLTS, 0, 0, 16);
+    leds.defineDisplayField(_OATVOLTS, 1, 1, 16);
+    leds.defineDisplayField(_OATVOLTS, 2, 2, 16);
+    leds.defineDisplayField(_OATVOLTS, 3, 3, 16);
+    leds.display(_OATVOLTS, "OAT.U");
     setSwitchNames();                                   ///< Die Schalter der Schaltermatrix benennen.
     switches.initHardware();                            ///< Die Arduino-Hardware der Schaltermatrix initialisieren.
     switches.scanSwitchPins();                          ///< Initiale Schalterstände abfragen und übertragen.
