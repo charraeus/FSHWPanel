@@ -49,13 +49,15 @@ const uint8_t MAX_7SEGMENT_UNITS = 6;       ///< Maximal mögliche Anzahl 7-Segm
  * @brief Ein Display-Feld fasst mehrere 7-Segment-Anzeigen zusammen.
  * 
  */
-struct DisplayField {
+class DisplayField {
+public:
     uint8_t led7SegmentRows[MAX_7SEGMENT_UNITS];    ///< Rows in der LED-Matrix für die einzelnen 7-Segment-Anzeigen.
     uint8_t led7SegmentCol0s[MAX_7SEGMENT_UNITS];   ///< Cols des Segment a in der LED-Matrix für die einzelnen 7-Segment-Anzeigen.
     uint8_t count7SegmentUnits;                     ///< Anzahl 7-Segment-Anzeigen, aus denen das Display-Feld besteht.
 };
 
-struct LedMatrixPos {
+class LedMatrixPos {
+public:
     uint8_t row;    ///< Row der Led.
     uint8_t col;    ///< Col der Led.
 };
@@ -100,6 +102,7 @@ private:
      * @return false @em row oder @em col liegen außerhalb der Arraygrenzen.
      */
     bool isValidRowCol(const uint8_t row, const uint8_t col);
+    bool isValidRowCol(const LedMatrixPos pos);
     
     /**
      * @brief Prüfen, ob blinkSpeed gültig ist, d.h.\ eine der @em blinkSpeed Konstanten ist.
@@ -140,6 +143,7 @@ public:
      * @return @em false Die LED ist ausgeschaltet. 
      */
     bool isLedOn(const uint8_t row, const uint8_t col);
+    bool isLedOn(const LedMatrixPos pos);
 
     /**
      * @brief LED anschalten, d.h.\ das entsprechende Bit in der LedMatrix an der Position (@em row, @em col) setzen.
@@ -149,6 +153,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int ledOn(const uint8_t row, const uint8_t col);
+    int ledOn(const LedMatrixPos pos);
     
     /**
      * @brief LED ausschalten, d.h.\ das entsprechende Bit in der LedMatrix an der Position (@em row, @em col) löschen.
@@ -158,6 +163,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int ledOff(const uint8_t row, const uint8_t col);
+    int ledOff(const LedMatrixPos pos);
 
     /**
      * @brief LED zwischen den Zuständen Aus und Ein umschalten,
@@ -168,6 +174,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int ledToggle(const uint8_t row, const uint8_t col);
+    int ledToggle(const LedMatrixPos pos);
 
     /**
      * @brief Das Blinken einer LED einschalten.
@@ -179,6 +186,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int ledBlinkOn(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed = BLINK_NORMAL);
+    int ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed = BLINK_NORMAL);
 
     /**
      * @brief Das Blinken einer LED ausschalten.
@@ -190,6 +198,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int ledBlinkOff(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed = BLINK_NORMAL);
+    int ledBlinkOff(const LedMatrixPos pos, const uint8_t blinkSpeed = BLINK_NORMAL);
 
     /**
      * @brief Prüfen, ob für eine LED das Blinken eingeschaltet ist.
@@ -201,6 +210,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int isLedBlinkOn(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed = BLINK_NORMAL);
+    int isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed = BLINK_NORMAL);
 
     /**
      * @brief Auf dem durch @em row und @em col spezifizierten 7-Segment-Display das Zeichen @em NewValue anzeigen, 
@@ -213,6 +223,7 @@ public:
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int set7SegValue(const uint8_t row, const uint8_t col0, const unsigned char newValue, const bool dpOn = false);
+    int set7SegValue(const LedMatrixPos pos, const unsigned char newValue, const bool dpOn = false);
 
     /**
      * @brief Für das Zeichen, das auf dem 7-Segment-Display angezeigt wird, blinken aktivieren.\ 
@@ -227,6 +238,7 @@ public:
      */
     int set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool dpBlink = false,
                        const uint8_t blinkSpeed = BLINK_NORMAL);
+    int set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink = false, const uint8_t blinkSpeed = BLINK_NORMAL);
     
     /**
      * @brief Das Blinken des Zeichens das auf der 7-Segment-Anzeige angezeigt wird, deaktivieren.\ 
@@ -243,15 +255,10 @@ public:
      */
     int set7SegBlinkOff(const uint8_t row, const uint8_t col0, const bool dpBlink = false,
                         const uint8_t blinkSpeed = BLINK_NORMAL);
-
-    /**
-     * @brief Ein wenig mit den LEDs spielen... --> simulierter Power-On-Self-Test
-     * 
-     */
-    void powerOnSelfTest();
-
+    int set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink = false, const uint8_t blinkSpeed = BLINK_NORMAL);
 
     void defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const uint8_t &matrixRow, const uint8_t &matrixCol0);
+    void defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const LedMatrixPos &pos);
 
     void defineDisplayFieldLength(const uint8_t &fieldId, const uint8_t &count7Segments) { displays[fieldId].count7SegmentUnits = count7Segments; };
 

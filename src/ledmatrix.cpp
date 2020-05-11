@@ -48,7 +48,35 @@ const unsigned long int BLINK_INTERVAL_DARK[NO_OF_SPEED_CLASSES] = {
 *
 * segmentBits enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
 * a wird dabei durch das niederstwertige Bit repräsentiert, g durch das höchstwertige Bit.
- */
+*
+* Beispiel:
+* - Auf den 7 Digits des XPDR die Ziffernfolge 0..6 anzeigen
+* - Die Dezimalpunkte im Digit 2 und 6 anzeigen
+* - Die LED R anzeigen
+* - Auf den oberen 4 Digits der Uhr folgende Zeichen anzeigen:
+*   -- Drei waagerechte Striche
+*   -- Minus
+*   -- E und Dezimalpunkt
+*   -- r
+* - Auf den unteren 4 Digits der Uhr folgende Zeichen anzeigen:
+*   -- kleines o und Dezimalpunkt
+*   -- F
+*   -- C
+*   -- Zwei senkrechte Striche
+* - Die Minutentrenner-LEDs der Uhr anzeigen
+* - Die LED UT anzeigen
+* vgl. Doku "Belegung der LED-Matrix des 1. IO-Warrior" in Evernote
+*                most sig. Byte   least sig. Byte
+*                7      07      07      07      0
+*    matrix[0] = 0b00000000010010010011111100010000;
+*    matrix[1] = 0b00000000010000000000011000010000;
+*    matrix[2] = 0b00000000111110011101101100000000;
+*    matrix[3] = 0b00000000010100000100111100010000;
+*    matrix[4] = 0b00000000110111001110011000000000;
+*    matrix[5] = 0b00000000011000110110110100000000;
+*    matrix[6] = 0b00000000001110010111110100000000;
+*    matrix[7] = 0b00000000001101100000000000010000;  
+*/
 const uint8_t SEGMENT_CHARS = 40;              ///< Anzahl verfügbare Zeichen
 const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
     //gfedcba
@@ -97,7 +125,6 @@ const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bi
 
 /**************************************************************************************************/
 LedMatrix::LedMatrix() {
-    Serial.println("Konstruktor");
     /// Die Matrizen initalisieren
     for (uint32_t row = 0; row != LED_ROWS; ++row) {
         hwMatrix[row] = 0;                  // Alle LEDs ausschalten
@@ -139,34 +166,6 @@ void LedMatrix::initHardware() {
     digitalWrite(STRB, HIGH);       // Latches umgehen --> immer auf HIGH setzen
     digitalWrite(OE, LOW);
     delayMicroseconds(500);
-
-
-    // - Auf den 7 Digits des XPDR die Ziffernfolge 0..6 anzeigen
-    // - Die Dezimalpunkte im Digit 2 und 6 anzeigen
-    // - Die LED R anzeigen
-    // - Auf den oberen 4 Digits der Uhr folgende Zeichen anzeigen:
-    //   -- Drei waagerechte Striche
-    //   -- Minus
-    //   -- E und Dezimalpunkt
-    //   -- r
-    // - Auf den unteren 4 Digits der Uhr folgende Zeichen anzeigen:
-    //   -- kleines o und Dezimalpunkt
-    //   -- F
-    //   -- C
-    //   -- Zwei senkrechte Striche
-    // - Die Minutentrenner-LEDs der Uhr anzeigen
-    // - Die LED UT anzeigen
-    // vgl. Doku "Belegung der LED-Matrix des 1. IO-Warrior" in Evernote
-    //            most sig. Byte   least sig. Byte
-    //            7      07      07      07      0
-//    matrix[0] = 0b00000000010010010011111100010000;
-//    matrix[1] = 0b00000000010000000000011000010000;
-//    matrix[2] = 0b00000000111110011101101100000000;
-//    matrix[3] = 0b00000000010100000100111100010000;
-//    matrix[4] = 0b00000000110111001110011000000000;
-//    matrix[5] = 0b00000000011000110110110100000000;
-//    matrix[6] = 0b00000000001110010111110100000000;
-//    matrix[7] = 0b00000000001101100000000000010000;  
 }
 
 
@@ -196,6 +195,10 @@ bool LedMatrix::isValidRowCol(const uint8_t row, const uint8_t col) {
     /// Zulässige Werte col: [0 ..LED_COLS - 1].
     return ((row < LED_ROWS) && (col < LED_COLS));
 };
+
+bool LedMatrix::isValidRowCol(const LedMatrixPos pos) {
+    return isValidRowCol(pos.row, pos.col);
+}
 
 
 /**************************************************************************************************/
@@ -316,6 +319,10 @@ bool LedMatrix::isLedOn(const uint8_t row, const uint8_t col) {
     }    
 }
 
+bool LedMatrix::isLedOn(const LedMatrixPos pos) {
+    return isLedOn(pos.row, pos.col);
+}
+
 
 /**************************************************************************************************/
 int LedMatrix::ledOn(const uint8_t row, const uint8_t col) {
@@ -327,6 +334,10 @@ int LedMatrix::ledOn(const uint8_t row, const uint8_t col) {
     }
 }
 
+int LedMatrix::ledOn(const LedMatrixPos pos) {
+    return ledOn(pos.row, pos.col);
+}
+
 
 /**************************************************************************************************/
 int LedMatrix::ledOff(const uint8_t row, const uint8_t col) {
@@ -336,6 +347,10 @@ int LedMatrix::ledOff(const uint8_t row, const uint8_t col) {
     } else {
         return -1;      // unzulässige Row oder Col
     }
+}
+
+int LedMatrix::ledOff(const LedMatrixPos pos) {
+    return ledOff(pos.row, pos.col);
 }
 
 
@@ -351,6 +366,10 @@ int LedMatrix::ledToggle(const uint8_t row, const uint8_t col) {
         }
         return 0;
     }
+}
+
+int LedMatrix::ledToggle(const LedMatrixPos pos) {
+    return ledToggle(pos.row, pos.row);
 }
 
 
@@ -369,6 +388,10 @@ int LedMatrix::ledBlinkOn(const uint8_t row, const uint8_t col, const uint8_t bl
     }
 }
 
+int LedMatrix::ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
+    return ledBlinkOn(pos.row, pos.col, blinkSpeed);
+}
+
 
 /**************************************************************************************************/
 int LedMatrix::ledBlinkOff(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed) {
@@ -383,6 +406,10 @@ int LedMatrix::ledBlinkOff(const uint8_t row, const uint8_t col, const uint8_t b
     } else {
         return -1;
     }    
+}
+
+int LedMatrix::ledBlinkOff(const LedMatrixPos pos, const uint8_t blinkSpeed) {
+    return ledBlinkOff(pos.row, pos.col, blinkSpeed);
 }
 
 
@@ -400,6 +427,10 @@ int LedMatrix::isLedBlinkOn(const uint8_t row, const uint8_t col, const uint8_t 
         returnvalue = -1;      // unzulässige Row oder Col; muss zwischen 0 und LED_ROWS - 1 bzw. LED_COLS - 1 sein
     }        
     return returnvalue;
+}
+
+int LedMatrix::isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
+    return isLedBlinkOn(pos.row, pos.col, blinkSpeed);
 }
 
 
@@ -423,9 +454,13 @@ int LedMatrix::set7SegValue(const uint8_t row, const uint8_t col0, const unsigne
     }
 }
 
+int LedMatrix::set7SegValue(const LedMatrixPos pos, const unsigned char newValue, const bool dpOn) {
+    return set7SegValue(pos.row, pos.col, newValue, dpOn);
+}
+
 
 /**************************************************************************************************/
-int LedMatrix:: set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool dpBlink, 
+int LedMatrix::set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool dpBlink, 
                                const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts einschalten
     // Dabei nach Blinkgeschwindigkeiten unterscheiden
@@ -447,6 +482,10 @@ int LedMatrix:: set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool
         // unzulässige Row oder Col
         return -1;      
     }    
+}
+
+int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
+    return set7SegBlinkOn(pos.row, pos.col, dpBlink, blinkSpeed);
 }
 
 
@@ -475,28 +514,8 @@ int LedMatrix::set7SegBlinkOff(const uint8_t row, const uint8_t col0, const bool
     }
 }
 
-
-/**************************************************************************************************/
-void LedMatrix::powerOnSelfTest() {
-    //Low-Level-Ansteuerung der Anzeigen
-    for (uint8_t row = 1; row != 7; ++row) {
-        set7SegValue(row, 8, row - 1);      // FL 123 und XPDR-Code 2345
-    }
-    set7SegValue(0, 8, _CHAR_MINUS);
-    for (uint8_t row = 4; row != 8; ++row) {     // alte Form: for (uint8_t row = 4; row != 8; ++row, DP_ON)
-        set7SegValue(row, 16, row - 3);     // 12:34 Uhr 
-    }
-    ledOn(7, 4);        // R-LED an
-    ledBlinkOn(7, 4, BLINK_SLOW);   // und diese langsam blinken lassen
-    ledOn(0, 4);        // Stunden-Minuten-Trenner 
-    ledOn(1, 4);        // Stunden-Minuten-Trenner
-    ledBlinkOn(0, 4);   // Beide Stunden-Minuten-Trenner sollen normal-schnell blinken
-    ledBlinkOn(1, 4);
-    // set7SegValue(0, 16, 2);     // 27°C 
-    // set7SegValue(1, 16, 7);
-    // set7SegValue(2, 16, CHAR_DEGREE);
-    // set7SegValue(3, 16, CHAR_C);
-    ledOn(3, 4);        // UT-LED an 
+int LedMatrix::set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
+    return set7SegBlinkOff(pos.row, pos.col, dpBlink, blinkSpeed);
 }
 
 
@@ -508,6 +527,10 @@ void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7Se
         displays[fieldId].count7SegmentUnits = max(led7SegmentId, displays[fieldId].count7SegmentUnits);
     }
 };
+
+void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const LedMatrixPos &matrixPos) {
+    defineDisplayField(fieldId, led7SegmentId, matrixPos.row, matrixPos.col);
+}
 
 
 /**************************************************************************************************/
@@ -552,13 +575,12 @@ void LedMatrix::display(const uint8_t &fieldId, const char* outString) {
                 set7SegValue(displays[fieldId].led7SegmentRows[1], displays[fieldId].led7SegmentCol0s[1], 'R' - 54);
                 set7SegValue(displays[fieldId].led7SegmentRows[2], displays[fieldId].led7SegmentCol0s[2], 'R' - 54);
                 set7SegValue(displays[fieldId].led7SegmentRows[3], displays[fieldId].led7SegmentCol0s[3], _CHAR_BLANK);
+                for (uint8_t i = 0; i != 3; ++i) {
+                    set7SegBlinkOn(displays[fieldId].led7SegmentRows[i], displays[fieldId].led7SegmentCol0s[i], BLINK_NORMAL);
+                }
             }
         } else {
             dpKorrektur++;
         }
     }
 };
-
-
- 
-
