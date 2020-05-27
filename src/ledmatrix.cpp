@@ -181,7 +181,7 @@ uint8_t LedMatrix::get7SegBits(const unsigned char character) {
             // ASCII-Code 48 = '0'; diese abziehen um den Wert zu erhalten.
             return segmentBits[character - 48];
         } else {
-            return segmentBits[_CHAR_ERROR];
+            return segmentBits[CHAR_ERROR];
         }
     } else {
         return segmentBits[character];
@@ -548,16 +548,16 @@ void LedMatrix::display(const uint8_t &fieldId, const char* outString) {
                     ch = outString[c] - 54;
                 } else {                                        // weder Ziffer, noch Buchstabe => auf Sonderzeichen prüfen
                     switch (outString[c]) {
-                        case ' ': ch = _CHAR_BLANK; break;
-                        case 'c': ch = _CHAR_c; break;
-                        case 'o': ch = _CHAR_o; break;
-                        case 'u': ch = _CHAR_u; break;
-                        case '-': ch = _CHAR_MINUS; break;
-                        case '_': ch = _CHAR_UNDERSCORE; break;
-                        case _CHAR_DEGREE:          ch = _CHAR_DEGREE; break;
-                        case _CHAR_3_DASH_HORIZ:    ch = _CHAR_3_DASH_HORIZ; break;
-                        case _CHAR_2_DASH_VERT:     ch = _CHAR_2_DASH_VERT; break;
-                        default: ch = _CHAR_ERROR;
+                        case ' ': ch = CHAR_BLANK; break;
+                        case 'c': ch = CHAR_c; break;
+                        case 'o': ch = CHAR_o; break;
+                        case 'u': ch = CHAR_u; break;
+                        case '-': ch = CHAR_MINUS; break;
+                        case '_': ch = CHAR_UNDERSCORE; break;
+                        case CHAR_DEGREE:          ch = CHAR_DEGREE; break;
+                        case CHAR_3_DASH_HORIZ:    ch = CHAR_3_DASH_HORIZ; break;
+                        case CHAR_2_DASH_VERT:     ch = CHAR_2_DASH_VERT; break;
+                        default: ch = CHAR_ERROR;
                     }
                 }
             }
@@ -574,7 +574,7 @@ void LedMatrix::display(const uint8_t &fieldId, const char* outString) {
                 set7SegValue(displays[fieldId].led7SegmentRows[0], displays[fieldId].led7SegmentCol0s[0], 'E' - 54);
                 set7SegValue(displays[fieldId].led7SegmentRows[1], displays[fieldId].led7SegmentCol0s[1], 'R' - 54);
                 set7SegValue(displays[fieldId].led7SegmentRows[2], displays[fieldId].led7SegmentCol0s[2], 'R' - 54);
-                set7SegValue(displays[fieldId].led7SegmentRows[3], displays[fieldId].led7SegmentCol0s[3], _CHAR_BLANK);
+                set7SegValue(displays[fieldId].led7SegmentRows[3], displays[fieldId].led7SegmentCol0s[3], CHAR_BLANK);
                 for (uint8_t i = 0; i != 3; ++i) {
                     set7SegBlinkOn(displays[fieldId].led7SegmentRows[i], displays[fieldId].led7SegmentCol0s[i], BLINK_NORMAL);
                 }

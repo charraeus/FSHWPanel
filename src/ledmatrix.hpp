@@ -20,16 +20,16 @@ const bool DP_ON = true;    ///< Dezimalpunkt wird angezeigt.
 const bool DP_OFF = false;  ///< Dezimalpunkt wird nicht angezeigt.
 
 /* Konstanten für die Anzeige von Sonderzeichen auf den 7-Segment-Anzeigen */
-#define _CHAR_BLANK 10          ///< Zeichen " " (Blank)
-#define _CHAR_c 32              ///< Zeichen "c"
-#define _CHAR_o 33              ///< Zeichen "o"
-#define _CHAR_u 34              ///< Zeichen "u"
-#define _CHAR_MINUS 35          ///< Zeichen "-"
-#define _CHAR_DEGREE 36         ///< Zeichen "°" (Grad)
-#define _CHAR_UNDERSCORE 37     ///< Zeichen "_"
-#define _CHAR_3_DASH_HORIZ 38   ///< Zeichen Drei "-" übereinander
-#define _CHAR_2_DASH_VERT 39    ///< Zeichen "||"
-#define _CHAR_ERROR 38          ///< Zeichen für Fehler. 
+const uint8_t CHAR_BLANK = 10;          ///< Zeichen " " (Blank)
+const uint8_t CHAR_c = 32;              ///< Zeichen "c"
+const uint8_t CHAR_o = 33;              ///< Zeichen "o"
+const uint8_t CHAR_u = 34;              ///< Zeichen "u"
+const uint8_t CHAR_MINUS = 35;          ///< Zeichen "-"
+const uint8_t CHAR_DEGREE = 36;         ///< Zeichen "°" (Grad)
+const uint8_t CHAR_UNDERSCORE = 37;     ///< Zeichen "_"
+const uint8_t CHAR_3_DASH_HORIZ = 38;   ///< Zeichen Drei "-" übereinander
+const uint8_t CHAR_2_DASH_VERT = 39;    ///< Zeichen "||"
+const uint8_t CHAR_ERROR = 38;          ///< Zeichen für Fehler. 
 
 /* Konstanten für Blinkrate und Blinken */
 const uint8_t BLINK_NORMAL = 0;     ///< Normale Blinkgeschwindigkeit.
