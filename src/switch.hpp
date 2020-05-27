@@ -19,10 +19,11 @@
  * @todo Doku an dieser Stelle noch ausführlicher.
  * 
  **************************************************************************************************/
+const uint8_t MAX_SWITCHNAME_LENGTH = 6;
 class Switch {
 private:
     uint8_t status {HIGH};          ///< Status 0 --> eingeschaltet, Status 1 --> ausgeschaltet
-    char switchName[11];            ///< Name des Schalters; wird durch Konstruktor gesetzt
+    char switchName[MAX_SWITCHNAME_LENGTH]; ///< Name des Schalters; wird durch Konstruktor gesetzt
     bool longOn {false};            ///< true => falls Schalter ist länger als 3 Sek\. an
     bool longOnSent {true};         ///< true => Ereignis wurde schon gesetzt und muss nicht nochmal gefeuert werden
     unsigned long onTimeStart {0};  ///< Zeitstempel wann Schalter eingeschaltet wurde

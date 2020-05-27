@@ -22,13 +22,15 @@ const uint16_t RESEND_SWITCHES   = 0xFF02;    ///< Den Status aller Schalter sen
 
 const uint16_t XPDR_CODE         = 0xF101;    ///< Den übergebenen XPDR-Code anzeigen
 const uint16_t XPDR_FLIGHTLEVEL  = 0xF102;    ///< Flightlevel für Transponder
-const uint16_t TIME_UTC          = 0xF103;    ///< Aktuelle Uhrzeit (UTC)
-const uint16_t TIME_LCL          = 0xF104;    ///< Aktuelle Uhrzeit (Local)
-const uint16_t TIME_ELAPSED_TIME = 0xF105;    ///< Elapsed Time
-const uint16_t TIME_FLIGHT_TIME  = 0xF106;    ///< Flight Time
-const uint16_t TIME_VOLTS        = 0xF107;    ///< Spannung in V
 
-const uint16_t QNH_XPLANE        = 0xF201;    ///< Aktuelles QNH des X-Plane-Wetters
-const uint16_t OAT_XPLANE        = 0xF202;    ///< OAT in °C
+const uint16_t M803_LT           = 0xF104;    ///< Aktuelle Uhrzeit (Local)
+const uint16_t M803_UT           = 0xF103;    ///< Aktuelle Uhrzeit (UTC)
+const uint16_t M803_ET           = 0xF105;    ///< Elapsed Time
+const uint16_t M803_FT           = 0xF106;    ///< Flight Time
+const uint16_t M803_OATF         = 0xF100;    ///< O.A.T. in Fahrenheit
+const uint16_t M803_OATC         = 0xF100;    ///< O.A.T. in Grad Celsius
+const uint16_t M803_VOLTS        = 0xF107;    ///< Spannung in V
+const uint16_t M803_QNH          = 0xF201;    ///< Aktuelles QNH des X-Plane-Wetters
+const uint16_t M802_ALT          = 0xF202;    ///< Aktueller Druck in inHg des X-Plane-Wetters
 
 #endif // ifndef
