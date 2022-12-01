@@ -110,9 +110,9 @@ const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bi
     0b1100111, ///<  "q": Segmente g, f, c, b, a                  --> segmentBits[27]
     0b1010000, ///<  "r": Segmente g, e                --> 0x50   --> segmentBits[28]
     0b1101101, ///<  "S": Wie "5"                      --> 0x6d   --> segmentBits[29]
-    0b0110001, ///<  "T": egmente  f, e, a                         --> segmentBits[30]
+    0b0110001, ///<  "T": Segmente  f, e, a                       --> segmentBits[30]
     0b0111110, ///<  "U": Segmente f, e, d, c, b                  --> segmentBits[31]
-    0b1011000, ///<  "c": Segment g, e, d, c                      --> segmentBits[32]
+    0b1011000, ///<  "c": Segmente g, e, d, c                     --> segmentBits[32]
     0b1011100, ///<  "o": Segmente g, e, d, c                     --> segmentBits[33]
     0b0011100, ///<  "u": Segmente e, d, c                        --> segmentBits[34]
     0b1000000, ///<  "-": Segment g                    --> 0x40   --> segmentBits[35]
@@ -138,7 +138,7 @@ LedMatrix::LedMatrix() {
         isBlinkDarkPhase[speedClass] = true;
         blinkStartTime[speedClass] = millis() + speedClass * BLINK_VERSATZ;   // Startzeit mit Versatz
     }
-    /// Defaultwerte für die Blinkdauern der nächsten anstehenden Hellphase
+    /// Defaultwerte für die Blinkdauern der Speedklassen der nächsten anstehenden Hellphase
     nextBlinkInterval[BLINK_NORMAL] = BLINK_INTERVAL_BRIGHT[BLINK_NORMAL];    // Dauer der Hellphase als Initialwert
     nextBlinkInterval[BLINK_SLOW] = BLINK_INTERVAL_BRIGHT[BLINK_SLOW];
 }
@@ -158,7 +158,7 @@ void LedMatrix::initHardware() {
     pinMode(DATA_IN, OUTPUT);
     pinMode(STRB, OUTPUT);
     pinMode(OE, OUTPUT);
-    delay(1);
+    delay(1);   // notwendig, da sonst die folgenden Write-Anweisungen nicht funktionieren
     digitalWrite(CLOCK, LOW);
     digitalWrite(DATA_IN, LOW);
     digitalWrite(STRB, LOW);
@@ -172,7 +172,7 @@ void LedMatrix::initHardware() {
 /**************************************************************************************************/
 uint8_t LedMatrix::get7SegBits(const unsigned char character) {
     if (character >= SEGMENT_CHARS) {
-        // character muss eines der @em CHAR_x Konstanten sein.
+        /// character muss eines der @em CHAR_x Konstanten sein.
         /// Prüfen, ob entweder eine Ziffer oder eine Ziffer als Char übergeben wurde.
         /// Bei Char wird der ASCII-Code übergeben, ASCII '0' = 48, ASCII '9' = 57;
         /// Fehler: Index referenziert keinen Eintrag aus unserer Zeichentabelle.
@@ -251,7 +251,7 @@ void LedMatrix::doBlink() {
         if (blinkOn) {
             for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
                 if (isBlinkDarkPhase[speedClass]) {
-                    hwMatrix[row] &= ~ blinkStatus[speedClass][row];      // LEDs, die normal blinken sollen, dunkel schalten
+                    hwMatrix[row] &= ~ blinkStatus[speedClass][row];      // LEDs, die blinken sollen, dunkel schalten
                 }
             }
         }
@@ -294,7 +294,8 @@ void LedMatrix::display() {
         
         // nachdem alle Column-Bits übertragen sind, muss noch das zugehörige Row-Bit übertragen werden.
         // Da das MSB zuerst übertragen werden muss, muss hier statt "row" der Ausdruck "7 - row"
-        // verwendet werden.
+        // verwendet werden. 
+        /// @todo Kommentar (oder Code) korrigieren wg. "statt 'row' der Ausdruck '7 - row'"
         uint8_t activeRow = 1 << row;
         for (uint8_t bit = sizeof(activeRow) * 8; bit != 0; --bit) {
             digitalWrite(DATA_IN, (activeRow >> (bit - 1)) & 1);
@@ -304,8 +305,8 @@ void LedMatrix::display() {
             delayMicroseconds(1);
         }
         
-        digitalWrite(STRB, HIGH);   // STROBE wieder auf HIGH setzen die Latch-Inhalte auf die Outputs geschaltet werden
-        //delayMicroseconds(1);
+        digitalWrite(STRB, HIGH);   // STROBE wieder auf HIGH setzen, damit die Latch-Inhalte auf die Outputs geschaltet werden
+        //delayMicroseconds(1);     // lt. Datenblatt erforderlich, aber funktioniert auch ohne
     }
 }
 
@@ -548,16 +549,16 @@ void LedMatrix::display(const uint8_t &fieldId, const char* outString) {
                     ch = outString[c] - 54;
                 } else {                                        // weder Ziffer, noch Buchstabe => auf Sonderzeichen prüfen
                     switch (outString[c]) {
-                        case ' ': ch = CHAR_BLANK; break;
-                        case 'c': ch = CHAR_c; break;
-                        case 'o': ch = CHAR_o; break;
-                        case 'u': ch = CHAR_u; break;
-                        case '-': ch = CHAR_MINUS; break;
-                        case '_': ch = CHAR_UNDERSCORE; break;
-                        case CHAR_DEGREE:          ch = CHAR_DEGREE; break;
-                        case CHAR_3_DASH_HORIZ:    ch = CHAR_3_DASH_HORIZ; break;
-                        case CHAR_2_DASH_VERT:     ch = CHAR_2_DASH_VERT; break;
-                        default: ch = CHAR_ERROR;
+                        case ' ':               ch = CHAR_BLANK; break;
+                        case 'c':               ch = CHAR_c; break;
+                        case 'o':               ch = CHAR_o; break;
+                        case 'u':               ch = CHAR_u; break;
+                        case '-':               ch = CHAR_MINUS; break;
+                        case '_':               ch = CHAR_UNDERSCORE; break;
+                        case CHAR_DEGREE:       ch = CHAR_DEGREE; break;
+                        case CHAR_3_DASH_HORIZ: ch = CHAR_3_DASH_HORIZ; break;
+                        case CHAR_2_DASH_VERT:  ch = CHAR_2_DASH_VERT; break;
+                        default:                ch = CHAR_ERROR;
                     }
                 }
             }
