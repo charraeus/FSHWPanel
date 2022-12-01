@@ -1,9 +1,15 @@
 # Entwicklungsumgebung Visual Studio Code
 .pio
-.DS_Store
+.vscode/.browse.c_cpp.db*
+obj
+Delphi/
+doc/html
+
+# projektspezifische Einstellungen
+XPanino/.vscode/c_cpp_properties.json
+XPanino/.vscode/launch.json
+XPanino/.vscode/ipch
 
 # Spezifische Dateien
-obj
-doc/html
+.DS_Store
 *.vpp.bak*
-Delphi/

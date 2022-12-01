@@ -48,6 +48,9 @@ FSHWPanel ist eine aus mehreren Komponenten bestehende Software, mittels derer S
 
 Link zur [GIT-Doku](https://git-scm.com/book/de/v2).
 
+## Tools
+## PlatformIO
+Für die Arduino-Programmierung wird [*PlatformIO*](https://docs.platformio.org/en/latest/) verwendet.
 ## Style-Guides
 
 * C++

@@ -4,5 +4,6 @@
     "scm.defaultViewMode": "tree",
     "editor.renderWhitespace": "boundary",
     "editor.trimAutoWhitespace": false,
-    "scm.diffDecorationsIgnoreTrimWhitespace": "inherit"
+    "scm.diffDecorationsIgnoreTrimWhitespace": "inherit",
+    "platformio-ide.activateProjectOnTextEditorChange": true
 }
