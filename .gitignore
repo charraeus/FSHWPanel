@@ -5,4 +5,5 @@
 # Spezifische Dateien
 obj
 doc/html
-.vpp.bak*
+*.vpp.bak*
+Delphi/
