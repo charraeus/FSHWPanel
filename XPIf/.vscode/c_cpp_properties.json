@@ -2,7 +2,7 @@
     "env": {
         "myDefaultIncludePath": [
             "${workspaceFolder}/src/**",
-            "${workspaceFolder}/XP-SDK-301/CHeaders/**"
+            "${workspaceFolder}/lib/XP-SDK-301/CHeaders/**"
         ],
         "myCompilerPath": ""
     },
