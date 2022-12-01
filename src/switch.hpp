@@ -17,6 +17,8 @@
 /**************************************************************************************************
  * @brief Abbildung eines Schalters
  * @todo Doku an dieser Stelle noch ausführlicher.
+ * @todo Softwaremäßiges Entprellen wie im Artikel "Fliegender Frederick" in c't 22/2020 implementieren
+ *       Siehe Function debounde.
  * 
  **************************************************************************************************/
 const uint8_t MAX_SWITCHNAME_LENGTH = 6;
@@ -29,6 +31,8 @@ private:
     unsigned long onTimeStart {0};  ///< Zeitstempel wann Schalter eingeschaltet wurde
     unsigned long onTime {0};       ///< Dauer wie lange der Schalter eingeschaltet war
     bool changed {false};           ///< true => Schalterstatus wurde seit der letzten Änderung nicht abgefragt
+
+    uint8_t history;                ///< notwendig für debounce(); macht evtl. onTimeStart, onTime überflüssig
     
     /**
      * @brief Differenz zweier Zeitstempel berechnen
@@ -41,6 +45,13 @@ private:
      * @return unsigned long Zeitdifferenz in Millisekunden
      */
     unsigned long calcTimeDiff(const unsigned long &onTime, const unsigned long &offTime);    
+
+    /**
+     * @brief Entprellen per Sofware. Siehe Pina Merkert: Fliegender Frederick, c't 22/2020, S. 152
+     *        Hier ist erstmal nur der Code aufgeschrieben - Implementierung und Test stehen noch aus.
+     * 
+     */
+    uint8_t debounce(uint8_t &history, uint8_t &newStatus);
    
 public:    
     

@@ -90,3 +90,12 @@ unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned l
     }
 }
 
+/******************************************************************************/
+uint8_t debounce(uint8_t &history, uint8_t &newStatus) {
+    history = (history << 1) | (newStatus);     // bisherige history mit *aktuell gelesenem* Status aktualisieren
+    switch (history){
+        case 0b00000000: newStatus = LOW; break;
+        case 0b11111111: newStatus = HIGH; break;
+    }
+    return newStatus;
+}

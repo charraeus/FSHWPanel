@@ -70,8 +70,8 @@ public:
  **************************************************************************************************/
 class LedMatrix {
 private:
-    uint32_t matrix[LED_ROWS];                              ///< Matrix für den Status (ein oder aus) je LED.
-    uint32_t hwMatrix[LED_ROWS];                            ///< akt. Status ein/aus je LED. Diese Matrix steuert direkt die Hardware.
+    uint32_t matrix[LED_ROWS];                              ///< Matrix für den logischen Status (ein oder aus) je LED.
+    uint32_t hwMatrix[LED_ROWS];                            ///< Akt. Status ein/aus je LED. Diese Matrix steuert direkt die Hardware.
     DisplayField displays[MAX_DISPLAY_FIELDS];              ///< Display-Felder (= Zusammenfassung von 7-Segment-Anzeigen).
     uint32_t blinkStatus[NO_OF_SPEED_CLASSES][LED_ROWS];    ///< Status ob geblinkt werden soll je Geschwindigkeitsklasse und LED.
     unsigned long int blinkStartTime[NO_OF_SPEED_CLASSES];  ///< Gibt den Takt des normal-schnellen Blinkens für alle LEDs vor.

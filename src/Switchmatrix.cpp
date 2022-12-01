@@ -79,9 +79,9 @@ void SwitchMatrix::scanSwitchPins() {
                 /// Lange Tastendrücke identifizieren und ggf. ein Ereignis auslösen.
                 switchMatrix[matrixRow][matrixCol].checkLongOn();
             }
-        }
+        }   /// weiter geht's mit der nächsten Spalte
         digitalWrite(row, HIGH);    /// Zeilen-Pin wieder auf HIGH setzen und damit deaktivieren.
-    }
+    }   /// weiter geht's mit der nächsten Zeile
 }
 
 

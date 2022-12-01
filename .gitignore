@@ -1,0 +1,8 @@
+# Entwicklungsumgebung Visual Studio Code
+.pio
+.DS_Store
+
+# Spezifische Dateien
+obj
+doc/html
+*.vpp.bak*
