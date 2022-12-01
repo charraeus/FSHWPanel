@@ -37,9 +37,7 @@ FSHWPanel ist eine aus mehreren Komponenten bestehende Software, mittels derer S
 ## GIT
 
 * *main* (bzw. veraltet *master*) enthält zu jedem Zeitpunkt die neueste, lauffähige Version des ganzen Repository.
-
 * Die Weiterentwicklung findet in ausschließlich in *Branches* statt.
-
 * Minimale Einstellungen
 
   ```console
@@ -48,9 +46,7 @@ FSHWPanel ist eine aus mehreren Komponenten bestehende Software, mittels derer S
   $ git config --global init.defaultBranch main
   ```
 
-[GIT-Doku](https://git-scm.com/book/de/v2)
-
-
+Link zur [GIT-Doku](https://git-scm.com/book/de/v2).
 
 ## Style-Guides
 
@@ -59,9 +55,8 @@ FSHWPanel ist eine aus mehreren Komponenten bestehende Software, mittels derer S
   * [Google C++ Linter `cpplint`](https://google.github.io/styleguide/xmlstyle.html)
 
 * Python
-  * [PEP 8](https://www.python.org/dev/peps/ pep-0008/)
+  * [PEP 8](https://www.python.org/dev/peps/pep-0008/)
   * [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
-* [Google Shell Style Guide](https://google.github. io/styleguide/shell.xml)
+* [Google Shell Style Guide](https://google.github.io/styleguide/shell.xml)
 * [Google Go Style Guide](https://google.github.io/styleguide/go/)
-* [Google XML Document Format Style Guide](https://google.github.io/styleguide/xmlstyle.html
-* 
+* [Google XML Document Format Style Guide](https://google.github.io/styleguide/xmlstyle.html)
