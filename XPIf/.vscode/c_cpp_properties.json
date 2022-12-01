@@ -1,0 +1,70 @@
+{
+    "env": {
+        "myDefaultIncludePath": [
+            "${workspaceFolder}/src/**",
+            "${workspaceFolder}/XP-SDK-301/CHeaders/**"
+        ],
+        "myCompilerPath": ""
+    },
+    "configurations": [
+        {
+            "name": "Mac",
+            "compilerPath": "/usr/bin/clang++",
+            "compilerArgs": [],
+            "intelliSenseMode": "clang-x64",
+            "includePath": [
+                "${myDefaultIncludePath}"
+            ],
+            "macFrameworkPath": [
+                "/System/Library/Frameworks"
+            ],
+            "defines": [
+                "XPLM200",
+                "XPLM210",
+                "XPLM300",
+                "XPLM301",
+                "APL=1",
+                "LIN=0",
+                "IBM=0"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "${myDefaultIncludePath}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        },
+        {
+            "name": "Win32",
+            "compilerPath": "C:\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+            "compilerArgs": [],
+            "intelliSenseMode": "gcc-x64",
+            "includePath": [
+                "${myDefaultIncludePath}"
+            ],
+            "defines": [
+                "XPLM200",
+                "XPLM210",
+                "XPLM300",
+                "XPLM301",
+                "APL=1",
+                "LIN=0",
+                "IBM=0"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "C:\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\**",
+                    "${myDefaultIncludePath}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}

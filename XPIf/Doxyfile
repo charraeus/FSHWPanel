@@ -1,0 +1,13 @@
+JAVADOC_BLOCK = YES
+JAVADOC_AUTOBRIEF = YES	/** Der erste Satz ist automatisch die 'brief description'.  */
+GENERATE_HTML = YES
+USE_PDFLATEX = NO
+PDF_HYPERLINKS = NO
+OUTPUT_LANGUAGE = GERMAN
+EXTRACT_ALL = NO
+
+INPUT = C:/Users/chris/Documents/projects/XPANINO/XPlaneIF
+FILE_PATTERNS = *.c++ *.h++ *.cpp *.hpp *.c *.h
+RECURSIVE = YES
+EXCLUDE = C:/Users/chris/Documents/projects/XPANINO/XPlaneIF/XP-SDK-301
+OUTPUT_DIRECTORY = C:/Users/chris/Documents/projects/XPANINO/Doku

@@ -1,0 +1,81 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "C/C++: g++ build active file",
+			"windows": {
+				"command": "C:\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+				"args": [
+					"-std=c++17",
+					"-Wall",
+					"-I${workspaceFolder}/XP-SDK-301/CHeaders/Widgets",
+					"-I${workspaceFolder}/XP-SDK-301/CHeaders/Wrappers",
+					"-I${workspaceFolder}/XP-SDK-301/CHeaders/XPLM",
+					"-L${workspaceFolder}/XP-SDK-301/Libraries/Win",
+					"-lXPLM_64.lib",
+					"-lXPWidgets_64.lib",
+					"-DXPLM200",
+					"-DXPLM210",
+					"-DXPLM300",
+					"-DXPLM301",
+					"-DAPL=0",
+					"-DLIN=0",
+					"-DIBM=1",
+					"-O0",
+					"-g",
+					"${file}",
+					"-o",
+					"${fileDirname}/${fileBasenameNoExtension}"
+				],
+				"options": {
+					"cwd": "${workspaceFolder}"
+				}
+			},
+			"osx": {
+				"command": "/usr/bin/g++",
+				"args": [
+					"-std=c++17",
+					"-stdlib=libc++",
+					"-Wall",
+					"-I ${workspaceFolder}/XP-SDK-301/CHeaders/Widgets",
+					"-I ${workspaceFolder}/XP-SDK-301/CHeaders/Wrappers",
+					"-I ${workspaceFolder}/XP-SDK-301/CHeaders/XPLM",
+					"-L ${workspaceFolder}/XP-SDK-301/Libraries/Mac",
+					"-l XPLM.framework",
+					"-l XPWidgets.framework",
+					"-D XPLM200",
+					"-D XPLM210",
+					"-D XPLM300",
+					"-D XPLM301",
+					"-D APL=1",
+					"-D LIN=0",
+					"-D IBM=0",
+					"-O0",
+					"-g",
+					"${file}",
+					"-o",
+					"${fileDirname}/${fileBasenameNoExtension}"
+				],
+				"options": {
+					"cwd": "${workspaceFolder}"
+				}
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		}
+	]
+}
