@@ -29,7 +29,7 @@ FSHWPanel ist eine aus mehreren Komponenten bestehende Software, mittels derer S
 * **XPIf**  
   Quellcode für die auf dem PC laufende Schnittstelle zu X-Plane. Die Unterverzeichnisse sind hier analog zu XPanino.
 
-  * **.vscode**
+  * **XPIf/.vscode**
   * **XPIf/doc/html**
   * **XPIf/lib**
   * **XPIf/src**

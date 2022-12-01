@@ -1,0 +1,8 @@
+{
+    "html.format.wrapAttributes": "force-aligned",
+    "editor.multiCursorModifier": "ctrlCmd",
+    "scm.defaultViewMode": "tree",
+    "editor.renderWhitespace": "boundary",
+    "editor.trimAutoWhitespace": false,
+    "scm.diffDecorationsIgnoreTrimWhitespace": "inherit"
+}
