@@ -1,4 +1,4 @@
-# A simple manual   {#mainpage} 
+# A simple manual   {#mainpage}
 
 Heir stehet einiges drin. blah bla.
 some general info.

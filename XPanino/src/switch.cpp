@@ -18,7 +18,7 @@ const unsigned long LONG_ON = 3000;     ///< Dauer, ab wann ein Schalter lange e
 void Switch::setOn() {
     status = LOW;
     changed = true;
-    onTimeStart = millis();     // Einschalt"zeit" merken
+    switchPressTime = millis();     // Einschalt"zeit" merken
     longOnSent = false;
     longOn = false;
     onTime = 0;
@@ -29,7 +29,7 @@ void Switch::setOn() {
 void Switch::setOff() {
     status = HIGH;
     changed = true;
-    onTime = calcTimeDiff(onTimeStart, millis());   // Differenz zwischen Ein- und Ausschalt"zeit" merken
+    onTime = calcTimeDiff(switchPressTime, millis());   // Differenz zwischen Ein- und Ausschalt"zeit" merken
     longOnSent = true;
     longOn = false;
 }
@@ -46,7 +46,7 @@ void Switch::checkLongOn() {
 
 /******************************************************************************/
 void Switch::updateOnTime(const unsigned long &newOnTime) {
-    onTime = calcTimeDiff(onTimeStart, newOnTime);
+    onTime = calcTimeDiff(switchPressTime, newOnTime);
 }
 
 

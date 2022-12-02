@@ -15,7 +15,7 @@ Beispielcode für Schaltermatrix mit PIO-Code: <https://github.com/GitJer/Some_R
 | 2            | "OFF" |  "SBY" | "TST"  | "ON"   | "ALT"  |
 | 3            | "OAT" |  "SEL" | "CTRL" | -      | "IDT"  |
 
-### Raspberry Pico <--> FSHWPanel-Transponder
+### Raspberry Pico <--> FSHWPanel-Transponder (Schalter)
 
 Schaltplan: *Transponder KT 76C, Uhr Davtron M803 - Anschluss LED und 7-Segment-Anzeigen, Schalter.pdf*
 

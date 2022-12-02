@@ -20,16 +20,7 @@ const uint8_t OE = PIN2;        ///< Arduino-Pin für OE des MIC5891/5821
 /** Konstanten für's Blinken */
 const unsigned int BLINK_VERSATZ = 447;     ///< Versatz für die Startzeiten der Blinkgeschwindigkeiten. Damit
                                             ///< nicht alles so gleich im Takt blinkt
-
-/** Konstanten für die Dauern der Hell- und Dunkelphasen beim Blinken */
-const unsigned long int BLINK_INTERVAL_BRIGHT[NO_OF_SPEED_CLASSES] = {
-    1000,   ///< Normales Blinken: Dauer der Hellphase in Millisekunden
-    2000    ///< Langsames Blinken: Dauer der Hellphase in Millisekunden
-};
-const unsigned long int BLINK_INTERVAL_DARK[NO_OF_SPEED_CLASSES] = {
-    1000,   ///< Normales Blinken: Dauer der Dunkelphase in Millisekunden
-    6000    ///< Langsames Blinken: Dauer der Dunkelphase in Millisekunden
-};
+ 
 
 /** Konstanten für die Bitmuster für die Anzeige der Werte auf den 7-Segment-Anzeigen
 * segmentBits bildet ein 7-Segment-Display mit Dezimalpunkt ab.
@@ -122,6 +113,12 @@ const uint8_t segmentBits[SEGMENT_CHARS] = {    ///< segmentBits enthält das Bi
     0b0110110  ///< Zwei senkrechte Striche:  Segmente f, e, c, b --> segmentBits[39]
 };
 
+/**************************************************************************************************/
+SpeedClass::SpeedClass(const unsigned long int brightTime, const unsigned long int darkTime) {
+    SpeedClass::brightTime = brightTime;
+    SpeedClass::darkTime = darkTime;
+};
+
 
 /**************************************************************************************************/
 LedMatrix::LedMatrix() {
@@ -139,8 +136,8 @@ LedMatrix::LedMatrix() {
         blinkStartTime[speedClass] = millis() + speedClass * BLINK_VERSATZ;   // Startzeit mit Versatz
     }
     /// Defaultwerte für die Blinkdauern der Speedklassen der nächsten anstehenden Hellphase
-    nextBlinkInterval[BLINK_NORMAL] = BLINK_INTERVAL_BRIGHT[BLINK_NORMAL];    // Dauer der Hellphase als Initialwert
-    nextBlinkInterval[BLINK_SLOW] = BLINK_INTERVAL_BRIGHT[BLINK_SLOW];
+    nextBlinkInterval[BLINK_NORMAL] = blinkTimes[BLINK_NORMAL].brightTime;    // Dauer der Hellphase als Initialwert
+    nextBlinkInterval[BLINK_SLOW] = blinkTimes[BLINK_SLOW].brightTime;
 }
 
 void LedMatrix::initHardware() {
@@ -196,6 +193,8 @@ bool LedMatrix::isValidRowCol(const uint8_t row, const uint8_t col) {
     return ((row < LED_ROWS) && (col < LED_COLS));
 };
 
+
+/**************************************************************************************************/
 bool LedMatrix::isValidRowCol(const LedMatrixPos pos) {
     return isValidRowCol(pos.row, pos.col);
 }
@@ -233,9 +232,9 @@ void LedMatrix::doBlink() {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (millis() - blinkStartTime[speedClass] > nextBlinkInterval[speedClass]) {
                 if (isBlinkDarkPhase[speedClass]) {
-                    nextBlinkInterval[speedClass] = BLINK_INTERVAL_BRIGHT[speedClass];
+                    nextBlinkInterval[speedClass] = blinkTimes[speedClass].brightTime;
                 } else {
-                    nextBlinkInterval[speedClass] = BLINK_INTERVAL_DARK[speedClass];
+                    nextBlinkInterval[speedClass] = blinkTimes[speedClass].darkTime;
                 } 
                 isBlinkDarkPhase[speedClass] = ! isBlinkDarkPhase[speedClass];
                 blinkStartTime[speedClass] = millis(); // + speedClass * BLINK_VERSATZ;

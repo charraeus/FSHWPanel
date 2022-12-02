@@ -28,11 +28,11 @@ private:
     char switchName[MAX_SWITCHNAME_LENGTH]; ///< Name des Schalters; wird durch Konstruktor gesetzt
     bool longOn {false};            ///< true => falls Schalter ist länger als 3 Sek\. an
     bool longOnSent {true};         ///< true => Ereignis wurde schon gesetzt und muss nicht nochmal gefeuert werden
-    unsigned long onTimeStart {0};  ///< Zeitstempel wann Schalter eingeschaltet wurde
+    unsigned long switchPressTime {0};  ///< Zeitstempel wann Schalter eingeschaltet wurde
     unsigned long onTime {0};       ///< Dauer wie lange der Schalter eingeschaltet war
     bool changed {false};           ///< true => Schalterstatus wurde seit der letzten Änderung nicht abgefragt
 
-    uint8_t history;                ///< notwendig für debounce(); macht evtl. onTimeStart, onTime überflüssig
+    uint8_t history;                ///< notwendig für debounce(); macht evtl. switchPressTime, onTime überflüssig
     
     /**
      * @brief Differenz zweier Zeitstempel berechnen

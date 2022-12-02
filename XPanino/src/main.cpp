@@ -117,7 +117,7 @@ void setup() {
     leds.defineDisplayField(FL, 1, 1, 8);         ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 8 bis 15: Zehnerstelle .
     leds.defineDisplayField(FL, 2, 2, 8);         ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 8 bis 15: Einerstelle.
     leds.display(FL, "020");
-
+    
     const uint8_t SQUAWK = 3;
     leds.defineDisplayField(SQUAWK, 0, 3, 8);        ///< Die 1. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 8 bis 15: Tausenderstelle.
     leds.defineDisplayField(SQUAWK, 1, 4, 8);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 8 bis 15: Hunderterstelle.
@@ -126,8 +126,10 @@ void setup() {
     leds.display(SQUAWK, "7000");
     
     const LedMatrixPos LED_TRENNER_1{0, 4};         ///< Der obere Stunden-Minuten-Trenner liegt auf Row=0 und Col=4.
+    leds.ledOn(LED_TRENNER_1);
     leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
     const LedMatrixPos LED_TRENNER_2{1, 4};         ///< Der untere Stunden-Minuten-Trenner liegt auf Row=1 und Col=4.
+    leds.ledOn(LED_TRENNER_2);
     leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
     const LedMatrixPos LED_LT{2, 4};                ///< Die LED "LT" liegt auf Row=2 und Col=4.
     leds.ledOn(LED_LT);
@@ -140,6 +142,7 @@ void setup() {
     const LedMatrixPos LED_ALT{6, 4};               ///< Die LED "ALT" liegt auf Row=2 und Col=4.
     leds.ledOn(LED_ALT);
     const LedMatrixPos LED_R{7, 4};                 ///< Die LED "R" liegt auf Row=3 und Col=4.
+    leds.ledOn(LED_R);
     leds.ledBlinkOn(LED_R, BLINK_SLOW);
     
     

@@ -50,7 +50,17 @@ Link zur [GIT-Doku](https://git-scm.com/book/de/v2).
 
 ## Tools
 ### PlatformIO
-Für die Arduino-Programmierung wird [*PlatformIO*](https://docs.platformio.org/en/latest/) verwendet.
+Für die Arduino-Programmierung wird [*PlatformIO*](https://docs.platformio.org/en/latest/) verwendet. Die Installation erfolgt direkt als Erweiterung in *Visual Studio Code*.
+
+### Visual Paradigm Community Editon
+
+Für die Erstellung von Diagrammen (insbes. Zustandsdiagrammen) wird die Community-Edition von Visual Paradigm genutzt. Die Installation auf dem Mac erfolgt mittels Homebrew, das natürlich installiert sein muss.
+
+```shell
+brew install visual-paradigm-ce
+```
+
+
 
 ## Style-Guides
 

@@ -15,6 +15,8 @@
 
 #include <Arduino.h>
 
+
+/**************************************************************************************************/
 /* Konstanten für den (gewünschten) Status des Dezimalpunkts der 7-Segment-Anzeigen */
 const bool DP_ON = true;    ///< Dezimalpunkt wird angezeigt.
 const bool DP_OFF = false;  ///< Dezimalpunkt wird nicht angezeigt.
@@ -31,11 +33,6 @@ const uint8_t CHAR_3_DASH_HORIZ = 38;   ///< Zeichen Drei "-" übereinander
 const uint8_t CHAR_2_DASH_VERT = 39;    ///< Zeichen "||"
 const uint8_t CHAR_ERROR = 38;          ///< Zeichen für Fehler. 
 
-/* Konstanten für Blinkrate und Blinken */
-const uint8_t BLINK_NORMAL = 0;     ///< Normale Blinkgeschwindigkeit.
-const uint8_t BLINK_SLOW = 1;       ///< Langsame Blinkgeschwindigkeit.
-const uint8_t NO_OF_SPEED_CLASSES = 2;  ///< Anzahl Blinkgeschwindigkeiten.
-
 /* Konstanten für die Größe der LED-Matrix */
 constexpr const uint8_t LED_ROWS = 8;
 constexpr const uint32_t LED_COLS = sizeof(uint32_t) * 8;  //Achtung: durch Verwendung von uint32_t ist die Spaltenzahl immer 32
@@ -44,8 +41,29 @@ constexpr const uint32_t LED_COLS = sizeof(uint32_t) * 8;  //Achtung: durch Verw
 const uint8_t MAX_DISPLAY_FIELDS = 4;       ///< Maximal mögliche Anzahl Display-Felder.
 const uint8_t MAX_7SEGMENT_UNITS = 6;       ///< Maximal mögliche Anzahl 7-Segment-Anzeigen je Display-Feld.
 
+/**************************************************************************************************
+ * @brief Speichert die Dauer der Hell- und Dunkelphasen für's Blinken
+ * 
+ */
+class SpeedClass {
+public:
+    unsigned long int brightTime;   ///< Zeit in Millisekunden eingeschaltet
+    unsigned long int darkTime;     ///< Dauer in Millisekunden ausgeschaltet
+    SpeedClass(const unsigned long int brightTime, const unsigned long int darkTime);
+};
 
-/**
+/**************************************************************************************************/
+/* Konstanten für Blinkrate und Blinken */
+const uint8_t BLINK_NORMAL = 0;  ///< Dient als Index für blinkTimes; Normale Blinkgeschwindigkeit.
+const uint8_t BLINK_SLOW = 1;    ///< Dient als Index für blinkTimes; Langsame Blinkgeschwindigkeit.
+const uint8_t NO_OF_SPEED_CLASSES = 2;  ///< Anzahl Blinkgeschwindigkeitspaare.
+const SpeedClass blinkTimes[NO_OF_SPEED_CLASSES] = {
+        { 500,  500}, //< BLINK_NORMAL:  500 ms hell,  500 ms dunkel
+        {2000, 6000}  //< BLINK_SLOW:   2000 ms hell, 6000 ms dunkel
+      } ;
+
+
+/**************************************************************************************************
  * @brief Ein Display-Feld fasst mehrere 7-Segment-Anzeigen zusammen.
  * 
  */
@@ -56,6 +74,10 @@ public:
     uint8_t count7SegmentUnits;                     ///< Anzahl 7-Segment-Anzeigen, aus denen das Display-Feld besteht.
 };
 
+/**************************************************************************************************
+ * @brief Position der Led in der LedMatrix, bestehend aus Row (y-Wert) und Col (x-Wert)
+ * 
+ */
 class LedMatrixPos {
 public:
     uint8_t row;    ///< Row der Led.
@@ -76,23 +98,17 @@ private:
     uint32_t blinkStatus[NO_OF_SPEED_CLASSES][LED_ROWS];    ///< Status ob geblinkt werden soll je Geschwindigkeitsklasse und LED.
     unsigned long int blinkStartTime[NO_OF_SPEED_CLASSES];  ///< Gibt den Takt des normal-schnellen Blinkens für alle LEDs vor.
     bool isBlinkDarkPhase[NO_OF_SPEED_CLASSES];             ///< Flag für die Dunkelphase beim normalen Blinken.
-    unsigned long int nextBlinkInterval[NO_OF_SPEED_CLASSES];  ///< Dauer des nächsten Blink-Intervalls (abhängig von BLINK_INTERVAL_NORMAL_BRIGHT und ..._DARK.
-//    unsigned long int blinkStartTimeNormal;               ///< Gibt den Takt des normal-schnellen Blinkens für alle LEDs vor.
-//    unsigned long int blinkStartTimeSlow;                 ///< Gibt den Takt des langsamen Blinkens für alle LEDs vor.
-//    bool isBlinkDarkPhaseNormal;                          ///< Flag für die Dunkelphase beim normalen Blinken.
-//    bool isBlinkDarkPhaseSlow;                            ///< Flag für die Dunkelphase beim langsamen Blinken.
-//    unsigned long int nextBlinkIntervalNormal;            ///< Dauer des nächsten Blink-Intervalls (abhängig von BLINK_INTERVAL_NORMAL_BRIGHT und ..._DARK.
-//    unsigned long int nextBlinkIntervalSlow;              ///< Dauer des nächsten Blink-Intervalls (abhängig von BLINK_INTERVAL_NORMAL_BRIGHT und ..._DARK. 
+    unsigned long int nextBlinkInterval[NO_OF_SPEED_CLASSES];  ///< Dauer des nächsten Blink-Intervalls (abhängig von blinkTimes[].brightTime und ...darkTime.
     
-    /** 
-     * Char in ein Bitmuster zur Anzeige auf einem 7-Segment-Display umrechnen, d.h.\ das zum
+    /***************************************************************************
+     * @brief Char in ein Bitmuster zur Anzeige auf einem 7-Segment-Display umrechnen, d.h.\ das zum
      * @em char passende Bitmuster zur Anzeige ermitteln.
      * @param [in] character Das anzuzeigende Zeichen. Muss eines der @em CHAR_x Konstanten sein.
 
      */
     uint8_t get7SegBits(const unsigned char character);
     
-    /**
+    /***************************************************************************
      * @brief Prüfen, ob @em row und @em col gültig sind, d.h.\ innerhalb der Arraygrenzen liegen.\ Gültig 
      * heißt, @em row und @em col ist jeweils in [0..LED_ROWS -1 bzw.\ 0..LED_COLS - 1]
      * 
@@ -104,7 +120,7 @@ private:
     bool isValidRowCol(const uint8_t row, const uint8_t col);
     bool isValidRowCol(const LedMatrixPos pos);
     
-    /**
+    /***************************************************************************
      * @brief Prüfen, ob blinkSpeed gültig ist, d.h.\ eine der @em blinkSpeed Konstanten ist.
      * 
      * @param [in] blinkSpeed Eine der @em blinkSpeed Konstanten.
@@ -113,14 +129,14 @@ private:
      */
     bool isValidBlinkSpeed(const uint8_t blinkSpeed);
     
-    /**
+    /***************************************************************************
      * @brief Ein-/Aus-Status für die LEDs gemäß der aktuellen Hell-/Dunkelphase des Blinkens festlegen.
      * 
      */
     void doBlink();
     
 public:    
-    /**
+    /***************************************************************************
      * @brief Konstruktor: Hardware des Arduino initialisieren.
      * Erst die Hardware und I/O-Pins des Arduino initialisieren und dann die eingebaute LED 
      * als Status-Feedback ein paar mal blinken lassen und die Arduino-Pins initialisieren.
@@ -128,13 +144,13 @@ public:
     LedMatrix();
     void initHardware();
     
-    /**
-     * @brief Die die LEDs repräsentierenden Bits serialisieren und an die MIC5891/5821-Chips übertragen.
+     /***************************************************************************
+    * @brief Die die LEDs repräsentierenden Bits serialisieren und an die MIC5891/5821-Chips übertragen.
      * 
      */
     void display();
 
-    /**
+    /***************************************************************************
      * @brief Prüfen, ob LED an der Position (@em row, @em col) in der Led Matrix angeschaltet ist.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix. 
@@ -145,7 +161,7 @@ public:
     bool isLedOn(const uint8_t row, const uint8_t col);
     bool isLedOn(const LedMatrixPos pos);
 
-    /**
+    /***************************************************************************
      * @brief LED anschalten, d.h.\ das entsprechende Bit in der LedMatrix an der Position (@em row, @em col) setzen.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix.
@@ -155,7 +171,7 @@ public:
     int ledOn(const uint8_t row, const uint8_t col);
     int ledOn(const LedMatrixPos pos);
     
-    /**
+    /***************************************************************************
      * @brief LED ausschalten, d.h.\ das entsprechende Bit in der LedMatrix an der Position (@em row, @em col) löschen.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix. 
@@ -165,7 +181,7 @@ public:
     int ledOff(const uint8_t row, const uint8_t col);
     int ledOff(const LedMatrixPos pos);
 
-    /**
+    /***************************************************************************
      * @brief LED zwischen den Zuständen Aus und Ein umschalten,
      * d.h.\ das entsprechende Bit in der LedMatrix an der Position (@em row, @em col) umschalten.
      * 
@@ -176,7 +192,7 @@ public:
     int ledToggle(const uint8_t row, const uint8_t col);
     int ledToggle(const LedMatrixPos pos);
 
-    /**
+    /***************************************************************************
      * @brief Das Blinken einer LED einschalten.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix.   
@@ -188,7 +204,7 @@ public:
     int ledBlinkOn(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed = BLINK_NORMAL);
     int ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed = BLINK_NORMAL);
 
-    /**
+    /***************************************************************************
      * @brief Das Blinken einer LED ausschalten.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix.    
@@ -200,7 +216,7 @@ public:
     int ledBlinkOff(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed = BLINK_NORMAL);
     int ledBlinkOff(const LedMatrixPos pos, const uint8_t blinkSpeed = BLINK_NORMAL);
 
-    /**
+    /***************************************************************************
      * @brief Prüfen, ob für eine LED das Blinken eingeschaltet ist.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix.     
@@ -212,7 +228,7 @@ public:
     int isLedBlinkOn(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed = BLINK_NORMAL);
     int isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed = BLINK_NORMAL);
 
-    /**
+    /***************************************************************************
      * @brief Auf dem durch @em row und @em col spezifizierten 7-Segment-Display das Zeichen @em NewValue anzeigen, 
      * d.h.\ die entsprechenden Bits setzen bzw. löschen. Der Dezimalpunkt wird mit dem Parameter @em dpOn gesondert gesetzt.
      * 
@@ -225,7 +241,7 @@ public:
     int set7SegValue(const uint8_t row, const uint8_t col0, const unsigned char newValue, const bool dpOn = false);
     int set7SegValue(const LedMatrixPos pos, const unsigned char newValue, const bool dpOn = false);
 
-    /**
+    /***************************************************************************
      * @brief Für das Zeichen, das auf dem 7-Segment-Display angezeigt wird, blinken aktivieren.\ 
      * Optional inkl.\ Dezimalpunkt.
      * 
@@ -240,8 +256,8 @@ public:
                        const uint8_t blinkSpeed = BLINK_NORMAL);
     int set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink = false, const uint8_t blinkSpeed = BLINK_NORMAL);
     
-    /**
-     * @brief Das Blinken des Zeichens das auf der 7-Segment-Anzeige angezeigt wird, deaktivieren.\ 
+    /***************************************************************************
+     * @brief Das Blinken des Zeichens, das auf der 7-Segment-Anzeige angezeigt wird, deaktivieren.\ 
      * Optional ebenfalls den Dezimalpunkt.
      * 
      * @param [in] row Die Nummer der Zeile in der LedMatrix. Diese entspricht der Nummer der 7-Segment-Anzeige
@@ -257,11 +273,31 @@ public:
                         const uint8_t blinkSpeed = BLINK_NORMAL);
     int set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink = false, const uint8_t blinkSpeed = BLINK_NORMAL);
 
+    /***************************************************************************
+     * @brief Mehrere 7-Segment-Anzeigen zu einem Display zusammenfassen, auf dem 
+     * dann ein Wert angezeigt werden kann.
+     * 
+     * @param [in] fieldId
+     * @param [in] led7SegmentId
+     * @param [in] matrixRow
+     * @param [in] matrixCol
+     */
     void defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const uint8_t &matrixRow, const uint8_t &matrixCol0);
+    
     void defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId, const LedMatrixPos &pos);
 
+    /***************************************************************************
+     * 
+     */
     void defineDisplayFieldLength(const uint8_t &fieldId, const uint8_t &count7Segments) { displays[fieldId].count7SegmentUnits = count7Segments; };
 
+    /***************************************************************************
+    * @brief Einen Wert (String) auf einem Display, d.h. ggf. über mehrere 7-Segment-Anzeigen
+     * hinweg, ausgeben
+     * 
+     * @param [in] fieldId
+     * @param [out] outString
+     */
     void display(const uint8_t &fieldId, const char* outString);
 
 };
