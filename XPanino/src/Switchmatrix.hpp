@@ -75,9 +75,9 @@ public:
 
     #ifdef DEBUG 
     /**
-     * Die Namen aller Schalter ausgeben.
+     * Alle Schalter in der Matrix ausgeben.
      *
-     * Gibt alle Namen der Schalter zeilen- und spaltenweise aus. 
+     * Gibt Row und Col der Schalter zeilen- und spaltenweise aus. 
      * @note Dient eigentlich nur zum debuggen.
      */
     void printMatrix();
