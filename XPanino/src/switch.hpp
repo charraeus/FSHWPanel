@@ -18,14 +18,12 @@
  * @brief Abbildung eines Schalters
  * @todo Doku an dieser Stelle noch ausführlicher.
  * @todo Softwaremäßiges Entprellen wie im Artikel "Fliegender Frederick" in c't 22/2020 implementieren
- *       Siehe Function debounde.
+ *       Siehe Function debounce.
  * 
  **************************************************************************************************/
-const uint8_t MAX_SWITCHNAME_LENGTH = 6;
 class Switch {
 private:
     uint8_t status {HIGH};          ///< Status 0 --> eingeschaltet, Status 1 --> ausgeschaltet
-    char switchName[MAX_SWITCHNAME_LENGTH]; ///< Name des Schalters; wird durch Konstruktor gesetzt
     bool longOn {false};            ///< true => falls Schalter ist länger als 3 Sek\. an
     bool longOnSent {true};         ///< true => Ereignis wurde schon gesetzt und muss nicht nochmal gefeuert werden
     unsigned long switchPressTime {0};  ///< Zeitstempel wann Schalter eingeschaltet wurde
@@ -95,7 +93,7 @@ public:
      * nur einmal - der Status @em LON (für \"long on\") gesendet. 
      * @todo hier muss noch der Schalterstatus irgendwie an X-Plane übergeben werden.
      */
-    void transmitStatus();
+    void transmitStatus(uint8_t row, uint8_t col);
     
    
     /** 
@@ -114,28 +112,7 @@ public:
     bool isChanged() { return changed; }    
     
     
-    /** 
-     * Gibt den Namen des Schalters zurück.
-     * @return String Name des Schalters.
-     */ 
-    char* getName() { return switchName; }
-    
-    
-    /** 
-     * Setzt den Namen des Schalters.
-     * @param [in] newName Name des Schalters.
-     */ 
-    bool setName(const char* &newName) { 
-        if (strlen(newName) < sizeof(switchName)) {
-            strcpy(switchName, newName);
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    
-    /** 
+     /** 
      * Fragt den Schalterstatus ab und setzt den Änderungsstatus des Schalters zurück. 
      * Nach Rückgabe des Schalterstatus, wird der Änderungsstatus des Schalters, 
      * d.h. die Eigenschaft @em changed, auf @em false gesetzt.

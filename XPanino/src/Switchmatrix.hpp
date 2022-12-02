@@ -38,22 +38,10 @@ class SwitchMatrix {
 private:
     Switch switchMatrix[SWITCH_MATRIX_ROWS][SWITCH_MATRIX_COLS];    ///< Switchmatrix anlegen.
     bool changed = false;   ///< Änderungsstatus der gesamten Matrix. Sobald sich ein Schalter ändert, ist @em changed @em true.
-    unsigned int debounceTime = 2;  ///< Zeit in Millisekunden zum Entprellen
+    unsigned int debounceTime = 8;  ///< Zeit in Millisekunden zum Entprellen
     
 public:
-    /**
-     * @brief Set the Switch Name object
-     * 
-     * @param [in,out] row      Zeilennummer: [0..SWITCH_MATRIX_ROWS - 1].
-     * @param [in,out] col      Spaltennummer: [0.. SWITCH_MATRIX_COLS -1].
-     * @param [in,out] newName  Name des Schalters. 
-     * @return true     Der Name wurde erfolgreich gesetzt. 
-     * @return false    Der Name wurde nicht gesetzt, weil die Zeilen- und Spaltennummer unzulässig ist. 
-     */
-    bool setSwitchName(const uint8_t &row, const uint8_t &col, const char* newName);
-    
-
-    /**
+     /**
      * @brief Die Hardware, d.h. die Pins, an denen die Schalter angeschlossen sind, initialisieren.
      * 
      */
@@ -83,22 +71,8 @@ public:
      *              @em false ==> der Status aller Schalter wird übertragen.
      */
     void transmitStatus(const bool changedOnly);
-    
-    
-    /**
-     * Schalter per Name finden und die zugehörige Row und Col der Matrix zurückgeben.
-     *
-     * Gibt die Zeile und Spalte in der Matrix zurück, die zu dem Schalter mit dem entsprechenden Namen gehören. 
-     * Das sind nicht die Pin-Nummern des Arduino, sondern die Zeile und Spalte im Array @em switchMatrix.
-     *
-     * @param [in]   switchName Name des Schalters, dessen Zeile und Spalte benötigt werden.
-     * @param [out]  matrixRow  Nummer der Zeile des Schalters [0..n]
-     * @param [out]  matrixCol  Nummer der Spalte des Schalters [0..n]
-     * @note        Wenn Row oder Col den Wert 9999 haben, wurde der Name nicht gefunden.
-     */
-    void findMatrixRowColByName(const char* switchName, size_t &matrixRow, size_t &matrixCol);
 
-    
+
     #ifdef DEBUG 
     /**
      * Die Namen aller Schalter ausgeben.

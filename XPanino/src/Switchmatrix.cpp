@@ -16,20 +16,6 @@
 
 
 /******************************************************************************/
-bool SwitchMatrix::setSwitchName(const uint8_t &row, const uint8_t &col, const char* newName) {
-    if (row < SWITCH_MATRIX_ROWS && col < SWITCH_MATRIX_COLS) {
-        switchMatrix[row][col].setName(newName);
-        #ifdef DEBUG
-        //Serial.print(newName); Serial.print("|"); Serial.println(switchMatrix[row][col].getName());
-        #endif
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
-/******************************************************************************/
 void SwitchMatrix::initHardware() {
     /// Alle Matrixzeilen-Pins als Output einstellen und auf HIGH setzen.
     for (uint8_t row = HW_MATRIX_ROWS_LSB_PIN; row <= HW_MATRIX_ROWS_MSB_PIN; ++row) {
@@ -40,9 +26,6 @@ void SwitchMatrix::initHardware() {
     for (uint8_t col = HW_MATRIX_COLS_LSB_PIN; col <= HW_MATRIX_COLS_MSB_PIN; ++col) {
         pinMode(col, INPUT_PULLUP);
     }
-    #ifdef DEBUG
-    //printMatrix();
-    #endif
 }
 
 
@@ -80,20 +63,20 @@ void SwitchMatrix::scanSwitchPins() {
                 switchMatrix[matrixRow][matrixCol].checkLongOn();
             }
         }   /// weiter geht's mit der nächsten Spalte
-        digitalWrite(row, HIGH);    /// Zeilen-Pin wieder auf HIGH setzen und damit deaktivieren.
-    }   /// weiter geht's mit der nächsten Zeile
+        digitalWrite(row, HIGH);    /// Row-Pin wieder auf HIGH setzen und damit deaktivieren.
+    }   /// weiter geht's mit der nächsten Row
 }
 
 
 /******************************************************************************/
 void SwitchMatrix::transmitStatus(const bool changedOnly) {
-    for (auto &row : switchMatrix) {
-        for (auto &col : row) {
-            if (changedOnly && col.isChanged()) {
-                col.transmitStatus();
+   for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
+        for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
+            if (changedOnly && switchMatrix[row][col].isChanged()) {
+                switchMatrix[row][col].transmitStatus(row, col);
             } else {
                 if (! changedOnly) {
-                    col.transmitStatus();
+                    switchMatrix[row][col].transmitStatus(row, col);
                 }
             }
         }
@@ -101,36 +84,25 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
 }
 
 
-/******************************************************************************/
-void SwitchMatrix::findMatrixRowColByName(const char* switchName, size_t &matrixRow, size_t &matrixCol) {
-    // Eingabe: Schaltername
-    // Ausgabe: Row und Col der Matrix (nicht die Pin-Nummern!)
-    // Wenn Row und Col den Wert 9999 haben, wurde der Name nicht gefunden
-    matrixRow = 9999;
-    matrixCol = 9999;
-    for (unsigned int row = 0; row != SWITCH_MATRIX_ROWS; ++row) {
-        for (unsigned int col = 0; col != SWITCH_MATRIX_COLS; ++col) {
-            if (strcmp(switchMatrix[row][col].getName(), switchName) == 0) {
-                matrixRow = row;
-                matrixCol = col;
-                break;
-            }
-        }
-    }
-}
-
 #ifdef DEBUG
 /******************************************************************************/
 void SwitchMatrix::printMatrix() {
-    uint8_t r{0};
-    for (auto &row : switchMatrix) {
-        Serial.print("Row "); Serial.print(r); Serial.print(":\t");
-        r++;
-        for (auto &col : row) {
-            Serial.print(col.getName());
+    Serial.print("\t\t");
+    for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
+        Serial.print("Col "); Serial.print(col); Serial.print("\t");
+    }
+    Serial.println();
+    for (uint8_t col = 0; col <= SWITCH_MATRIX_COLS; col++) {
+        Serial.print("--------");
+    }
+    Serial.println();   
+    for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
+        Serial.print("Row "); Serial.print(row); Serial.print(":\t");
+        for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
+            Serial.print(row); Serial.print(" / "); Serial.print(col);
             Serial.print("\t");
         }
         Serial.println();
     }
 }
-#endif //if def DEBUG
+#endif //if def DEBUG,

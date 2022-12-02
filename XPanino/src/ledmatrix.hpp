@@ -62,7 +62,6 @@ const SpeedClass blinkTimes[NO_OF_SPEED_CLASSES] = {
         {2000, 6000}  //< BLINK_SLOW:   2000 ms hell, 6000 ms dunkel
       } ;
 
-
 /**************************************************************************************************
  * @brief Ein Display-Feld fasst mehrere 7-Segment-Anzeigen zusammen.
  * 
@@ -148,7 +147,7 @@ public:
     * @brief Die die LEDs repräsentierenden Bits serialisieren und an die MIC5891/5821-Chips übertragen.
      * 
      */
-    void display();
+    void writeToHardware();
 
     /***************************************************************************
      * @brief Prüfen, ob LED an der Position (@em row, @em col) in der Led Matrix angeschaltet ist.

@@ -276,7 +276,7 @@ void LedMatrix::doBlink() {
  * stattfinden, wird die Anzeige mehr oder weniger stark flimmern.
  * 
 */
-void LedMatrix::display() {
+void LedMatrix::writeToHardware() {
     // Alle Berechnungen zum Blinken erledigen
     doBlink();
     // Die hwMatrix serialisieren, in die Schieberegister schieben und die Outputs scharf schalten

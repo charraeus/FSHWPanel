@@ -29,22 +29,6 @@ ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 
 /******************************************************************************
- * @brief Die Schalter benennen.
- * 
- ******************************************************************************/
-void setSwitchNames() {
-    /** row 0 */ switches.setSwitchName(0, 0, "0"); switches.setSwitchName(0, 1, "1"); switches.setSwitchName(0, 2, "2"); switches.setSwitchName(0, 3, "3");
-                 switches.setSwitchName(0, 4, "4"); switches.setSwitchName(0, 5, "5"); switches.setSwitchName(0, 6, "6"); switches.setSwitchName(0, 7, "7");
-    /** row 1 */ switches.setSwitchName(1, 0, "IDT"); switches.setSwitchName(1, 1, "VFR"); switches.setSwitchName(1, 2, "CLR"); switches.setSwitchName(1, 3, "OFF");
-                 switches.setSwitchName(1, 4, "SBY"); switches.setSwitchName(1, 5, "TST"); switches.setSwitchName(1, 6, "ON"); switches.setSwitchName(1, 7, "ALT");
-    /** row 2 */ switches.setSwitchName(2, 0, "2-0"); switches.setSwitchName(2, 1, "2-1"); switches.setSwitchName(2, 2, "2-2"); switches.setSwitchName(2, 3, "2-3");
-                 switches.setSwitchName(2, 4, "2-4"); switches.setSwitchName(2, 5, "2-5"); switches.setSwitchName(2, 6, "OAT"); switches.setSwitchName(2, 7, "2-7");
-    /** row 3 */ switches.setSwitchName(3, 0, "0"); switches.setSwitchName(3, 1, "1"); switches.setSwitchName(3, 2, "2"); switches.setSwitchName(3, 3, "3");
-                 switches.setSwitchName(3, 4, "4"); switches.setSwitchName(3, 5, "5"); switches.setSwitchName(3, 6, "SEL"); switches.setSwitchName(3, 7, "CTL");
-}
-
-
-/******************************************************************************
  * @brief Zeichen liegt an der seriellen Schnittstelle vor.
  * 
  ******************************************************************************/
@@ -96,7 +80,7 @@ void setup() {
         Serial.println("XPanino V0.1 (c) Christian Harraeus, 2020.\nLos geht's.");
     }
 
-    leds.initHardware();                                ///< Arduino-Hardware der LED-Matrix initialisieren.
+    leds.initHardware();                      ///< Arduino-Hardware der LED-Matrix initialisieren.
     
     const uint8_t OATVOLTS = 0;                         ///< Das Display-Feld OATVOLTS definieren. Es besteht aus 4 7-Segment-Anzeigen:
     leds.defineDisplayField(OATVOLTS, 0, 0, 16);       ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 16 bis 23.
@@ -145,10 +129,8 @@ void setup() {
     leds.ledOn(LED_R);
     leds.ledBlinkOn(LED_R, BLINK_SLOW);
     
-    
-    setSwitchNames();                                   ///< Die Schalter der Schaltermatrix benennen.
-    switches.initHardware();                            ///< Die Arduino-Hardware der Schaltermatrix initialisieren.
-    switches.scanSwitchPins();                          ///< Initiale Schalterstände abfragen und übertragen.
+    switches.initHardware();            ///< Die Arduino-Hardware der Schaltermatrix initialisieren.
+    switches.scanSwitchPins();          ///< Initiale Schalterstände abfragen und übertragen.
     switches.transmitStatus(TRANSMIT_ALL_SWITCHES);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
     #ifdef DEBUG
     switches.printMatrix();
@@ -164,5 +146,5 @@ void loop() {
     switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
-    leds.display();     ///< LEDs anzeigen bzw. refreshen
+    leds.writeToHardware();     ///< LEDs anzeigen bzw. refreshen
 }
