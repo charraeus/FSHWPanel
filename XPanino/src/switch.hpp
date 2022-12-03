@@ -42,7 +42,8 @@ private:
      * @param [in] offTime Ausschaltzeitstempel in Millisekunden, z.B. millis(). Dieser Parameter ist i.d.R. der neuere Zeitstempel.
      * @return unsigned long Zeitdifferenz in Millisekunden
      */
-    unsigned long calcTimeDiff(const unsigned long &onTime, const unsigned long &offTime);    
+    static unsigned long calcTimeDiff(const unsigned long &onTime, 
+                                      const unsigned long &offTime);    
 
     /**
      * @brief Entprellen per Sofware. Siehe Pina Merkert: Fliegender Frederick, c't 22/2020, S. 152

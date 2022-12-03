@@ -31,36 +31,41 @@ void SwitchMatrix::initHardware() {
 
 /******************************************************************************/
 void SwitchMatrix::scanSwitchPins() {
-    uint8_t pinStatus;
-    size_t matrixRow, matrixCol;
+    uint8_t pinStatus = 0;
+    size_t matrixRow = 0, matrixCol = 0;    
     
     for (uint8_t row = HW_MATRIX_ROWS_LSB_PIN; row <= HW_MATRIX_ROWS_MSB_PIN; ++row) {
         digitalWrite(row, LOW);     // Die Matrixzeile aktivieren
         for (uint8_t col = HW_MATRIX_COLS_LSB_PIN; col <= HW_MATRIX_COLS_MSB_PIN; ++col) {
             matrixRow = row - HW_MATRIX_ROWS_LSB_PIN;   // Pin-Nummer auf Matrixzeile umrechnen.
             matrixCol = col - HW_MATRIX_COLS_LSB_PIN;   // Pin-Nummer auf Matrixspalte umrechnen.
-            
-            /// Pinstatus einlesen und entprellen.
-            pinStatus = digitalRead(col);
-            
-            /// Wenn eine Änderung erkannt wurde, den neuen Schalterstatus in der _SwitchMatrix speichern
-            /// und die Einschalt\"zeit\" merken.
-            /// Außerdem die neuen Status an PC übertragen.\n
-            /// @em 0 enspricht geschlossenem Schalter, da bei geschlossenem Schalter
-            /// das Col-Pin auf @em LOW gezogen wird.
-            if (pinStatus != (switchMatrix[matrixRow][matrixCol]).getStatusNoChange()) {
-                if (pinStatus == LOW) {
-                    switchMatrix[matrixRow][matrixCol].setOn();
+            if (isValidMatrixPos(matrixRow, matrixCol)) {
+                /// Pinstatus einlesen und entprellen.
+                pinStatus = digitalRead(col);
+                /// Wenn eine Änderung erkannt wurde, den neuen Schalterstatus in der _SwitchMatrix speichern
+                /// und die Einschalt\"zeit\" merken.
+                /// Außerdem die neuen Status an PC übertragen.\n
+                /// @em 0 enspricht geschlossenem Schalter, da bei geschlossenem Schalter
+                /// das Col-Pin auf @em LOW gezogen wird.
+                
+                if (pinStatus != (switchMatrix[matrixRow][matrixCol]).getStatusNoChange()) {
+                    if (pinStatus == LOW) {
+                        switchMatrix[matrixRow][matrixCol].setOn();
+                    }
+                    else {
+                        switchMatrix[matrixRow][matrixCol].setOff();
+                    };
+                    changed = true;
+                } else {
+                    /// Bei den nicht veränderten Schaltern die Einschaltzeiten aktualisieren.
+                    switchMatrix[matrixRow][matrixCol].updateOnTime(millis()); 
+                    /// Lange Tastendrücke identifizieren und ggf. ein Ereignis auslösen.
+                    switchMatrix[matrixRow][matrixCol].checkLongOn();
                 }
-                else {
-                    switchMatrix[matrixRow][matrixCol].setOff();
-                };
-                changed = true;
             } else {
-                /// Bei den nicht veränderten Schaltern die Einschaltzeiten aktualisieren.
-                switchMatrix[matrixRow][matrixCol].updateOnTime(millis()); 
-                /// Lange Tastendrücke identifizieren und ggf. ein Ereignis auslösen.
-                switchMatrix[matrixRow][matrixCol].checkLongOn();
+                Serial.print("Error: Invalid switchMatrix position in "
+                    "SwitchMatrix::scanSwitchPins(): row=");
+                Serial.print(row); Serial.print(", col="); Serial.println(col); // NOLINT
             }
         }   /// weiter geht's mit der nächsten Spalte
         digitalWrite(row, HIGH);    /// Row-Pin wieder auf HIGH setzen und damit deaktivieren.

@@ -6,7 +6,7 @@
  * Dieses Programm wird auf den Arduino geladen und stellt das Interface zwischen Flugsimulator
  * und der Schalter- und Anzeige-Hardware dar.
  * @author Christian Harraeus (christian@harraeus.de)
- * @version 0.1
+ * @version 0.2
  **************************************************************************************************/
 
 /// Headerdateien der Objekte includen
@@ -77,7 +77,7 @@ void setup() {
         while (Serial.available() > 0) {
             Serial.read();
         }
-        Serial.println("XPanino V0.1 (c) Christian Harraeus, 2020.\nLos geht's.");
+        Serial.println("XPanino V0.2 (c) Christian Harraeus, 2020.\nLos geht's.");
     }
 
     leds.initHardware();                      ///< Arduino-Hardware der LED-Matrix initialisieren.

@@ -40,6 +40,12 @@ private:
     bool changed = false;   ///< Änderungsstatus der gesamten Matrix. Sobald sich ein Schalter ändert, ist @em changed @em true.
     unsigned int debounceTime = 8;  ///< Zeit in Millisekunden zum Entprellen
     
+    bool isValidMatrixRow(const uint8_t row) {return ((row >= 0) && (row <= SWITCH_MATRIX_ROWS));}
+    bool isValidMatrixCol(const uint8_t col) {return ((col >= 0) && (col <= SWITCH_MATRIX_COLS));}
+    bool isValidMatrixPos(const uint8_t row, const uint8_t col) {
+        return isValidMatrixRow(row) && isValidMatrixCol(col);
+    }
+    
 public:
      /**
      * @brief Die Hardware, d.h. die Pins, an denen die Schalter angeschlossen sind, initialisieren.
