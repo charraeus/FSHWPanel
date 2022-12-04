@@ -9,6 +9,7 @@
  * 
  */
 
+#pragma once
 
 #ifndef ARDUINO
 #include <string>

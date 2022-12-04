@@ -9,7 +9,7 @@
  * 
  **************************************************************************************************/
 
-#include "xpdr.hpp"
+#include <xpdr.hpp>
 
 
 // Konstanten der möglichen Event-Strings

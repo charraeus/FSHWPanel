@@ -10,10 +10,9 @@
  * @todo statt <em>if not defined(NDEBUG)</em> besser auf <em>if defined(DEBUG)</em> umstellen.
  **************************************************************************************************/
 
-#ifndef Switchmatrix_hpp
-#define Switchmatrix_hpp
+#pragma once
 
-#include "switch.hpp"
+#include <switch.hpp>
 
 // Konstanten
 const bool TRANSMIT_ONLY_CHANGED_SWITCHES = true; ///< nur veränderte Schalter-Status übertragen
@@ -38,7 +37,7 @@ class SwitchMatrix {
 private:
     Switch switchMatrix[SWITCH_MATRIX_ROWS][SWITCH_MATRIX_COLS];    ///< Switchmatrix anlegen.
     bool changed = false;   ///< Änderungsstatus der gesamten Matrix. Sobald sich ein Schalter ändert, ist @em changed @em true.
-    unsigned int debounceTime = 8;  ///< Zeit in Millisekunden zum Entprellen
+    const unsigned int debounceTime = 9;  ///< Zeit in Millisekunden zum Entprellen
     
     bool isValidMatrixRow(const uint8_t row) {return ((row >= 0) && (row <= SWITCH_MATRIX_ROWS));}
     bool isValidMatrixCol(const uint8_t col) {return ((col >= 0) && (col <= SWITCH_MATRIX_COLS));}
@@ -76,7 +75,7 @@ public:
      *              @em true ==>  es wird nur der Status der Schalter, die sich seit der letzten Abfrage geändert haben, übertragen.\n
      *              @em false ==> der Status aller Schalter wird übertragen.
      */
-    void transmitStatus(const bool changedOnly);
+    void transmitStatus(bool changedOnly);
 
 
     #ifdef DEBUG 
@@ -89,5 +88,3 @@ public:
     void printMatrix();
     #endif /* ifdef DEBUG */
 };
-
-#endif /* ifndef Switchmatrix_hpp */

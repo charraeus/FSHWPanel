@@ -11,8 +11,8 @@
  * 
  ******************************************************************************/
 
-#include "Switchmatrix.hpp"
-#include "Arduino.h"
+#include <Arduino.h>
+#include <Switchmatrix.hpp>
 
 
 /******************************************************************************/
@@ -32,7 +32,8 @@ void SwitchMatrix::initHardware() {
 /******************************************************************************/
 void SwitchMatrix::scanSwitchPins() {
     uint8_t pinStatus = 0;
-    size_t matrixRow = 0, matrixCol = 0;    
+    size_t matrixRow = 0;
+    size_t matrixCol = 0;    
     
     for (uint8_t row = HW_MATRIX_ROWS_LSB_PIN; row <= HW_MATRIX_ROWS_MSB_PIN; ++row) {
         digitalWrite(row, LOW);     // Die Matrixzeile aktivieren
@@ -47,7 +48,6 @@ void SwitchMatrix::scanSwitchPins() {
                 /// Außerdem die neuen Status an PC übertragen.\n
                 /// @em 0 enspricht geschlossenem Schalter, da bei geschlossenem Schalter
                 /// das Col-Pin auf @em LOW gezogen wird.
-                
                 if (pinStatus != (switchMatrix[matrixRow][matrixCol]).getStatusNoChange()) {
                     if (pinStatus == LOW) {
                         switchMatrix[matrixRow][matrixCol].setOn();
@@ -110,4 +110,4 @@ void SwitchMatrix::printMatrix() {
         Serial.println();
     }
 }
-#endif //if def DEBUG,
+#endif

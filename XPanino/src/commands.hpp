@@ -9,8 +9,7 @@
  * 
  **************************************************************************************************/
 
-#ifndef commands_hpp
-#define commands_hpp
+#pragma once
 
 #include <Arduino.h>
 
@@ -32,5 +31,3 @@ const uint16_t M803_OATC         = 0xF100;    ///< O.A.T. in Grad Celsius
 const uint16_t M803_VOLTS        = 0xF107;    ///< Spannung in V
 const uint16_t M803_QNH          = 0xF201;    ///< Aktuelles QNH des X-Plane-Wetters
 const uint16_t M802_ALT          = 0xF202;    ///< Aktueller Druck in inHg des X-Plane-Wetters
-
-#endif // ifndef

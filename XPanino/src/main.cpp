@@ -2,7 +2,7 @@
  * @file main.cpp
  * @brief Hauptprogramm XPanino.
  * X-Plane-Panel mit Arduino - Proof of concept.
- * 
+ *
  * Dieses Programm wird auf den Arduino geladen und stellt das Interface zwischen Flugsimulator
  * und der Schalter- und Anzeige-Hardware dar.
  * @author Christian Harraeus (christian@harraeus.de)
@@ -10,14 +10,14 @@
  **************************************************************************************************/
 
 /// Headerdateien der Objekte includen
-#include "Switchmatrix.hpp"
-#include "ledmatrix.hpp"
-#include "parser.hpp"
-#include "xpdr.hpp"
-//#include "commands.hpp"
+#include <Switchmatrix.hpp>
+#include <ledmatrix.hpp>
+#include <parser.hpp>
+#include <xpdr.hpp>
+//#include <commands.hpp>
 
 /// Makros für serielle Schnittstelle definieren
-#define _SERIAL_BAUDRATE 115200     /// Baudrate für den seriellen Port. Nur hier ändern!!
+#define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
 
 /// Objekte anlegen
 LedMatrix leds;             ///< LedMatrix anlegen
@@ -30,10 +30,10 @@ ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 /******************************************************************************
  * @brief Zeichen liegt an der seriellen Schnittstelle vor.
- * 
+ *
  ******************************************************************************/
 void serialEvent() {
-    while (Serial.available() > 0) { 
+    while (Serial.available() > 0) {
         char inChar = char(Serial.read());
         // prüfen auf gültige Zeichen.
         // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
@@ -43,7 +43,7 @@ void serialEvent() {
             #ifdef DEBUG
             Serial.println(inChar);
             Serial.println(inBuffer.get());
-            #endif        
+            #endif
         } else {
             if (((inChar == '\n') || (inChar == '\r')) && (! inBuffer.isEmpty())) {
                 // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde kein '\r' bzw. '\n' gelesen,
@@ -51,7 +51,7 @@ void serialEvent() {
                 // Buffer zum Parsen zum Parser senden.
                 parser.parseString(inBuffer.get());
                 inBuffer.wipe();
-            } 
+            }
             // alle anderen Zeichen werden ignoriert.
         }
     }
@@ -59,29 +59,29 @@ void serialEvent() {
 
 
 /******************************************************************************
- * @brief Initialisierungen des Arduino durchführen. 
- * 
+ * @brief Initialisierungen des Arduino durchführen.
+ *
  * @todo Dokumentation hier ergänzen und Doxygen-Test-Doku 'rausnehmen.
  ******************************************************************************/
-void setup() {  
-    /// Serielle Schnittstelle initialisieren                           
+void setup() {
+    /// Serielle Schnittstelle initialisieren
     if (Serial) {
         Serial.begin(_SERIAL_BAUDRATE, SERIAL_8N1);
         // wait for serial port to connect. Needed for native USB
         while (!Serial) {
-            ; 
+            ;
         }
         // Schreibpuffer leeren
-        Serial.flush();  
+        Serial.flush();
         // Lesepuffer leeren
         while (Serial.available() > 0) {
             Serial.read();
         }
-        Serial.println("XPanino V0.2 (c) Christian Harraeus, 2020.\nLos geht's.");
+        Serial.println("XPanino V0.2 (c) Christian Harraeus, 2020 - 2022.\nLos geht's.");
     }
 
     leds.initHardware();                      ///< Arduino-Hardware der LED-Matrix initialisieren.
-    
+
     const uint8_t OATVOLTS = 0;                         ///< Das Display-Feld OATVOLTS definieren. Es besteht aus 4 7-Segment-Anzeigen:
     leds.defineDisplayField(OATVOLTS, 0, 0, 16);       ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 16 bis 23.
     leds.defineDisplayField(OATVOLTS, 1, 1, 16);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 16 bis 23.
@@ -101,14 +101,14 @@ void setup() {
     leds.defineDisplayField(FL, 1, 1, 8);         ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 8 bis 15: Zehnerstelle .
     leds.defineDisplayField(FL, 2, 2, 8);         ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 8 bis 15: Einerstelle.
     leds.display(FL, "020");
-    
+
     const uint8_t SQUAWK = 3;
     leds.defineDisplayField(SQUAWK, 0, 3, 8);        ///< Die 1. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 8 bis 15: Tausenderstelle.
     leds.defineDisplayField(SQUAWK, 1, 4, 8);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 8 bis 15: Hunderterstelle.
     leds.defineDisplayField(SQUAWK, 2, 5, 8);        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 8 bis 15: Zehnerstelle.
     leds.defineDisplayField(SQUAWK, 3, 6, 8);        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 8 bis 15: Einerstelle.
     leds.display(SQUAWK, "7000");
-    
+
     const LedMatrixPos LED_TRENNER_1{0, 4};         ///< Der obere Stunden-Minuten-Trenner liegt auf Row=0 und Col=4.
     leds.ledOn(LED_TRENNER_1);
     leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
@@ -128,7 +128,7 @@ void setup() {
     const LedMatrixPos LED_R{7, 4};                 ///< Die LED "R" liegt auf Row=3 und Col=4.
     leds.ledOn(LED_R);
     leds.ledBlinkOn(LED_R, BLINK_SLOW);
-    
+
     switches.initHardware();            ///< Die Arduino-Hardware der Schaltermatrix initialisieren.
     switches.scanSwitchPins();          ///< Initiale Schalterstände abfragen und übertragen.
     switches.transmitStatus(TRANSMIT_ALL_SWITCHES);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
@@ -139,7 +139,7 @@ void setup() {
 
 /******************************************************************************
  * @brief Lfd.\ Verarbeitung im loop().
- * 
+ *
  ******************************************************************************/
 void loop() {
     switches.scanSwitchPins();  ///< Hardware-Schalter abfragen

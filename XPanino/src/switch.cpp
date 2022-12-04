@@ -4,12 +4,12 @@
  * @brief Implementierung der Klasse @em Switch
  * @version 0.1
  * @date 2020-04-10
- * 
+ *
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
- * 
+ *
 **************************************************************************************************/
 
-#include "switch.hpp"
+#include <switch.hpp>
 
 const unsigned long LONG_ON = 3000;     ///< Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
 
@@ -80,19 +80,19 @@ unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned l
         // millis() ist nicht übergelaufen (Normalfall)
         // Zeit in Millisekunden berechnen, die der Schalter an wahr
         return offTime - onTime;
-    } else {
-        // millis() ist übergelaufen (passiert nach 50 Tagen)
-        // onTimeStart = Zeit seit Überlauf + Maximalwert von unsigned long - Einschalt"zeit"
-        return maxLong - onTime + offTime;
     }
+    // millis() ist übergelaufen (passiert nach 50 Tagen)
+    // onTimeStart = Zeit seit Überlauf + Maximalwert von unsigned long - Einschalt"zeit"
+    return maxLong - onTime + offTime;
 }
 
 /******************************************************************************/
 uint8_t debounce(uint8_t &history, uint8_t &newStatus) {
-    history = (history << 1) | (newStatus);     // bisherige history mit *aktuell gelesenem* Status aktualisieren
+    history = (history << static_cast<uint8_t>(1)) | (newStatus);     // bisherige history mit *aktuell gelesenem* Status aktualisieren
     switch (history){
         case 0b00000000: newStatus = LOW; break;
         case 0b11111111: newStatus = HIGH; break;
+        default: ;
     }
     return newStatus;
 }

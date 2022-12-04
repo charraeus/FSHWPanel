@@ -4,12 +4,12 @@
  * @brief Implementierung der Klasse @em Parser.
  * @version 0.1
  * @date 2017-11-17
- * 
+ *
  * Copyright © 2017 - 2020. All rights reserved.
- * 
+ *
  **************************************************************************************************/
 
-#include "parser.hpp"
+#include <parser.hpp>
 
 
 /**************************************************************************************************/
@@ -19,9 +19,8 @@ uint8_t BufferClass::addChar(const char inChar) {
         actPos += 1;
         buffer[actPos] = '\0';
         return 1;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 
@@ -39,9 +38,9 @@ bool ParserClass::parseString(char *inBuffer) {
     // Schnittstelle läuft.
     // in der Switchmatrix direkt dispatch(device, event, parameter1, parameter2) aufrufen
     // das muss aber noch geschaut werden, wie das gehen kann
-    char *ptrParameter;
-    uint8_t paramCount = 1;                     // Zähler für die richtige Variable der struct 
-    
+    char *ptrParameter = nullptr;
+    uint8_t paramCount = 1;                     // Zähler für die richtige Variable der struct
+
     ptrParameter = strtok (inBuffer, " ");      // ptrChar enthält jetzt den Stringabschnitt bis zum ersten Blank.
     if (ptrParameter != nullptr) {              // Vorsichtshalber testen, ob was gefunden wurde.
         strcpy(device, ptrParameter);           // Diesen in device kopieren.
@@ -49,9 +48,9 @@ bool ParserClass::parseString(char *inBuffer) {
             #ifdef DEBUG
             Serial.println (ptrParameter);
             #endif
-            paramCount++;                       // Zähler hochzählen, für die richtige Variable der struct 
+            paramCount++;                       // Zähler hochzählen, für die richtige Variable der struct
             ptrParameter = strtok (nullptr, " ");    // In die richtige Variable den Teilstring bis zum jeweils
-            switch (paramCount) {               // nächsten Blank hineinkopieren. 
+            switch (paramCount) {               // nächsten Blank hineinkopieren.
                 case 2: { strcpy(devEvent, ptrParameter); break; }
                 case 3: { strcpy(parameter1, ptrParameter); break; }
                 case 4: { strcpy(parameter2, ptrParameter); break; }
@@ -71,7 +70,7 @@ bool ParserClass::parseString(char *inBuffer) {
 void ParserClass::dispatch() {
     // Events je nach Quelle verteilen
     // if (device == "CLOCK") {
-        // rufe eine Callback-Funktion von ClockDavtronM802 auf. Die Adresse dieser Funktion muss 
+        // rufe eine Callback-Funktion von ClockDavtronM802 auf. Die Adresse dieser Funktion muss
         // aber zuerst von ClockDavtronM803 gesetzt worden sein.
         // Hierzu muss wahrscheinlich noch eine SetCallbackFunction implementiert werden.
         // callbackEventClock(switchName, eventName); --> Sollte die function ClockDavtronM803.event() aufrufen
@@ -86,7 +85,7 @@ void ParserClass::dispatch() {
     //     }
     // }
     Serial.println("Hier wird jetzt dispatscht...");
-    
+
     // Kommandovariablen wieder putzen
     // device = "";
     // devEvent = "";
