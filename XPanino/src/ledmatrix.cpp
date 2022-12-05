@@ -57,7 +57,7 @@ LedMatrix::LedMatrix() {
             blinkStatus[speedClass][row] = 0;         // Keine LED blinkt
         }
         isBlinkDarkPhase[speedClass] = true;
-        blinkStartTime[speedClass] = millis() + speedClass * BLINK_VERSATZ;   // Startzeit mit Versatz
+        blinkStartTime[speedClass] = millis(); // + speedClass * BLINK_VERSATZ;   // Startzeit mit Versatz
     }
     /// Defaultwerte für die Blinkdauern der Speedklassen der nächsten anstehenden Hellphase
     nextBlinkInterval[BLINK_NORMAL] = blinkTimes[BLINK_NORMAL].getBrightTime();    // Dauer der Hellphase als Initialwert
@@ -168,7 +168,7 @@ void LedMatrix::doBlink() {
                     nextBlinkInterval[speedClass] = blinkTimes[speedClass].getDarkTime();
                 }
                 isBlinkDarkPhase[speedClass] = ! isBlinkDarkPhase[speedClass];
-                blinkStartTime[speedClass] = millis() + speedClass * BLINK_VERSATZ;
+                blinkStartTime[speedClass] = millis(); // + speedClass * BLINK_VERSATZ;
             }
         }
     }
@@ -322,7 +322,7 @@ int LedMatrix::ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (blinkSpeed == speedClass) {
                 // An der Stelle col soll das Bit gesetzt werden
-                blinkStatus[speedClass][pos.row] |= static_cast<uint32_t>(1) << pos.col;
+                blinkStatus[speedClass][pos.row] |= static_cast<uint32_t>(0b00000001) << pos.col;
                 return 0;
             }
         }
@@ -403,8 +403,7 @@ int LedMatrix::set7SegValue(const LedMatrixPos pos, const uint8_t charBitMap, co
  *
  * @param pos row und col0 der 7-Segment-Anzeige
  */
-int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink,
-                              const uint8_t blinkSpeed) {
+int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts einschalten
     // Dabei nach Blinkgeschwindigkeiten unterscheiden
     // NOLINTNEXTLINE
@@ -501,7 +500,7 @@ void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
             charBitMap = charMap.get7SegBitMap(outChar);
             // Prüfen, ob das dem aktuellen Zeichen folgende Zeichen ein Dezimalpunkt ist und Flag entsprechend setzen.
             if (outString[led7SegmentIndex + 1] == '.') {
-                dpOn = true;
+                dpOn = true;    // NOLINT
             } else {
                 dpOn = false;
             }

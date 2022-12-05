@@ -21,8 +21,8 @@
 
 /// Objekte anlegen
 LedMatrix leds;             ///< LedMatrix anlegen
-ParserClass parser;         ///< Parser-Objekt anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
+ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
 
 ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
@@ -39,7 +39,7 @@ void serialEvent() {
         // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
         // gültig sind: Space, '_' und alle alfanumerischen Zeichen
         if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (inChar == ' ') || (inChar == '_')) {
-            inBuffer.addChar(inChar);
+             inBuffer.addChar(inChar);
         } else {
             if (((inChar == '\n') || (inChar == '\r')) && (! inBuffer.isEmpty())) {
                 // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde kein '\r' bzw. '\n' gelesen,

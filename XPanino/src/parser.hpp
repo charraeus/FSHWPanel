@@ -15,7 +15,7 @@
 
 // Einige Konstanten
 const uint8_t MAX_BUFFER_LENGTH = 50;   ///< Der Buffer kann max. 49 Zeichen zzgl. Zeilenende '\0' aufnehmen.
-const uint8_t MAX_PARA_LENGTH = 10;     ///< Max. Länge der geparsten Kommandoparameter.
+const uint8_t MAX_PARA_LENGTH = 15;     ///< Max. Länge der geparsten Kommandoparameter.
 
 
 /**************************************************************************************************

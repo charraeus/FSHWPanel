@@ -73,19 +73,19 @@ uint8_t BufferClass::addChar(const char inChar) {
  *       das muss aber noch geschaut werden, wie das gehen kann
  */
 bool ParserClass::parseString(char *inBuffer) {
-    char *ptrParameter = nullptr;
+    char *ptrParameter = NULL; // NOLINT
     uint8_t paramCount = 1;                     // Zähler für die richtige Variable der struct
 
-    ptrParameter = strtok (inBuffer, " ");      // ptrChar enthält jetzt den Stringabschnitt bis zum ersten Blank.
-    if (ptrParameter != nullptr) {              // Vorsichtshalber testen, ob was gefunden wurde.
-        strcpy(device, ptrParameter);           // Diesen in device kopieren.
-        while (ptrParameter != nullptr) {       // Das Zerlegen fortsetzen bis nichts mehr da ist.
+    ptrParameter = strtok(inBuffer, " ");      // ptrParameter enthält jetzt den Stringabschnitt bis zum ersten Blank.
+    if (ptrParameter != NULL) {  // NOLINT modernize-use-nullptr vorsichtshalber testen, ob was gefunden wurde.
+        strcpy(device, ptrParameter);        // Diesen in device kopieren.
+        while (ptrParameter != NULL) {       // NOLINT Das Zerlegen fortsetzen bis nichts mehr da ist.
             #ifdef DEBUG
             Serial.println (ptrParameter);
             #endif
             paramCount++;                       // Zähler hochzählen, für die richtige Variable der struct
-            ptrParameter = strtok (nullptr, " ");    // In die richtige Variable den Teilstring bis zum jeweils
-            switch (paramCount) {               // nächsten Blank hineinkopieren.
+            ptrParameter = strtok(NULL, " ");   // NOLINT In die richtige Variable den Teilstring bis zum
+            switch (paramCount) {               // jeweils nächsten Blank hineinkopieren.
                 case 2: { strcpy(devEvent, ptrParameter); break; }
                 case 3: { strcpy(parameter1, ptrParameter); break; }
                 case 4: { strcpy(parameter2, ptrParameter); break; }
