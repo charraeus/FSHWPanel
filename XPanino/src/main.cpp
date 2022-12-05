@@ -83,30 +83,30 @@ void setup() {
     leds.initHardware();                      ///< Arduino-Hardware der LED-Matrix initialisieren.
 
     const uint8_t OATVOLTS = 0;                         ///< Das Display-Feld OATVOLTS definieren. Es besteht aus 4 7-Segment-Anzeigen:
-    leds.defineDisplayField(OATVOLTS, 0, 0, 16);       ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 16 bis 23.
-    leds.defineDisplayField(OATVOLTS, 1, 1, 16);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 16 bis 23.
-    leds.defineDisplayField(OATVOLTS, 2, 2, 16);        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 16 bis 23.
-    leds.defineDisplayField(OATVOLTS, 3, 3, 16);        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 16 bis 23.
+    leds.defineDisplayField(OATVOLTS, 0, {0, 16});       ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 16 bis 23.
+    leds.defineDisplayField(OATVOLTS, 1, {1, 16});        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 16 bis 23.
+    leds.defineDisplayField(OATVOLTS, 2, {2, 16});        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 16 bis 23.
+    leds.defineDisplayField(OATVOLTS, 3, {3, 16});        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 16 bis 23.
     leds.display(OATVOLTS, "OAT.U");
 
     const uint8_t UHR = 1;
-    leds.defineDisplayField(UHR, 0, 4, 16);        ///< Die 1. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 16 bis 23: Zehnerstelle der Stunde.
-    leds.defineDisplayField(UHR, 1, 5, 16);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 16 bis 23: Einerstelle der Stunde.
-    leds.defineDisplayField(UHR, 2, 6, 16);        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 16 bis 23: Zehnerstelle der Minute.
-    leds.defineDisplayField(UHR, 3, 7, 16);        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 7 und den Cols 16 bis 23: Einerstelle der Minute.
+    leds.defineDisplayField(UHR, 0, {4, 16});        ///< Die 1. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 16 bis 23: Zehnerstelle der Stunde.
+    leds.defineDisplayField(UHR, 1, {5, 16});        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 16 bis 23: Einerstelle der Stunde.
+    leds.defineDisplayField(UHR, 2, {6, 16});        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 16 bis 23: Zehnerstelle der Minute.
+    leds.defineDisplayField(UHR, 3, {7, 16});        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 7 und den Cols 16 bis 23: Einerstelle der Minute.
     leds.display(UHR, "HH99");
 
     const uint8_t FL = 2;
-    leds.defineDisplayField(FL, 0, 0, 8);         ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 8 bis 15: Hunderterstelle.
-    leds.defineDisplayField(FL, 1, 1, 8);         ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 8 bis 15: Zehnerstelle .
-    leds.defineDisplayField(FL, 2, 2, 8);         ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 8 bis 15: Einerstelle.
+    leds.defineDisplayField(FL, 0, {0, 8});         ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 8 bis 15: Hunderterstelle.
+    leds.defineDisplayField(FL, 1, {1, 8});         ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 8 bis 15: Zehnerstelle .
+    leds.defineDisplayField(FL, 2, {2, 8});         ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 8 bis 15: Einerstelle.
     leds.display(FL, "020");
 
     const uint8_t SQUAWK = 3;
-    leds.defineDisplayField(SQUAWK, 0, 3, 8);        ///< Die 1. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 8 bis 15: Tausenderstelle.
-    leds.defineDisplayField(SQUAWK, 1, 4, 8);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 8 bis 15: Hunderterstelle.
-    leds.defineDisplayField(SQUAWK, 2, 5, 8);        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 8 bis 15: Zehnerstelle.
-    leds.defineDisplayField(SQUAWK, 3, 6, 8);        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 8 bis 15: Einerstelle.
+    leds.defineDisplayField(SQUAWK, 0, {3, 8});        ///< Die 1. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 8 bis 15: Tausenderstelle.
+    leds.defineDisplayField(SQUAWK, 1, {4, 8});        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 8 bis 15: Hunderterstelle.
+    leds.defineDisplayField(SQUAWK, 2, {5, 8});        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 8 bis 15: Zehnerstelle.
+    leds.defineDisplayField(SQUAWK, 3, {6, 8});        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 8 bis 15: Einerstelle.
     leds.display(SQUAWK, "7.000");
 
     const LedMatrixPos LED_TRENNER_1{0, 4};         ///< Der obere Stunden-Minuten-Trenner liegt auf Row=0 und Col=4.

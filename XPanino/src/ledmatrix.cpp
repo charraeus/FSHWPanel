@@ -5,7 +5,7 @@
  * @version 0.1
  * @date 2017-11-10
  *
- * Copyright © 2017 - 2020. All rights reserved.
+ * Copyright © 2017 - 2022. All rights reserved.
  *
  **************************************************************************************************/
 
@@ -22,15 +22,29 @@ const unsigned int BLINK_VERSATZ = 447;     ///< Versatz für die Startzeiten de
                                             ///< nicht alles so gleich im Takt blinkt
 
 
+/**************************************************************************************************
+ * @brief Speichert die Dauer der Hell- und Dunkelphasen für's Blinken
+ *
+ **************************************************************************************************/
 
-/**************************************************************************************************/
+/** SpeedClass - Konstruktor
+ * @brief Die Länge der Hell- und Dunkelphase initialisieren
+ */
 SpeedClass::SpeedClass(const unsigned long int brightTime, const unsigned long int darkTime) {
     this->brightTime = brightTime;
     this->darkTime = darkTime;
 };
 
 
-/**************************************************************************************************/
+/**************************************************************************************************
+ * @brief LEDs, die in einer Matrix angeordnet sind.
+ *
+ * @todo Ausführlichere Doku ergänzen.
+ **************************************************************************************************/
+
+/** LedMatrix - Konstruktor
+ * @brief Die Matrizen etc. initialisieren
+ */
 LedMatrix::LedMatrix() {
     /// Die Matrizen initalisieren
     for (uint32_t row = 0; row != LED_ROWS; ++row) {
@@ -50,9 +64,15 @@ LedMatrix::LedMatrix() {
     nextBlinkInterval[BLINK_SLOW] = blinkTimes[BLINK_SLOW].getBrightTime();
 }
 
+
+/** initHardware
+ * @brief Konstruktor: Hardware des Arduino initialisieren.
+ *
+ * Erst die Hardware und I/O-Pins des Arduino initialisieren und dann die eingebaute LED
+ * als Status-Feedback ein paar mal blinken lassen und die Arduino-Pins initialisieren.
+ */
 void LedMatrix::initHardware() {
-    /// Die eingebaute LED als Status aktivieren: die LED
-    /// vier mal ein- und ausschalten
+    /// Die eingebaute LED als Status aktivieren: die LED vier mal ein- und ausschalten
     pinMode(LED_BUILTIN, OUTPUT);
     for (unsigned int i = 1; i != 4; ++i) {
         digitalWrite(LED_BUILTIN, HIGH);
@@ -77,26 +97,38 @@ void LedMatrix::initHardware() {
 }
 
 
-/**************************************************************************************************/
-bool LedMatrix::isValidRowCol(const uint8_t row, const uint8_t col) {
+/** isValidRowCol
+ * @brief Prüfen, ob @em row und @em col gültig sind, d.h.\ innerhalb der Arraygrenzen liegen.\ Gültig
+ * heißt, @em row und @em col ist jeweils in [0..LED_ROWS -1 bzw.\ 0..LED_COLS - 1]
+ *
+ * @param pos row und col Die Nummer der Zeile und Spalte in der LedMatrix.
+ * @return @em true Sowohl @em row als auch @em col sind gültig, d.h. innerhalb der Arraygrenzen.
+ * @return @em false @em row oder @em col liegen außerhalb der Arraygrenzen.
+ */
+bool LedMatrix::isValidRowCol(const LedMatrixPos pos) {
     /// Zulässige Werte row: [0..LED_ROWS - 1],
     /// Zulässige Werte col: [0..LED_COLS - 1].
-    return ((row < LED_ROWS) && (col < LED_COLS));
+    return ((pos.row < LED_ROWS) && (pos.col < LED_COLS));
 };
 
 
-/**************************************************************************************************/
-bool LedMatrix::isValidRowCol(const LedMatrixPos pos) {
-    return isValidRowCol(pos.row, pos.col);
-}
-
-
-/**************************************************************************************************/
+/** isValidBlinkSpeed
+ * @brief Prüfen, ob blinkSpeed gültig ist, d.h.\ eine der @em blinkSpeed Konstanten ist.
+ *
+ * @param blinkSpeed Eine der @em blinkSpeed Konstanten.
+ * @return @em true @em blinkSpeed ist gültig.
+ * @return @em false blinkSpeed ist nicht gültig.
+ */
 bool LedMatrix::isValidBlinkSpeed(const uint8_t blinkSpeed) {
     return (blinkSpeed < NO_OF_SPEED_CLASSES);
 }
 
-/**************************************************************************************************/
+
+/** isSomethingToBlink
+ * @brief Prüfen, ob geblinkt werden muss. Falls nämlich nicht, spart man sich
+ *        einen Haufen Aufwand.
+ *        Diese Funktion wird von LedMatrix::doBlink() verwendet.
+ */
 bool LedMatrix::isSomethingToBlink() {
     /// checken, ob überhaupt (normal) geblinkt werden muss:
     /// Wenn alle Werte in blinkStatus Null sind, ist für alle LEDs das Blinken ausgeschaltet.
@@ -117,7 +149,9 @@ bool LedMatrix::isSomethingToBlink() {
 }
 
 
-/**************************************************************************************************/
+/** doBlink
+ * @brief Ein-/Aus-Status für die LEDs gemäß der aktuellen Hell-/Dunkelphase des Blinkens festlegen.
+ */
 void LedMatrix::doBlink() {
     /// Wenn was zu blinken ist und das Blinkintervall abgelaufen ist, die Blinkphase umschalten.
     /// isBlinkDarkPhaseXXX wurde mit Anfangs mit false initialisiert, d.h. das Blinken startet
@@ -155,7 +189,9 @@ void LedMatrix::doBlink() {
 }
 
 
-/*************************************************************************************************
+/** writeToHardware
+ * @brief Die die LEDs repräsentierenden Bits serialisieren und an die MIC5891/5821-Chips übertragen.
+ *
  * @note Diese Funktion muss regelmäßig und sehr häufig innerhalb des loop
  * aufgerufen werden!
  *
@@ -172,7 +208,7 @@ void LedMatrix::doBlink() {
  * Wenn zu viele andere Aktivitäten zwischen den display()-Aufrufen
  * stattfinden, wird die Anzeige mehr oder weniger stark flimmern.
  *
-*/
+ */
 void LedMatrix::writeToHardware() {
     // Alle Berechnungen zum Blinken erledigen
     doBlink();
@@ -204,146 +240,153 @@ void LedMatrix::writeToHardware() {
         }
 
         digitalWrite(STRB, HIGH);   // STROBE wieder auf HIGH setzen, damit die Latch-Inhalte auf die Outputs geschaltet werden
-        //delayMicroseconds(1);     // lt. Datenblatt erforderlich, aber funktioniert auch ohne
+        delayMicroseconds(1);     // lt. Datenblatt erforderlich, aber funktioniert auch ohne
     }
 }
 
 
-/**************************************************************************************************/
-bool LedMatrix::isLedOn(const uint8_t row, const uint8_t col) {
-    if (isValidRowCol(row, col)) {
-        return (matrix[row] & (static_cast<uint32_t>(1) << col)) != 0;
+/** isLedOn
+ * @brief Prüfen, ob LED an der Position (@em row, @em col) in der Led Matrix angeschaltet ist.
+ *
+ * @param pos row und col  Die Nummer der Zeile und Spalte in der LedMatrix.
+ * @return @em false Die LED ist ausgeschaltet.
+ */
+bool LedMatrix::isLedOn(const LedMatrixPos pos) {
+    if (isValidRowCol(pos)) {
+        return (matrix[pos.row] & (static_cast<uint32_t>(1) << pos.col)) != 0;
     }
     return false;  // unzulässige Row oder Col; muss zwischen 0 und LED_ROWS - 1 bzw. LED_COLS - 1 sein
 }
 
-bool LedMatrix::isLedOn(const LedMatrixPos pos) {
-    return isLedOn(pos.row, pos.col);
-}
 
-
-/**************************************************************************************************/
-int LedMatrix::ledOn(const uint8_t row, const uint8_t col) {
-    if (isValidRowCol(row, col)) {
-        matrix[row] |= static_cast<uint32_t>(1) << col;    // An der Stelle col soll das Bit gesetzt werden
-        return 0;
-    }
-    return -1;      // unzulässige Row oder Col
-}
-
+/** LedMatrix::ledOn
+ * @brief LED einschalten, d.h.\ das entsprechende Bit in der LedMatrix an der
+ *        Position (@em row , @em col) setzen.
+ *
+ * @param pos row und col Position der LED in der LedMatrix
+ * @return Status
+ */
 int LedMatrix::ledOn(const LedMatrixPos pos) {
-    return ledOn(pos.row, pos.col);
-}
-
-
-/**************************************************************************************************/
-int LedMatrix::ledOff(const uint8_t row, const uint8_t col) {
-    if (isValidRowCol(row, col)) {
-        matrix[row] &= ~ (static_cast<uint32_t>(1) << col);
+    if (isValidRowCol(pos)) {
+        matrix[pos.row] |= static_cast<uint32_t>(1) << pos.col;    // An der Stelle col soll das Bit gesetzt werden
         return 0;
     }
     return -1;      // unzulässige Row oder Col
 }
 
+
+/** LedMatrix::ledOff
+ * @brief LED ausschalten, d.h.\ das entsprechende Bit in der LedMatrix an der
+ *        Position (@em row, @em col) löschen.
+ *
+ * @param pos row und col Position der LED in der LedMatrix
+ * @return Status
+ */
 int LedMatrix::ledOff(const LedMatrixPos pos) {
-    return ledOff(pos.row, pos.col);
+    if (isValidRowCol(pos)) {
+        matrix[pos.row] &= ~ (static_cast<uint32_t>(1) << pos.col);
+        return 0;
+    }
+    return -1;      // unzulässige Row oder Col
 }
 
 
-/**************************************************************************************************/
-int LedMatrix::ledToggle(const uint8_t row, const uint8_t col) {
-    if ((row >= LED_ROWS) || (col >= LED_COLS)) {
+/** LedMatrix::ledToggle
+ * @brief Das Blinken der LED umschalten
+ *
+ * @param pos row und col der LED
+ * @return Status
+ */
+int LedMatrix::ledToggle(const LedMatrixPos pos) {
+    if ((pos.row >= LED_ROWS) || (pos.col >= LED_COLS)) {
         return -1;      // unzulässige Row oder Col
     }
-    if (isLedOn(row, col)) {
-        ledOff(row, col);
+    if (isLedOn(pos)) {
+        ledOff(pos);
     } else {
-        ledOn(row, col);
+        ledOn(pos);
     }
     return 0;
 }
 
-int LedMatrix::ledToggle(const LedMatrixPos pos) {
-    return ledToggle(pos.row, pos.row);
-}
 
-
-/**************************************************************************************************/
-int LedMatrix::ledBlinkOn(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed) {
-    if (isValidRowCol(row, col) && isValidBlinkSpeed(blinkSpeed)) {
+/** LedMatrix::ledBlinkOn
+ * @brief Das Blinken der LED einschalten
+ *
+ * @param pos row und col der LED
+ * @param blinkspeed Blink-Geschwindigkeitsklasse
+ * @return Status
+ */
+int LedMatrix::ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
+    if (isValidRowCol(pos) && isValidBlinkSpeed(blinkSpeed)) {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (blinkSpeed == speedClass) {
                 // An der Stelle col soll das Bit gesetzt werden
-                blinkStatus[speedClass][row] |= static_cast<uint32_t>(1) << col;
-                break;
+                blinkStatus[speedClass][pos.row] |= static_cast<uint32_t>(1) << pos.col;
+                return 0;
             }
         }
-        return 0;
     }
     return -1;
 }
 
-int LedMatrix::ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
-    return ledBlinkOn(pos.row, pos.col, blinkSpeed);
-}
 
-
-/**************************************************************************************************/
-int LedMatrix::ledBlinkOff(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed) {
-    if (isValidRowCol(row, col) && isValidBlinkSpeed(blinkSpeed)) {
-        for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
-            if (blinkSpeed == speedClass) {
-                blinkStatus[speedClass][row] &= ~ (static_cast<uint32_t>(1) << col);
-                break;
-            }
-        }
-        return 0;
-    }
-    return -1;
-}
-
+/** LedMatrix::isLedBlinkOff
+ * @brief Das Blinken der LED ausschalten
+ *
+ * @param pos row und col der LED
+ * @return
+ */
 int LedMatrix::ledBlinkOff(const LedMatrixPos pos, const uint8_t blinkSpeed) {
-    return ledBlinkOff(pos.row, pos.col, blinkSpeed);
-}
-
-
-/**************************************************************************************************/
-int LedMatrix::isLedBlinkOn(const uint8_t row, const uint8_t col, const uint8_t blinkSpeed) {
-    int returnvalue = 0;
-
-    if (isValidRowCol(row, col) && isValidBlinkSpeed(blinkSpeed)) {
+    if (isValidRowCol(pos) && isValidBlinkSpeed(blinkSpeed)) {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (blinkSpeed == speedClass) {
-                returnvalue = static_cast<int>(((blinkStatus[speedClass][row]
-                                 & (static_cast<uint32_t>(1) << col)) != 0));
+                blinkStatus[speedClass][pos.row] &= ~ (static_cast<uint32_t>(1) << pos.col);
+                return 0;
             }
         }
-    } else {
-        returnvalue = -1;      // unzulässige Row oder Col; muss zwischen 0 und LED_ROWS - 1 bzw. LED_COLS - 1 sein
     }
-    return returnvalue;
+    return -1;
 }
 
+
+/** LedMatrix::isLedBlinkOn
+ * @brief Prüfen, ob die Led blinkt
+ *
+ * @param [IN] pos row und col der LED
+ * @return
+ */
 int LedMatrix::isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
-    return isLedBlinkOn(pos.row, pos.col, blinkSpeed);
+
+    if (isValidRowCol(pos) && isValidBlinkSpeed(blinkSpeed)) {
+        for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
+            if (blinkSpeed == speedClass) {
+                return static_cast<int>(((blinkStatus[speedClass][pos.row]
+                            & (static_cast<uint32_t>(1) << pos.col)) != 0));
+            }
+        }
+    }
+    return -1;  // unzulässige Row oder Col; muss zwischen 0 und LED_ROWS - 1 bzw. LED_COLS - 1 sein
 }
 
 
-/**************************************************************************************************/
-int LedMatrix::set7SegValue(const uint8_t row, const uint8_t col0,
-                            const uint8_t charBitMap, const bool dpOn) {
+/** LedMatrix::set7SegValue
+ * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
+ *
+ * @param pos row und col0 der 7-Segment-Anzeige
+ */
+int LedMatrix::set7SegValue(const LedMatrixPos pos, const uint8_t charBitMap, const bool dpOn) {
     // prüfen, ob insbes. alle 8 cols, die für ein 7-Segement-Display benötigt werden, innerhalb
     // des gültigen Berichs liegen
-    // NOLINTNEXTLINE: Es muss nunmal der Wert 7 addiert werden (Bytelogik!)
-    if (isValidRowCol(row, col0) && isValidRowCol(row, col0 + 7)) {
+    if (isValidRowCol(pos) && isValidRowCol({pos.row, static_cast<uint8_t>(pos.col + 7)})) {
         // row und col0 passen
         // NOLINTNEXTLINE
-        matrix[row] &= ~ (static_cast<uint32_t>(0b11111111) << col0);  // alle Bits der 7-Segm.-Anz. löschen
-        matrix[row] |= static_cast<uint32_t>(charBitMap) << col0;
+        matrix[pos.row] &= ~ (static_cast<uint32_t>(0b11111111) << pos.col);  // alle Bits der 7-Segm.-Anz. löschen
+        matrix[pos.row] |= static_cast<uint32_t>(charBitMap) << pos.col;
         if (dpOn) {
-            ledOn(row, col0 + 7);   // NOLINT: der Dezimalpunkt ist immer das höchstwertigste Bit im Zeichenbyte
+            ledOn({pos.row, static_cast<uint8_t>(pos.col + 7)});   // NOLINT: der Dezimalpunkt ist immer das höchstwertigste Bit im Zeichenbyte
         } else {
-            ledOff(row, col0 + 7);   // NOLINT: der Dezimalpunkt ist immer das höchstwertigste Bit im Zeichenbyte
+            ledOff({pos.row, static_cast<uint8_t>(pos.col + 7)});   // NOLINT: der Dezimalpunkt ist immer das höchstwertigste Bit im Zeichenbyte
         }
         return 0;
     }
@@ -351,28 +394,29 @@ int LedMatrix::set7SegValue(const uint8_t row, const uint8_t col0,
     return -1;
 }
 
-int LedMatrix::set7SegValue(const LedMatrixPos pos, const unsigned char newValue, const bool dpOn) {
-    return set7SegValue(pos.row, pos.col, newValue, dpOn);
-}
 
-
-/**************************************************************************************************/
-int LedMatrix::set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool dpBlink,
-                               const uint8_t blinkSpeed) {
+/** LedMatrix::set7SegBlinkOn
+ * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
+ *
+ * @param pos row und col0 der 7-Segment-Anzeige
+ */
+int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink,
+                              const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts einschalten
     // Dabei nach Blinkgeschwindigkeiten unterscheiden
     // NOLINTNEXTLINE
-    if (isValidRowCol(row, col0) && isValidRowCol(row, col0 + 7) && isValidBlinkSpeed(blinkSpeed)) {
+    if (isValidRowCol(pos) && isValidRowCol({pos.row, static_cast<uint8_t>(pos.col + 7)})
+            && isValidBlinkSpeed(blinkSpeed)) {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (blinkSpeed == speedClass) {
                 if (dpBlink) {
                     // alle Bits inkl. Dezimalpunkt des 7-Segment-Displays zum Blinken einschalten
                     // NOLINTNEXTLINE
-                    blinkStatus[speedClass][row] |= static_cast<uint32_t>(0b11111111) << col0;
+                    blinkStatus[speedClass][pos.row] |= static_cast<uint32_t>(0b11111111) << pos.col;
                 } else {
                     // alle Bits, aber ohne Dezimalpunkt, des 7-Segment-Displays zum Blinken einschalten
                     // NOLINTNEXTLINE
-                    blinkStatus[speedClass][row] |= static_cast<uint32_t>(0b01111111) << col0;  // alle Bits, aber ohne Dezimalpunkt, des 7-Segment-Displays zum Blinken markieren
+                    blinkStatus[speedClass][pos.row] |= static_cast<uint32_t>(0b01111111) << pos.col;  // alle Bits, aber ohne Dezimalpunkt, des 7-Segment-Displays zum Blinken markieren
                 }
                 break;
             }
@@ -383,28 +427,28 @@ int LedMatrix::set7SegBlinkOn(const uint8_t row, const uint8_t col0, const bool 
     return -1;
 }
 
-int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
-    return set7SegBlinkOn(pos.row, pos.col, dpBlink, blinkSpeed);
-}
 
-
-/**************************************************************************************************/
-int LedMatrix::set7SegBlinkOff(const uint8_t row, const uint8_t col0, const bool dpBlink,
-                               const uint8_t blinkSpeed) {
+/** LedMatrix::set7SegBlinkOff
+ * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
+ *
+ * @param [IN] pos row und col0 der 7-Segment-Anzeige
+ */
+int LedMatrix::set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts ausschalten
     // Dabei nach Blinkgeschwindigkeiten unterscheiden
     // NOLINTNEXTLINE
-    if (isValidRowCol(row, col0) && isValidRowCol(row, col0 + 7) && isValidBlinkSpeed(blinkSpeed)) {
+    if (isValidRowCol(pos) && isValidRowCol({pos.row, static_cast<uint8_t>(pos.col + 7)})
+            && isValidBlinkSpeed(blinkSpeed)) {
         for (uint8_t speedClass = 0; speedClass != NO_OF_SPEED_CLASSES; ++speedClass) {
             if (blinkSpeed == speedClass) {
                 if (dpBlink) {
                     // das Blinker aller Bits inkl. Dezimalpunkt des 7-Segment-Displays ausschalten
                     // NOLINTNEXTLINE
-                    blinkStatus[speedClass][row] &= ~ (static_cast<uint32_t>(0b11111111) << col0);
+                    blinkStatus[speedClass][pos.row] &= ~ (static_cast<uint32_t>(0b11111111) << pos.col);
                 } else {
                     // das Blinken aller Bits, aber ohne Dezimalpunkt, des 7-Segment-Displays einschalten
                     // NOLINTNEXTLINE
-                    blinkStatus[speedClass][row] &= ~ (static_cast<uint32_t>(0b01111111) << col0);
+                    blinkStatus[speedClass][pos.row] &= ~ (static_cast<uint32_t>(0b01111111) << pos.col);
                 }
                 break;
             }
@@ -415,57 +459,25 @@ int LedMatrix::set7SegBlinkOff(const uint8_t row, const uint8_t col0, const bool
     return -1;
 }
 
-int LedMatrix::set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
-    return set7SegBlinkOff(pos.row, pos.col, dpBlink, blinkSpeed);
-}
 
-
-/**************************************************************************************************/
+/** LedMatrix::defineDisplayField
+ * @brief Die Anzahl der 7-Segment-Anzeigen, die das Display-Feld bilden, festlegen
+*
+ * @param matrixPos row und col0 der LED-Matrix
+ */
 void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId,
-                                   const uint8_t &matrixRow, const uint8_t &matrixCol0) {
+                                   const LedMatrixPos &matrixPos) {
     if ((fieldId <= MAX_DISPLAY_FIELDS) && (led7SegmentId <= MAX_7SEGMENT_UNITS)) {
-        displays[fieldId].led7SegmentRows[led7SegmentId] = matrixRow;
-        displays[fieldId].led7SegmentCol0s[led7SegmentId] = matrixCol0;
+        displays[fieldId].led7SegmentRows[led7SegmentId] = matrixPos.row;
+        displays[fieldId].led7SegmentCol0s[led7SegmentId] = matrixPos.col;
         displays[fieldId].count7SegmentUnits = max(led7SegmentId, displays[fieldId].count7SegmentUnits);
     }
 };
 
-void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId,
-                                   const LedMatrixPos &matrixPos) {
-    defineDisplayField(fieldId, led7SegmentId, matrixPos.row, matrixPos.col);
-}
 
-
-/**************************************************************************************************/
-// void LedMatrix::display(const uint8_t &fieldId, const char* outString) {
-//     char ch = 0;
-//     bool dpOn = false;          // Flag, ob Dezimalpunkt im aktuellen 7-Segment-Display angezeigt werden soll.
-//     uint8_t dpKorrektur = 0;    // Korrektur zum Positionszähler, falls Dezimalpunkt(e) gefunden.
-
-//     for (uint8_t c = 0; c != strlen(outString); ++c) {
-//         if (outString[c] != '.') {      // Falls das aktuelle Zeichen ein Dezimalpunkt ist, dieses übergehen, da es bereits verarbeitet wurde.
-//             if (((outString[c] - 48) >= 0) && ((outString[c] - 48) <= 9)) {     // Prüfen auf Ziffer 0...9
-//                 ch = outString[c] - 48;
-//             } else {
-//                 if (((outString[c] - 54) >= 11) && ((outString[c] - 54) <= 31)) {   // Prüfen auf Buchstabe A..U
-//                     ch = outString[c] - 54;
-//                 } else {                                        // weder Ziffer, noch Buchstabe => auf Sonderzeichen prüfen
-//                     switch (outString[c]) {
-//                         case ' ':               ch = CHAR_BLANK; break;
-//                         case 'c':               ch = CHAR_c; break;
-//                         case 'o':               ch = CHAR_o; break;
-//                         case 'u':               ch = CHAR_u; break;
-//                         case '-':               ch = CHAR_MINUS; break;
-//                         case '_':               ch = CHAR_UNDERSCORE; break;
-//                         case CHAR_DEGREE:       ch = CHAR_DEGREE; break;
-//                         case CHAR_3_DASH_HORIZ: ch = CHAR_3_DASH_HORIZ; break;
-//                         case CHAR_2_DASH_VERT:  ch = CHAR_2_DASH_VERT; break;
-//                         default:                ch = CHAR_ERROR;
-//                     }
-//                 }
-//             }
-
-
+/** LedMatrix::display
+ * @brief Einen String auf einem Display-Feld ausgeben
+ */
 void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
     bool dpOn = false;         // Flag, ob Dezimalpunkt im akt. 7-Segment-Display angezeigt wird
     uint8_t dpKorrektur = 0;   // Korrektur zum Positionszähler, falls Dezimalpunkt(e) gefunden
@@ -491,8 +503,8 @@ void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
                 dpOn = false;
             }
             // outChar auf der richtigen 7-Segment-Anzeige anzeigen lassen
-            set7SegValue(displays[fieldId].led7SegmentRows[led7SegmentIndex - dpKorrektur],
-                         displays[fieldId].led7SegmentCol0s[led7SegmentIndex - dpKorrektur],
+            set7SegValue({displays[fieldId].led7SegmentRows[led7SegmentIndex - dpKorrektur],
+                         displays[fieldId].led7SegmentCol0s[led7SegmentIndex - dpKorrektur]},
                         charBitMap, dpOn);
         } // if outChar ist Dezimalpunkt
         led7SegmentIndex++;
