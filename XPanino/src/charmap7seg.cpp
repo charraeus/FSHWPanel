@@ -112,7 +112,7 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
  * @brief BitMap zur Darstellung eines Zeichens auf der 7-Segment-Anzeige ermitteln
  */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
-    for (auto i = 0; i < charsAllowed.length(); ++i) {
+    for (unsigned int i = 0; i < charsAllowed.length(); ++i) {
         if (outChar == charsAllowed[i]) {
             return bitMap[i];
         }

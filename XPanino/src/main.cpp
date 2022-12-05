@@ -38,19 +38,16 @@ void serialEvent() {
         // prüfen auf gültige Zeichen.
         // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
         // gültig sind: Space, '_' und alle alfanumerischen Zeichen
-        if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (isSpace(inChar)) || (inChar == '_')) {
+        if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (inChar == ' ') || (inChar == '_')) {
             inBuffer.addChar(inChar);
-            #ifdef DEBUG
-            Serial.println(inChar);
-            Serial.println(inBuffer.get());
-            #endif
         } else {
             if (((inChar == '\n') || (inChar == '\r')) && (! inBuffer.isEmpty())) {
                 // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde kein '\r' bzw. '\n' gelesen,
                 // was dann den inBuffer geleert hätte.
                 // Buffer zum Parsen zum Parser senden.
-                parser.parseString(inBuffer.get());
-                inBuffer.wipe();
+                // parser.parseString(inBuffer.get());
+                // inBuffer.wipe();
+                Serial.println("CR erkannt.");
             }
             // alle anderen Zeichen werden ignoriert.
         }

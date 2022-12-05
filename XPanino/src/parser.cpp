@@ -64,8 +64,6 @@ uint8_t BufferClass::addChar(const char inChar) {
  *
  * @note Vom Flugsimulator eingelesene Zeile parsen
  *       Ergebnis des Parsens ist deviceName, switchName, eventName
- *       z.B.                       XP FL CHANGE MAX_PARSER_LENGTH1    oder
- *                                  XPDR BTN ON
  *
  *       Aber ACHTUNG
  *       Das kann durcheinander geben, falls der Ausgangsstatus nicht DSTATE_WAIT_FOR_device ist.
