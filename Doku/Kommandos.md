@@ -6,7 +6,7 @@
 
 Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostrings. Ein Kommandostring besteht immer aus 5 verschiedenen Teilen, die im Ganzen als zusammengesetzter String verschickt werden. Die einzelnen Teile sind jeweils durch ein Blank getrennt. Am Ende steht immer ein \<CR> und/oder ein \<LF>.
 
-1. Source: Quelle des Kommandos,
+1. Source: Sender bzw. Empfänger des Kommandos,
 1. Device: Gerät, das angesprochen werden soll, oder von dem Daten kommen,
 1. Action: Aktion, die vom Device ausgeführt wurde, oder ausgeführt werden soll,
 1. Para 1: 1. Parameter zur Aktion, d.h. die Nutzdaten (optional),
@@ -23,22 +23,24 @@ Para 2       | @todo ergänzen
 **Beispiele**
 Kommandostring | Bedeutung
 ---------------|------------------------
-`XP D X7000`   | Im Transponderfeld den Wert '7000' anzeigen.
+`XP D X 7000`   | Nachricht von **X**-**P**lane: Im Transponderfeld den Wert '7000' anzeigen. 
 `XP D C 20.3`   | Im O.A.T.-Feld den Wert ' 20.3' anzeigen.<br/>Hier wird es ggf. knifflig beim parsen, da das Blank hier keinen Parameter-Trenner darstellt.
+`X S ON 2 3` | Nachricht vom Transponder (**X**): Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurd eingeschaltet (**ON**). 
 
 ### Source
 
 Source | Beschreibung
 -------|----------------------------------------------------------------------
 XP     | Die Daten kommen vom X-Plane
-ARD1   | Id des ext. Geräts, hier Arduino 1 (es können ja noch mehr kommen...)
+ X      | Transponder 
+ U      | Uhr 
 
 ### Devices
 
 const-Name | Device | Beschreibung
 -----------|:------:|-----------------------
 DATA       | D      | Keine Device; es kommen Daten
-SWITCH     | S      | Schalter oder Taster
+SWITCH     | S      | Daten eines gedrückten Schalters oder Tasters 
 LED        | L      | Eine einzelne LED
 DISP       | 7      | Ein 7-Segment-Display
 
@@ -60,21 +62,37 @@ RESEND_SWITCHES   | 0xFF02 | Den Status aller Schalter senden                   
 
 ### Transponder KT 76C und Uhr Davtron M803
 
+#### Source, Recipient und Device
+
+| Source | Const              | Beschreibung |
+| ------ | ------------------ | ------------ |
+| X      | SOURCE_XPDR = "X " | XPDR         |
+| U      | SOURCE_M803 = "U " | Uhr          |
+
+| Device | Const                | Beschreibung                                    |
+| ------ | -------------------- | ----------------------------------------------- |
+| S      | DEVICE_SWITCH = "S " | Switch - Schalter oder Taster                   |
+| D      | DEVICE_DATA = "D "   | Daten, z.B. die am Arduino eingestellte Uhrzeit |
+
 #### Definierte Actions
 
-const-Name        | Action | Beschreibung                                               | Parameter-Typ | Parameter-Beschreibung
-------------------|--------|------------------------------------------------------------|---------------|-----------------------
-XPDR_CODE         | X      | Den übergebenen XPDR-Code anzeigen                         | ?             | 4-stelliger Transpondercode
-XPDR_FLIGHTLEVEL  | L      | Flightlevel für Transponder                                | ?             | 3 Stellen
-M803_LT           |        | Aktuelle Uhrzeit (Local)                                   | ?             | Uhrzeit HHMMSS
-M803_UT           | U      | Aktuelle Uhrzeit (UTC)                                     | ?             | Uhrzeit HHMMSS
-M803_ET           |        | Elapsed Time                                               | ?             | Vergangene Zeit HHMMSS
-M803_FT           |        | Flight Time                                                | ?             | Flight Time in HHMMSS
-M803_VOLTS        | V      | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht| ?             | Spannung in Volt
-M803_QNH          | Q      | Aktuelles QNH des X-Plane-Wetters                          | ?             | 4 Stellen
-M803_ALT          | A      | Aktuelles Altimeter-Setting in inHg                        | ?             |
-M803_OATC         | C      | OAT in °C                                                  | ?             | OAT in Celsius
-M803_OATF         | F      | OAT in Fahrenheit                                          |               | OAT in Fahrenheit
+Data<br/>Const        | Action | Beschreibung                                               | Parameter&nbsp;1<br/>Typ | Parameter&nbsp;2<br/>Typ | Parameter-Beschreibung
+------------------|--------|------------------------------------------------------------|---------------|-----------------------|-----------------------
+- | ON | (Schalter) wurde eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
+- | LON | (Schalter) ist lange eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
+- | OFF | (Schalter) ist ausgeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
+ |  |  |  | | 
+XPDR_CODE         | X      | XPDR-Code anzeigen                         | Transponder-Code<br/>String | - | 4-stellig 
+XPDR_FL  | L      | Flightlevel für Transponder                                | Flightlevel<br/>String | - | 3-stellig 
+M803_LT           | LT | Aktuelle Uhrzeit (Local)                                   | Uhrzeit<br/>String          | - | Uhrzeit HHMMSS
+M803_UT           | UT     | Aktuelle Uhrzeit (UTC)                                     | Uhrzeit<br/>String | - | Uhrzeit HHMMSS
+M803_ET           | ET | Elapsed Time                                               | ?             | | Vergangene Zeit HHMMSS
+M803_FT           | FT | Flight Time                                                | ?             | | Flight Time in HHMMSS
+M803_VOLTS        | V      | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht? | ?             | | Spannung in Volt
+M803_QNH          | Q      | Aktuelles QNH des X-Plane-Wetters                          | ?             | | 4-stellig 
+M803_ALT          | A      | Aktuelles Altimeter-Setting in inHg                        | ?             ||
+M803_OATC         | C      | OAT in °C                                                  | ?             | | OAT in Celsius
+M803_OATF         | F      | OAT in Fahrenheit                                          | ? | | OAT in Fahrenheit
 
 Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
 

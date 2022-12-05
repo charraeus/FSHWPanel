@@ -52,18 +52,22 @@ void Switch::updateOnTime(const unsigned long &newOnTime) {
 
 /******************************************************************************/
 void Switch::transmitStatus(uint8_t row, uint8_t col) {
-    String charsToSend = "XPDR " + String(row) + "/" + String(col) + " ";
+    const String SOURCE_XPDR = "X ";
+    const String DEVICE_SWITCH = "S ";
+
+    String charsToSend = SOURCE_XPDR + DEVICE_SWITCH;
 
     if ((! longOnSent) && longOn) {
         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
         changed = false;
-       charsToSend = charsToSend + "LON";
+       charsToSend += + "LON ";
     } else {
         // Den An-/Aus-Status des Schalters übertragen.
-        charsToSend = charsToSend + ((getStatus() == LOW) ? "ON" : "OFF");
+        charsToSend += ((getStatus() == LOW) ? "ON " : "OFF ");
     }
+    charsToSend += String(row) + " " + String(col);
     #ifdef DEBUG
     Serial.println(charsToSend);
     ///@todo Switch::transmitStatus ausprogrammieren.
