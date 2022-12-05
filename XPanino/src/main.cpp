@@ -107,7 +107,7 @@ void setup() {
     leds.defineDisplayField(SQUAWK, 1, 4, 8);        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 8 bis 15: Hunderterstelle.
     leds.defineDisplayField(SQUAWK, 2, 5, 8);        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 8 bis 15: Zehnerstelle.
     leds.defineDisplayField(SQUAWK, 3, 6, 8);        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 8 bis 15: Einerstelle.
-    leds.display(SQUAWK, "7000");
+    leds.display(SQUAWK, "7.000");
 
     const LedMatrixPos LED_TRENNER_1{0, 4};         ///< Der obere Stunden-Minuten-Trenner liegt auf Row=0 und Col=4.
     leds.ledOn(LED_TRENNER_1);

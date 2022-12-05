@@ -5,17 +5,68 @@
  * @version 0.1
  * @date 2017-11-10
  *
- * Copyright © 2017 - 2020. All rights reserved.
+ * Copyright © 2017 - 2022. All rights reserved.
  *
 **************************************************************************************************/
 
 #include <Arduino.h>
+#include <String.h>
+
 #include <charmap7seg.hpp>
 
-const uint8_t Led7SegmentCharMap::bitMap[] =  {    ///< charMap enthält das Bitmuster, die die Ziffer
-                            ///< bzw. den Buchstaben darstellen.
+
+/** Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können */
+const String Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
+
+/** @brief bitMap enthalten die Bitmuster um die einzelnen Segemente der 7-Segment-Anzeigen für die
+ * Anzeige der Ziffern und Buchstaben anzusteuern.
+ * bitMap bildet ein 7-Segment-Display mit Dezimalpunkt ab.
+ *
+ *       a
+ *    -------
+ *    |     |
+ *  f |     | b
+ *    |  g  |
+ *    -------
+ *    |     |
+ *  e |     | c
+ *    |     |
+ *    -------
+ *       d
+ *
+ * bitMap enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
+ * a wird dabei durch das niederstwertige Bit repräsentiert, g durch das höchstwertige Bit.
+ *
+ * Beispiel:
+ * - Auf den 7 Digits des XPDR die Ziffernfolge 0..6 anzeigen
+ * - Die Dezimalpunkte im Digit 2 und 6 anzeigen
+ * - Die LED R anzeigen
+ * - Auf den oberen 4 Digits der Uhr folgende Zeichen anzeigen:
+ *   -- Drei waagerechte Striche
+ *   -- Minus
+ *   -- E und Dezimalpunkt
+ *   -- r
+ * - Auf den unteren 4 Digits der Uhr folgende Zeichen anzeigen:
+ *   -- kleines o und Dezimalpunkt
+ *   -- F
+ *   -- C
+ *   -- Zwei senkrechte Striche
+ * - Die Minutentrenner-LEDs der Uhr anzeigen
+ * - Die LED UT anzeigen
+ * vgl. Doku "Belegung der LED-Matrix des 1. IO-Warrior" in Evernote
+ *                most sig. Byte   least sig. Byte
+ *                7      07      07      07      0
+ *    matrix[0] = 0b00000000010010010011111100010000;
+ *    matrix[1] = 0b00000000010000000000011000010000;
+ *    matrix[2] = 0b00000000111110011101101100000000;
+ *    matrix[3] = 0b00000000010100000100111100010000;
+ *    matrix[4] = 0b00000000110111001110011000000000;
+ *    matrix[5] = 0b00000000011000110110110100000000;
+ *    matrix[6] = 0b00000000001110010111110100000000;
+ *    matrix[7] = 0b00000000001101100000000000010000;
+ */
+const uint8_t Led7SegmentCharMap::bitMap[] =  {
         //gfedcba
-        // Ziffern
         0b0111111, ///<  "0": Segmente f, e, d, c, b, a    --> bitMap[0]
         0b0000110, ///<  "1": Segmente c, b                --> bitMap[1]
         0b1011011, ///<  "2": Segmente g, e, d, b, a       --> bitMap[2]
@@ -26,7 +77,6 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {    ///< charMap enthält das Bit
         0b0000111, ///<  "7": Segmente c, b, a             --> bitMap[7]
         0b1111111, ///<  "8": Segmente g, f, e, d, c, b, a --> bitMap[8]
         0b1101111, ///<  "9": Segmente g, f, d, c, b, a    --> bitMap[9]
-        // Großbuchstaben A..U; V, W, X, Y, Z entfallen, da nicht darstellbar
         0b0000000, ///<  " ": alle Segmente aus            --> bitMap[10]
         0b1110111, ///<  "A": Segmente g, f, e, b, c, a .  --> bitMap[11]
         0b1111100, ///<  "b": Segmente g, f, e, d, c       --> bitMap[12]
@@ -38,73 +88,35 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {    ///< charMap enthält das Bit
         0b1110110, ///<  "H": Segmente g, f, e, c, b       --> bitMap[18]
         0b0000110, ///<  "I": Wie "1"                      --> bitMap[19]
         0b0001110, ///<  "J": Segmente d, c, b             --> bitMap[20]
-        0b1001001, ///<  "K": Drei waagerechte Striche: Segmente g, d, a  --> bitMap[21]
-        0b0111000, ///<  "L": Segmente f, e, d             --> bitMap[22]
-        0b1001001, ///<  "M": Drei waagerechte Striche: Segmente g, d, a  --> bitMap[23]
-        0b1001001, ///<  "N": Drei waagerechte Striche: Segmente g, d, a  --> bitMap[24]
-        0b0111111, ///<  "O": Segmente f, e, d, c, b, a    --> bitMap[25]
-        0b1110011, ///<  "P": Segmente g, f, e, b, a       --> bitMap[26]
-        0b1100111, ///<  "q": Segmente g, f, c, b, a       --> bitMap[27]
-        0b1010000, ///<  "r": Segmente g, e                --> bitMap[28]
-        0b1101101, ///<  "S": Wie "5"                      --> bitMap[29]
-        0b0110001, ///<  "T": Segmente  f, e, a            --> bitMap[30]
-        0b0111110, ///<  "U": Segmente f, e, d, c, b       --> bitMap[31]
-        // "Sonderzeichen"
-        0b1011000, ///<  "c": Segmente g, e, d, c          --> bitMap[32]
-        0b1011100, ///<  "o": Segmente g, e, d, c          --> bitMap[33]
-        0b0011100, ///<  "u": Segmente e, d, c             --> bitMap[34]
-        0b1000000, ///<  "-": Segment g                    --> bitMap[35]
-        0b1100011, ///<  "°": Segment g, f, b, a           --> bitMap[36]
-        0b0001000, ///<  "_": Segment d                    --> bitMap[37]
-        0b1001001, ///< Drei waagerechte Striche: Segmente g, d, a  --> bitMap[38]
-        0b0110110  ///< Zwei senkrechte Striche:  Segmente f, e, c, b --> bitMap[39]
+        0b0111000, ///<  "L": Segmente f, e, d             --> bitMap[21]
+        0b1001001, ///<  "n": Segmente g, e, c .           --> bitMap[22]
+        0b0111111, ///<  "O": Segmente f, e, d, c, b, a    --> bitMap[23]
+        0b1110011, ///<  "P": Segmente g, f, e, b, a       --> bitMap[24]
+        0b1100111, ///<  "q": Segmente g, f, c, b, a       --> bitMap[25]
+        0b1010000, ///<  "r": Segmente g, e                --> bitMap[26]
+        0b1101101, ///<  "S": Wie "5"                      --> bitMap[27]
+        0b0110001, ///<  "T": Segmente  f, e, a            --> bitMap[28]
+        0b0111110, ///<  "U": Segmente f, e, d, c, b       --> bitMap[29]
+        0b1011000, ///<  "c": Segmente g, e, d, c          --> bitMap[30]
+        0b1011100, ///<  "o": Segmente g, e, d, c          --> bitMap[31]
+        0b0011100, ///<  "u": Segmente e, d, c             --> bitMap[32]
+        0b1000000, ///<  "-": Segment g                    --> bitMap[33]
+        0b1100011, ///<  "°": Segment g, f, b, a           --> bitMap[34]
+        0b0001000, ///<  "_": Segment d                    --> bitMap[35]
+        0b1001001, ///< Drei waagerechte Striche: Segmente g, d, a    --> bitMap[36]
+        0b0110110  ///< Zwei senkrechte Striche:  Segmente f, e, c, b --> bitMap[37]
     };
 
 
-// BitMap zur Darstellung auf der 7-Segment-Anzeige aus Zeichen bzw. Index ermitteln
+/** Led7SegmentCharMap::get7SegBitMap
+ * @brief BitMap zur Darstellung eines Zeichens auf der 7-Segment-Anzeige ermitteln
+ */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
-    return bitMap[getCharMapIndex(outChar)];
-};
-
-
-// Indexwert für charMap aus ASCII-Zeichen ermitteln
-uint8_t Led7SegmentCharMap::getCharMapIndex(const char outChar) const {
-    uint8_t charMapIndex = CHAR_ERROR;  // Index für die Zeichentabelle
-
-    // Wenn das outChar numerisch oder alfanumerisch ist,
-    // den Index in der Zeichentabelle ausrechnen
-    if (isDigit(outChar)) {
-        charMapIndex = static_cast<uint8_t>(outChar)
-            - static_cast<uint8_t>(DIFF_CHARMAP_ASCII_NUMBERS);
-    }
-    if (isSpace(outChar)) {
-        charMapIndex = CHAR_BLANK;
-    }
-    if (isAlpha(outChar)) {
-        // erst auf die "Sonderzeichen" prüfen
-        switch (outChar) {
-            case 'c':               charMapIndex = CHAR_c; break;
-            case 'o':               charMapIndex = CHAR_o; break;
-            case 'u':               charMapIndex = CHAR_u; break;
-            // kein "Sonderzeichen", dann muss es ein Buchstabe sein
-            default: {
-                charMapIndex = static_cast<uint8_t>(outChar)
-                    - static_cast<uint8_t>(DIFF_CHARMAP_ASCII_ALFA);
-            }
-        }
-    };
-    if (charMapIndex == CHAR_ERROR) {
-        // Bisher nix gefunden, d.h. jetzt können nur
-        // noch "echte Sonderzeichen" übrig sein
-        // Wird hier auch nix gefunden, bleibt es halt bei CHAR_ERROR
-        switch (outChar) {
-            case '-':               charMapIndex = CHAR_MINUS; break;
-            case '_':               charMapIndex = CHAR_UNDERSCORE; break;
-            case CHAR_DEGREE:       charMapIndex = CHAR_DEGREE; break;
-            case CHAR_3_DASH_HORIZ: charMapIndex = CHAR_3_DASH_HORIZ; break;
-            case CHAR_2_DASH_VERT:  charMapIndex = CHAR_2_DASH_VERT; break;
-            default:                charMapIndex = CHAR_ERROR;
+    for (auto i = 0; i < charsAllowed.length(); ++i) {
+        if (outChar == charsAllowed[i]) {
+            return bitMap[i];
         }
     }
-    return charMapIndex;
-};
+    // wenn man hier landet, wurde kein erlaubtes Zeichen gefunden --> Fehlerbitmap zurück geben
+    return bitMap[CHAR_ERROR];
+}

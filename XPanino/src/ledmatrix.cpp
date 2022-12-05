@@ -487,6 +487,8 @@ void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
             // Prüfen, ob das dem aktuellen Zeichen folgende Zeichen ein Dezimalpunkt ist und Flag entsprechend setzen.
             if (outString[led7SegmentIndex + 1] == '.') {
                 dpOn = true;
+            } else {
+                dpOn = false;
             }
             // outChar auf der richtigen 7-Segment-Anzeige anzeigen lassen
             set7SegValue(displays[fieldId].led7SegmentRows[led7SegmentIndex - dpKorrektur],

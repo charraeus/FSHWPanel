@@ -13,17 +13,10 @@
 
 #include <Arduino.h>
 
-/* charMap-Index-Konstanten für die Anzeige von Sonderzeichen auf den 7-Segment-Anzeigen */
-const uint8_t CHAR_BLANK = 10;          ///< Zeichen " " (Blank)
-const uint8_t CHAR_c = 32;              ///< Zeichen "c"
-const uint8_t CHAR_o = 33;              ///< Zeichen "o"
-const uint8_t CHAR_u = 34;              ///< Zeichen "u"
-const uint8_t CHAR_MINUS = 35;          ///< Zeichen "-"
-const uint8_t CHAR_DEGREE = 36;         ///< Zeichen "°" (Grad)
-const uint8_t CHAR_UNDERSCORE = 37;     ///< Zeichen "_"
-const uint8_t CHAR_3_DASH_HORIZ = 38;   ///< Zeichen Drei "-" übereinander
-const uint8_t CHAR_2_DASH_VERT = 39;    ///< Zeichen "||"
-const uint8_t CHAR_ERROR = 38;          ///< Zeichen für Fehler
+/** charMap-Index-Konstanten für die Anzeige von Sonderzeichen auf den 7-Segment-Anzeigen */
+const uint8_t CHAR_3_DASH_HORIZ = 36;           ///< Zeichen Drei "-" übereinander
+const uint8_t CHAR_2_DASH_VERT = 37;            ///< Zeichen "||"
+const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
 
 
 /** Konstanten für die Bitmuster für die Anzeige der Werte auf den 7-Segment-Anzeigen
@@ -87,15 +80,13 @@ const uint8_t CHAR_ERROR = 38;          ///< Zeichen für Fehler
  */
 class Led7SegmentCharMap {
 public:
-    static const uint8_t bitMap[];
 
-    // Konstruktur
-    //Led7SegmentCharMap();
-    // BitMap zur Darstellung auf der 7-Segment-Anzeige für outChar ermitteln
+    /** BitMap zur Darstellung auf der 7-Segment-Anzeige für outChar ermitteln */
     uint8_t get7SegBitMap(char outChar) const;
 
 private:
-    const uint8_t DIFF_CHARMAP_ASCII_NUMBERS = 48;
-    const uint8_t DIFF_CHARMAP_ASCII_ALFA = 54;
-    uint8_t getCharMapIndex(char outChar) const;
+    /** Bitmap-Tabelle mit den Bitmustern für die Anzeige von Zeichen auf 7-Segment-Anzeigen */
+    static const uint8_t bitMap[];
+    /** Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können */
+    static const String charsAllowed;
 };
