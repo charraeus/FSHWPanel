@@ -178,10 +178,10 @@ public:
      * @brief Auf dem durch @em row und @em col spezifizierten 7-Segment-Display das Zeichen @em NewValue anzeigen,
      * d.h.\ die entsprechenden Bits setzen bzw. löschen. Der Dezimalpunkt wird mit dem Parameter @em dpOn gesondert gesetzt.
      *
-     * @param [in] pos row Die Nummer der Zeile in der LedMatrix.
-     *                 col0 Die Nummer der Spalte in der LedMatrix, d.h. der 1. LED (= Segment) der 7-Segment-Anzeige.
-     * @param [in] newValue Das auszugebende Zeichen.
-     * @param [in] dpOn @em true wenn der Dezimalpunkt des 7-Segment-Displays eingeschaltet sein soll, sonst @em false.
+     * @param pos row und col0 Die Nummer der Zeile und Spalte des 1. Segments der 7-Segm.-Anzeige
+     *            in der LedMatrix.
+     * @param newValue Das auszugebende Zeichen.
+     * @param dpOn @em true wenn der Dezimalpunkt des 7-Segment-Displays eingeschaltet sein soll, sonst @em false.
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int set7SegValue(LedMatrixPos pos, uint8_t charBitMap, bool dpOn = false);
@@ -191,11 +191,11 @@ public:
      * @brief Für das Zeichen, das auf dem 7-Segment-Display angezeigt wird, blinken aktivieren.\
      * Optional inkl.\ Dezimalpunkt.
      *
-     * @param [in] pos row Die Nummer der Zeile in der LedMatrix. Diese entspricht der Nummer der 7-Segment-Anzeige.
+     * @param pos row Die Nummer der Zeile in der LedMatrix. Diese entspricht der Nummer der 7-Segment-Anzeige.
      *                 col0 Die Nummer der Spalte der ersten LED der 7-Segment-Anzeige.
-     * @param [in] dpBlink @em true, wenn der Dezimalpunkt ebenfalls blinken soll, sonst @em false.
-     * @param [in] blinkSpeed Die Geschwindigkeit, mit der die LED blinken soll. Optionaler Parameter.\n
-     *                          Mögliche Angaben: BLINK_SLOW, BLINK_NORMAL.
+     * @param dpBlink @em true, wenn der Dezimalpunkt ebenfalls blinken soll, sonst @em false.
+     * @param blinkSpeed Die Geschwindigkeit, mit der die LED blinken soll. Optionaler Parameter.\n
+     *                   Mögliche Angaben: BLINK_SLOW, BLINK_NORMAL.
      * @return int Status der Aktion: 0 oder -1 falls ungültige Row/Col.
      */
     int set7SegBlinkOn(LedMatrixPos pos, bool dpBlink = false, uint8_t blinkSpeed = BLINK_NORMAL);
@@ -221,28 +221,20 @@ public:
      * @brief Mehrere 7-Segment-Anzeigen zu einem Display zusammenfassen, auf dem
      * dann ein Wert angezeigt werden kann.
      *
-     * @param [in] fieldId
-     * @param [in] led7SegmentId
-     * @param [in] matrixPos
+     * @param fieldId           Id dieses Display-Felds
+     * @param led7SegmentId     Id der zugehörigen 7-Segment-Anzeige
+     * @param matrixPos         row und col0 der ersten LED der 7-Segment-Anzeige
      */
     void defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId,
                             const LedMatrixPos &matrixPos);
 
 
-    /** defineDisplayFieldLength
-     * @brief Die Anzahl der 7-Segment-Anzeigen, die das Display-Feld bilden, festlegen
-     */
-    void defineDisplayFieldLength(uint8_t &fieldId, uint8_t &count7Segments) {
-        displays[fieldId].count7SegmentUnits = count7Segments;
-    };
-
-
     /** display
     * @brief Einen Wert (String) auf einem Display, d.h. ggf. über mehrere 7-Segment-Anzeigen
      * hinweg, ausgeben
-     *
-     * @param [in] fieldId
-     * @param [out] outString
+
+     * @param fieldId Id des Display-Felds, auf dem der outString ausgegeben werden soll
+     * @param outString Die auszugebenden Zeichen.
      */
     void display(const uint8_t &fieldId, const String &outString);
 

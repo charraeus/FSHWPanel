@@ -168,7 +168,7 @@ void LedMatrix::doBlink() {
                     nextBlinkInterval[speedClass] = blinkTimes[speedClass].getDarkTime();
                 }
                 isBlinkDarkPhase[speedClass] = ! isBlinkDarkPhase[speedClass];
-                blinkStartTime[speedClass] = millis(); // + speedClass * BLINK_VERSATZ;
+                blinkStartTime[speedClass] = millis() + speedClass * BLINK_VERSATZ;
             }
         }
     }
@@ -374,6 +374,9 @@ int LedMatrix::isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
  * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
  *
  * @param pos row und col0 der 7-Segment-Anzeige
+ * @param charBitMap Bitmap, die auf dieser 7-Segment-Anzeige angezeigt werden soll
+ * @param dpOn @em true um den Dezimalpunkt einzuschalten
+ *             @em false um den Dezimalpunkt auszuschalten
  */
 int LedMatrix::set7SegValue(const LedMatrixPos pos, const uint8_t charBitMap, const bool dpOn) {
     // prüfen, ob insbes. alle 8 cols, die für ein 7-Segement-Display benötigt werden, innerhalb
