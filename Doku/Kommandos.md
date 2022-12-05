@@ -15,10 +15,16 @@ Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostr
 Kommandoteil | Datentyp
 -------------|--------------------------
 Source       | string
-Device       | unsigned integer (2 Byte)
+Device       | char / uint8_t
 Action       | uint8_t (1 Byte)
 Para 1       | @todo ergänzen
 Para 2       | @todo ergänzen
+
+**Beispiele**
+Kommandostring | Bedeutung
+---------------|------------------------
+`XP D X7000`   | Im Transponderfeld den Wert '7000' anzeigen.
+`XP D C 20.3`   | Im O.A.T.-Feld den Wert ' 20.3' anzeigen.<br/>Hier wird es ggf. knifflig beim parsen, da das Blank hier keinen Parameter-Trenner darstellt.
 
 ### Source
 
@@ -30,10 +36,13 @@ ARD1   | Id des ext. Geräts, hier Arduino 1 (es können ja noch mehr kommen...)
 ### Devices
 
 const-Name | Device | Beschreibung
------------|--------|-----------------------
-SWITCH     | 0x0001 | Schalter oder Taster
-LED        | 0x0101 | Eine einzelne LED
-DISP       | 0x0201 | Ein 7-Segment-Display
+-----------|:------:|-----------------------
+DATA       | D      | Keine Device; es kommen Daten
+SWITCH     | S      | Schalter oder Taster
+LED        | L      | Eine einzelne LED
+DISP       | 7      | Ein 7-Segment-Display
+
+Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
 
 Vom PC zum Arduino gesendete Actions
 ---------------------------------------------------------------
@@ -55,17 +64,19 @@ RESEND_SWITCHES   | 0xFF02 | Den Status aller Schalter senden                   
 
 const-Name        | Action | Beschreibung                                               | Parameter-Typ | Parameter-Beschreibung
 ------------------|--------|------------------------------------------------------------|---------------|-----------------------
-XPDR_CODE         | 0xF101 | Den übergebenen XPDR-Code anzeigen                         | ?             | 4-stelliger Transpondercode
-XPDR_FLIGHTLEVEL  | 0xF102 | Flightlevel für Transponder                                | ?             | 3 Stellen
-M803_LT           | 0xF103 | Aktuelle Uhrzeit (Local)                                   | ?             | Uhrzeit HHMMSS
-M803_UT           | 0xF104 | Aktuelle Uhrzeit (UTC)                                     | ?             | Uhrzeit HHMMSS
-M803_ET           | 0xF105 | Elapsed Time                                               | ?             | Vergangene Zeit HHMMSS
-M803_FT           | 0xF106 | Flight Time                                                | ?             | Flight Time in HHMMSS
-M803_VOLTS        | 0xF107 | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht| ?             | Spannung in Volt
-M803_QNH          | 0xF201 | Aktuelles QNH des X-Plane-Wetters                          | ?             | 4 Stellen
-M803_ALT          | 0xF202 | Aktuelles Altimeter-Setting in inHg                        | ?             |
-M803_OATC         | 0xF203 | OAT in °C                                                  | ?             | OAT in Celsius
-M803_OATF         | 0xF204 | OAT in Fahrenheit                                          |               | OAT in Fahrenheit
+XPDR_CODE         | X      | Den übergebenen XPDR-Code anzeigen                         | ?             | 4-stelliger Transpondercode
+XPDR_FLIGHTLEVEL  | L      | Flightlevel für Transponder                                | ?             | 3 Stellen
+M803_LT           |        | Aktuelle Uhrzeit (Local)                                   | ?             | Uhrzeit HHMMSS
+M803_UT           | U      | Aktuelle Uhrzeit (UTC)                                     | ?             | Uhrzeit HHMMSS
+M803_ET           |        | Elapsed Time                                               | ?             | Vergangene Zeit HHMMSS
+M803_FT           |        | Flight Time                                                | ?             | Flight Time in HHMMSS
+M803_VOLTS        | V      | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht| ?             | Spannung in Volt
+M803_QNH          | Q      | Aktuelles QNH des X-Plane-Wetters                          | ?             | 4 Stellen
+M803_ALT          | A      | Aktuelles Altimeter-Setting in inHg                        | ?             |
+M803_OATC         | C      | OAT in °C                                                  | ?             | OAT in Celsius
+M803_OATF         | F      | OAT in Fahrenheit                                          |               | OAT in Fahrenheit
+
+Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
 
 #### Actions und X-Plane-Datarefs
 
