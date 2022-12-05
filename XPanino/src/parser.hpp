@@ -13,57 +13,65 @@
 
 #include <Arduino.h>
 
+// Einige Konstanten
 const uint8_t MAX_BUFFER_LENGTH = 50;   ///< Der Buffer kann max. 49 Zeichen zzgl. Zeilenende '\0' aufnehmen.
 const uint8_t MAX_PARA_LENGTH = 10;     ///< Max. Länge der geparsten Kommandoparameter.
 
-/**
+
+/**************************************************************************************************
  * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle.
  *
- */
+ * Aus Ressoureneinsparungsgründen werden die C-Strings verwendet (und nicht <String.h>)
+ *
+ ***************************************************************************************************/
 class BufferClass {
 public:
-    /**
+    /** get
      * @brief Inhalt des Zeichenpuffers ausgeben
      *
      * @return char* Zeichenpuffer
      */
     char *get() { return buffer; }
 
-    /**
+
+    /** addChar
      * @brief Zeichen an das Ende des Zeichenpuffers anhängen.
      *
-     * @param [in] inChar Das anzuhängende Zeichen.
-     * @return uint8_t @em 1: erfolgreich durchgeführt.
-     *                 @em 0: Fehler aufgetreten. Wahrscheinlich, weil buffer voll ist.
+     * @param inChar Das anzuhängende Zeichen.
+     * @return @em 1: erfolgreich durchgeführt.
+     *         @em 0: Fehler aufgetreten. Wahrscheinlich, weil buffer voll ist.
      */
     uint8_t addChar(char inChar);
 
-    /**
+
+    /** wipe
      * @brief Zeichenpuffer löschen.
      *
      */
     void wipe() { actPos = 0; buffer[actPos] = '\0'; }
 
-    /**
+
+    /** isEmpty
      * @brief Prüfung, ob der Zeichenpuffer leer ist.
      *
-     * @return true     Der Zeichenpuffer ist leer.
-     * @return false    Der Zeichenpuffer ist nicht leer.
+     * @return @em true     Der Zeichenpuffer ist leer.
+     * @return @em false    Der Zeichenpuffer ist nicht leer.
      */
     bool isEmpty() { return strlen(buffer) == 0; }
 
 private:
-    char buffer[MAX_BUFFER_LENGTH]{'\0'};      ///< Zeichenpuffer der Länge _BUFFER_LENGTH
+    char buffer[MAX_BUFFER_LENGTH]{'\0'};  ///< Zeichenpuffer der Länge _BUFFER_LENGTH
     unsigned int actPos{0};                ///< aktuelles Ende des Buffers; zeigt auf die Position nach dem letzten Zeichen
 };
 
-/**
+
+/**************************************************************************************************
  * @brief Vom Flugsimulator kommenden Kommandstring parsen und zerlegen.
- * @todo Doku ergänzen
- */
+ *
+ ***************************************************************************************************/
 class ParserClass {
 public:
-    /**
+    /** parseString
      * @brief Den vom Flugsimulator erhaltenen String parsen und in 4 Parameter zerlegen.
      * Im vom Flugsimulator enthaltenen String werden folgende Informationen erwartet,
      * jeweils getrennt durch ein Blank. Es müssen immer diese 4 Parameter übertragen werden:
@@ -77,12 +85,13 @@ public:
      * - parameter1,
      * - parameter2 - Werte zu dem device/Ereignis
      *
-     * @param [in, out] inBuffer Zeiger auf die eingelesenen Zeichen (String), die von der seriellen Schnittstelle gelesen wurden.
-     *                  Der inBuffer wird dabei zerstört.
-     * @return true  Parsen wurde fehlerfrei abgeschlossen.
-     *         false Fehler beim Parsen aufgetreten.
+     * @param inBuffer Enthält die eingelesenen Zeichen, die von der seriellen Schnittstelle gelesen wurden.
+     *                 Der inBuffer wird dabei zerstört.
+     * @return @em true  Parsen wurde fehlerfrei abgeschlossen.
+     *         @em false Fehler beim Parsen aufgetreten.
      */
     bool parseString(char *inBuffer);
+
 
     #ifdef DEBUG
     void printData();
@@ -94,5 +103,11 @@ private:
     char parameter1[MAX_PARA_LENGTH] = "para1";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
     char parameter2[MAX_PARA_LENGTH] = "para2";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
 
+    /** dispatch
+     * @brief Prüfung, ob der Zeichenpuffer leer ist.
+     *
+     * @return @em true     Der Zeichenpuffer ist leer.
+     * @return @em false    Der Zeichenpuffer ist nicht leer.
+     */
     void dispatch();    ///< Dispatcher aufrufen. @todo Dispatcher in eine eigene Klasse auslagern.
 };

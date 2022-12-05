@@ -38,7 +38,7 @@ void serialEvent() {
         // prüfen auf gültige Zeichen.
         // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
         // gültig sind: Space, '_' und alle alfanumerischen Zeichen
-        if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (inChar == '_') || (inChar == ' ')) {
+        if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (isSpace(inChar)) || (inChar == '_')) {
             inBuffer.addChar(inChar);
             #ifdef DEBUG
             Serial.println(inChar);
