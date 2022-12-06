@@ -5,17 +5,27 @@
  *
  * @author    Christian Harraeus
  * @date      2017-10-31
- * 
+ *
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
- * 
- * 
+ *
+ *
  ******************************************************************************/
 
 #include <Arduino.h>
 #include <Switchmatrix.hpp>
 
 
-/******************************************************************************/
+/******************************************************************************
+ * Methoden für SwitchMatrix
+ *
+ *******************************************************************************/
+
+bool SwitchMatrix::isValidMatrixRow(const uint8_t row) { return ((row >= 0) && (row <= SWITCH_MATRIX_ROWS)); }
+bool SwitchMatrix::isValidMatrixCol(const uint8_t col) { return ((col >= 0) && (col <= SWITCH_MATRIX_COLS)); }
+bool SwitchMatrix::isValidMatrixPos(const uint8_t row, const uint8_t col) {
+    return isValidMatrixRow(row) && isValidMatrixCol(col);
+}
+
 void SwitchMatrix::initHardware() {
     /// Alle Matrixzeilen-Pins als Output einstellen und auf HIGH setzen.
     for (uint8_t row = HW_MATRIX_ROWS_LSB_PIN; row <= HW_MATRIX_ROWS_MSB_PIN; ++row) {
@@ -33,8 +43,8 @@ void SwitchMatrix::initHardware() {
 void SwitchMatrix::scanSwitchPins() {
     uint8_t pinStatus = 0;
     size_t matrixRow = 0;
-    size_t matrixCol = 0;    
-    
+    size_t matrixCol = 0;
+
     for (uint8_t row = HW_MATRIX_ROWS_LSB_PIN; row <= HW_MATRIX_ROWS_MSB_PIN; ++row) {
         digitalWrite(row, LOW);     // Die Matrixzeile aktivieren
         for (uint8_t col = HW_MATRIX_COLS_LSB_PIN; col <= HW_MATRIX_COLS_MSB_PIN; ++col) {
@@ -58,7 +68,7 @@ void SwitchMatrix::scanSwitchPins() {
                     changed = true;
                 } else {
                     /// Bei den nicht veränderten Schaltern die Einschaltzeiten aktualisieren.
-                    switchMatrix[matrixRow][matrixCol].updateOnTime(millis()); 
+                    switchMatrix[matrixRow][matrixCol].updateOnTime(millis());
                     /// Lange Tastendrücke identifizieren und ggf. ein Ereignis auslösen.
                     switchMatrix[matrixRow][matrixCol].checkLongOn();
                 }
@@ -72,8 +82,13 @@ void SwitchMatrix::scanSwitchPins() {
     }   /// weiter geht's mit der nächsten Row
 }
 
-
-/******************************************************************************/
+/** SwitchMatrix::transmitStatus
+ * @brief Schalterstatus (ON, OFF, LON) übermitteln
+ *
+ * @param changedOnly @em true: nur den Status von seit letztem Mal geänderten
+ *                              Schaltern übermitteln
+ *                    @em false: den Status aller Schalter übermitteln
+ */
 void SwitchMatrix::transmitStatus(const bool changedOnly) {
    for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
@@ -100,7 +115,7 @@ void SwitchMatrix::printMatrix() {
     for (uint8_t col = 0; col <= SWITCH_MATRIX_COLS; col++) {
         Serial.print("--------");
     }
-    Serial.println();   
+    Serial.println();
     for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
         Serial.print("Row "); Serial.print(row); Serial.print(":\t");
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {

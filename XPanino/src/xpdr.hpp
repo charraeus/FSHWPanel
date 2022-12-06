@@ -108,5 +108,5 @@ private:
     float altimeter{STD_ALTIMETER_inHg};     ///< Luftdruck in inHg
 
     // Altimeter in QNH umrechnen
-    float qnh(float &altimeter);
+    inline float qnh(float &altimeter);
 };
