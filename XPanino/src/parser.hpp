@@ -48,7 +48,7 @@ public:
      * @brief Zeichenpuffer löschen.
      *
      */
-    void wipe() { actPos = 0; buffer[actPos] = '\0'; }
+    void wipe();
 
 
     /** isEmpty
@@ -98,10 +98,10 @@ public:
     #endif
 
 private:
-    char device[MAX_PARA_LENGTH] = "device";       ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
-    char devEvent[MAX_PARA_LENGTH] = "devEvent";   ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
-    char parameter1[MAX_PARA_LENGTH] = "para1";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-    char parameter2[MAX_PARA_LENGTH] = "para2";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+    char device[MAX_PARA_LENGTH] = "";       ///< Avionic-Gerät, von/zu dem die Aktion stammt/gehört.
+    char devEvent[MAX_PARA_LENGTH] = "";   ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
+    char parameter1[MAX_PARA_LENGTH] = "";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
+    char parameter2[MAX_PARA_LENGTH] = "";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
 
     /** dispatch
      * @brief Prüfung, ob der Zeichenpuffer leer ist.

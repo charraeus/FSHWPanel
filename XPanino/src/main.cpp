@@ -42,12 +42,11 @@ void serialEvent() {
              inBuffer.addChar(inChar);
         } else {
             if (((inChar == '\n') || (inChar == '\r')) && (! inBuffer.isEmpty())) {
-                // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde kein '\r' bzw. '\n' gelesen,
-                // was dann den inBuffer geleert hätte.
-                // Buffer zum Parsen zum Parser senden.
-                // parser.parseString(inBuffer.get());
-                // inBuffer.wipe();
-                Serial.println("CR erkannt.");
+                // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde
+                // kein '\r' bzw. '\n' gelesen, was dann den inBuffer geleert hätte.
+                // Also den Buffer jetzt zum Parsen zum Parser senden.
+                parser.parseString(inBuffer.get());
+                inBuffer.wipe();
             }
             // alle anderen Zeichen werden ignoriert.
         }

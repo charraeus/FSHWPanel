@@ -10,13 +10,10 @@
 **************************************************************************************************/
 
 #include <Arduino.h>
-#include <String.h>
-
 #include <charmap7seg.hpp>
 
-
 /** Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können */
-const String Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
+const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
 
 /** @brief bitMap enthalten die Bitmuster um die einzelnen Segemente der 7-Segment-Anzeigen für die
  * Anzeige der Ziffern und Buchstaben anzusteuern.
@@ -112,7 +109,7 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
  * @brief BitMap zur Darstellung eines Zeichens auf der 7-Segment-Anzeige ermitteln
  */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
-    for (unsigned int i = 0; i < charsAllowed.length(); ++i) {
+    for (unsigned int i = 0; i < strlen(charsAllowed); ++i) {
         if (outChar == charsAllowed[i]) {
             return bitMap[i];
         }

@@ -28,13 +28,20 @@
      */
 uint8_t BufferClass::addChar(const char inChar) {
     if (actPos < MAX_BUFFER_LENGTH - 1) {
-        buffer[actPos] = inChar;
+        buffer[actPos] = toupper(inChar);
         actPos += 1;
         buffer[actPos] = '\0';
         return 1;
     }
     return 0;
 }
+
+
+    /** wipe
+     * @brief Zeichenpuffer löschen.
+     *
+     */
+    void BufferClass::wipe() { actPos = 0; buffer[actPos] = '\0'; }
 
 
 /**************************************************************************************************
@@ -73,22 +80,22 @@ uint8_t BufferClass::addChar(const char inChar) {
  *       das muss aber noch geschaut werden, wie das gehen kann
  */
 bool ParserClass::parseString(char *inBuffer) {
-    char *ptrParameter = NULL; // NOLINT
+    const char* TOKEN_DELIMITER = ";";
+    char* ptrParameter = NULL; // NOLINT
     uint8_t paramCount = 1;                     // Zähler für die richtige Variable der struct
 
-    ptrParameter = strtok(inBuffer, " ");      // ptrParameter enthält jetzt den Stringabschnitt bis zum ersten Blank.
-    if (ptrParameter != NULL) {  // NOLINT modernize-use-nullptr vorsichtshalber testen, ob was gefunden wurde.
+    ptrParameter = strtok(inBuffer, TOKEN_DELIMITER);  // ptrParameter enthält jetzt den Stringabschnitt bis zum ersten Blank.
+    if (ptrParameter != NULL) {  // NOLINT modernize-use-nullptr ;vorsichtshalber testen, ob was gefunden wurde.
         strcpy(device, ptrParameter);        // Diesen in device kopieren.
         while (ptrParameter != NULL) {       // NOLINT Das Zerlegen fortsetzen bis nichts mehr da ist.
-            #ifdef DEBUG
-            Serial.println (ptrParameter);
-            #endif
-            paramCount++;                       // Zähler hochzählen, für die richtige Variable der struct
-            ptrParameter = strtok(NULL, " ");   // NOLINT In die richtige Variable den Teilstring bis zum
+            paramCount++;   // Zähler hochzählen, für die richtige Variable der struct
+                            // In die richtige Variable den Teilstring bis zum
+            ptrParameter = strtok(NULL, TOKEN_DELIMITER);   // NOLINT
             switch (paramCount) {               // jeweils nächsten Blank hineinkopieren.
                 case 2: { strcpy(devEvent, ptrParameter); break; }
                 case 3: { strcpy(parameter1, ptrParameter); break; }
                 case 4: { strcpy(parameter2, ptrParameter); break; }
+                default: ;  // mehr als 4 Tokens; das ist ein Fehler; die überzähligen Token ignorieren
             }
         }
     }

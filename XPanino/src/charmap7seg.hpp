@@ -80,7 +80,6 @@ const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
  */
 class Led7SegmentCharMap {
 public:
-
     /** BitMap zur Darstellung auf der 7-Segment-Anzeige für outChar ermitteln */
     uint8_t get7SegBitMap(char outChar) const;
 
@@ -88,5 +87,6 @@ private:
     /** Bitmap-Tabelle mit den Bitmustern für die Anzeige von Zeichen auf 7-Segment-Anzeigen */
     static const uint8_t bitMap[];
     /** Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können */
-    static const String charsAllowed;
+//    static const String charsAllowed;
+    static const char *charsAllowed;
 };

@@ -4,17 +4,15 @@
 
 ### Allgemeiner Aufbau
 
-Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostrings. Ein Kommandostring besteht immer aus 5 verschiedenen Teilen, die im Ganzen als zusammengesetzter String verschickt werden. Die einzelnen Teile sind jeweils durch ein Blank getrennt. Am Ende steht immer ein \<CR> und/oder ein \<LF>.
+Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostrings. Ein Kommandostring besteht immer aus 5 verschiedenen Teilen, die im Ganzen als zusammengesetzter String verschickt werden. Die einzelnen Teile sind jeweils durch ein Blank getrennt. Am Ende steht immer ein \<CR> ("\\r") und/oder ein \<LF> ("\\n").
 
-1. Source: Sender bzw. Empfänger des Kommandos,
 1. Device: Gerät, das angesprochen werden soll, oder von dem Daten kommen,
 1. Action: Aktion, die vom Device ausgeführt wurde, oder ausgeführt werden soll,
 1. Para 1: 1. Parameter zur Aktion, d.h. die Nutzdaten (optional),
 1. Para 2: 2. Parameter zur Aktion, d.h. die Nutzdaten (optional).
 
-Kommandoteil | Datentyp
+Kommandoteil | Datentyp @todo: noch anpassen 
 -------------|--------------------------
-Source       | string
 Device       | char / uint8_t
 Action       | uint8_t (1 Byte)
 Para 1       | @todo ergänzen
@@ -22,81 +20,61 @@ Para 2       | @todo ergänzen
 
 **Beispiele**
 Kommandostring | Bedeutung
----------------|------------------------
-`XP D X 7000`   | Nachricht von **X**-**P**lane: Im Transponderfeld den Wert '7000' anzeigen. 
-`XP D C 20.3`   | Im O.A.T.-Feld den Wert ' 20.3' anzeigen.<br/>Hier wird es ggf. knifflig beim parsen, da das Blank hier keinen Parameter-Trenner darstellt.
-`X S ON 2 3` | Nachricht vom Transponder (**X**): Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurd eingeschaltet (**ON**). 
-
-### Source
-
-Source | Beschreibung
--------|----------------------------------------------------------------------
-XP     | Die Daten kommen vom X-Plane
- X      | Transponder 
- U      | Uhr 
-
-### Devices
-
-const-Name | Device | Beschreibung
------------|:------:|-----------------------
-DATA       | D      | Keine Device; es kommen Daten
-SWITCH     | S      | Daten eines gedrückten Schalters oder Tasters 
-LED        | L      | Eine einzelne LED
-DISP       | 7      | Ein 7-Segment-Display
+:--------------|------------------------
+`X;X;7000`   | Nachricht von X-Plane an Arduino: Im Transponderfeld den Wert "7000" anzeigen. 
+`X;C; 20.3`   | Nachricht von X-Plane an Arduino: Im O.A.T.-Feld den Wert " 20.3" anzeigen. Der @ steht für ein Blank. Dieser Sonderfall ist nötig, damit das parsen einfacher wird (Blanks trennen die einzelnen Bestandteile des Kommandostrings) 
+`S;ON;2;3` | Nachricht vom Transponder: Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurd eingeschaltet (**ON**). 
+| |
 
 Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
 
-Vom PC zum Arduino gesendete Actions
----------------------------------------------------------------
+## Transponder KT 76C und Uhr Davtron M803
 
 Siehe auch @ref commands.hpp für die aktuelle Version der Codes.
 @todo noch weiter ergänzen und updaten!!
 
-### Steuerkommandos für den Arduino
+### Devices
 
-const-Name        | Action | Beschreibung                                               | Parameter-Typ | Parameter-Beschreibung
-------------------|--------|------------------------------------------------------------|---------------|-----------------------
-ACK               | 0xFFFF | Acknowledge - Angeforderte Daten für Parameter Code folgen |               | |
-RESET_ARDUINO     | 0xFF01 | Arduino neu booten                                         | -             | |
-RESEND_SWITCHES   | 0xFF02 | Den Status aller Schalter senden                           | -             | |
+Ein Device definiert das "Gerät", von dem die nachfolgende Action ausgeführt werden soll (auf dem Arduino) bzw. von dem die Action stammt (vom Arduino für den PC).
 
-### Transponder KT 76C und Uhr Davtron M803
+| Device | Const              | Beschreibung                                    |
+| ------ | ------------------ | ----------------------------------------------- |
+| X      | DEVICE_XPDR = "X " | Action betrifft Transponder KT76C               |
+| M      | DEVICE_M803 = "M"  | Action betrifft Uhr Davtron M803                |
+|        |                    |                                                 |
+| D      | DEVICE_DATA = "D " | Daten, z.B. die am Arduino eingestellte Uhrzeit |
 
-#### Source, Recipient und Device
+### Definierte Actions
 
-| Source | Const              | Beschreibung |
-| ------ | ------------------ | ------------ |
-| X      | SOURCE_XPDR = "X " | XPDR         |
-| U      | SOURCE_M803 = "U " | Uhr          |
+ Action |Const        | Beschreibung                                               | Parameter&nbsp;1<br/>Typ | Parameter&nbsp;2<br/>Typ | Parameter-Beschreibung
+--------|------------------|------------------------------------------------------------|---------------|-----------------------|-----------------------
+ ON |SWITCH_ON = "ON" | (Schalter) wurde eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
+ LON |SWITCH_LON = "LON" | (Schalter) ist lange eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
+ OFF |SWITCH_OFF = "OFF" | (Schalter) ist ausgeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
+  |  |  | ||
+ X      | XPDR_CODE = "X"   | XPDR-Code anzeigen                         | Transponder-Code<br/>String | - | 4-stellig 
+ L      | XPDR_FL = "F" | Flightlevel für Transponder                                | Flightlevel<br/>String | - | 3-stellig 
+ LT | M803_LT = "LT"    | Aktuelle Uhrzeit (Local)                                   | Uhrzeit<br/>String          | - | Uhrzeit HHMMSS
+ UT     | M803_UT = "UT"   | Aktuelle Uhrzeit (UTC)                                     | Uhrzeit<br/>String | - | Uhrzeit HHMMSS
+ ET | M803_ET = "E"   | Elapsed Time                                               | ?             | | Vergangene Zeit HHMMSS
+ FT | M803_FT = "FT"    | Flight Time                                                | ?             | | Flight Time in HHMMSS
+ V      | M803_VOLTS = "V"  | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht? | ?             | | Spannung in Volt
+ Q      | M803_QNH = "Q" | Aktuelles QNH des X-Plane-Wetters                          | ?             | | 4-stellig 
+ A      | M803_ALT = "A"    | Aktuelles Altimeter-Setting in inHg                        | ?             ||
+ C      | M803_OATC = "C"   | OAT in °C                                                  | ?             | | OAT in Celsius
+ F      | M803_OATF = "F"   | OAT in Fahrenheit                                          | ? | | OAT in Fahrenheit
 
-| Device | Const                | Beschreibung                                    |
-| ------ | -------------------- | ----------------------------------------------- |
-| S      | DEVICE_SWITCH = "S " | Switch - Schalter oder Taster                   |
-| D      | DEVICE_DATA = "D "   | Daten, z.B. die am Arduino eingestellte Uhrzeit |
+## Steuerkommandos für den Arduino
 
-#### Definierte Actions
-
-Data<br/>Const        | Action | Beschreibung                                               | Parameter&nbsp;1<br/>Typ | Parameter&nbsp;2<br/>Typ | Parameter-Beschreibung
-------------------|--------|------------------------------------------------------------|---------------|-----------------------|-----------------------
-- | ON | (Schalter) wurde eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
-- | LON | (Schalter) ist lange eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
-- | OFF | (Schalter) ist ausgeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
- |  |  |  | | 
-XPDR_CODE         | X      | XPDR-Code anzeigen                         | Transponder-Code<br/>String | - | 4-stellig 
-XPDR_FL  | L      | Flightlevel für Transponder                                | Flightlevel<br/>String | - | 3-stellig 
-M803_LT           | LT | Aktuelle Uhrzeit (Local)                                   | Uhrzeit<br/>String          | - | Uhrzeit HHMMSS
-M803_UT           | UT     | Aktuelle Uhrzeit (UTC)                                     | Uhrzeit<br/>String | - | Uhrzeit HHMMSS
-M803_ET           | ET | Elapsed Time                                               | ?             | | Vergangene Zeit HHMMSS
-M803_FT           | FT | Flight Time                                                | ?             | | Flight Time in HHMMSS
-M803_VOLTS        | V      | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht? | ?             | | Spannung in Volt
-M803_QNH          | Q      | Aktuelles QNH des X-Plane-Wetters                          | ?             | | 4-stellig 
-M803_ALT          | A      | Aktuelles Altimeter-Setting in inHg                        | ?             ||
-M803_OATC         | C      | OAT in °C                                                  | ?             | | OAT in Celsius
-M803_OATF         | F      | OAT in Fahrenheit                                          | ? | | OAT in Fahrenheit
+| const-Name      | Action | Beschreibung                                               | Parameter-Typ | Parameter-Beschreibung |
+| --------------- | ------ | ---------------------------------------------------------- | ------------- | ---------------------- |
+| ACK             | 0xFFFF | Acknowledge - Angeforderte Daten für Parameter Code folgen |               |                        |
+| RESET_ARDUINO   | 0xFF01 | Arduino neu booten                                         | -             |                        |
+| RESEND_SWITCHES | 0xFF02 | Den Status aller Schalter senden                           | -             |                        |
 
 Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
 
-#### Actions und X-Plane-Datarefs
+### Actions und X-Plane-Datarefs
 
 Action            | X-Plane-Dataref                                                                                 | X-Plane-Typ | r/w
 ------------------|-------------------------------------------------------------------------------------------------|-------------|----
