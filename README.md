@@ -31,23 +31,11 @@ FSHWPanel ist eine aus mehreren Komponenten bestehende Software, mittels derer S
   * **XPIf/lib**
   * **XPIf/src**
 
-## GIT
-* *main* (bzw. veraltet *master*) enthält zu jedem Zeitpunkt die neueste, lauffähige Version des ganzen Repository.
-* Die Weiterentwicklung findet in ausschließlich in *Branches* statt.
-* Minimale Einstellungen
-
-  ```console
-  $ git config --global user.name "John Doe"
-  $ git config --global user.email johndoe@example.com
-  $ git config --global init.defaultBranch main
-  ```
-
-Link zur [GIT-Doku](https://git-scm.com/book/de/v2).
-
-## Entwicklungsumgebung
-### Entwicklungsumgebung Visual Studio Code
-Ich verwende Visual Studio Code (VSCode) als Entwicklungsumgebung mit folgenen Erweiterungen:
-* Für die Arduino-Programmierung: [***PlatformIO IDE***](https://docs.platformio.org/en/latest/)
+## Entwicklungsumgebung mit Visual Studio Code
+### Visual Studio Code
+"IDE" mit folgenen VSCode-Erweiterungen:
+* Für die Arduino-Programmierung: [***PlatformIO IDE***](https://docs.platformio.org/en/latest/)  
+  Die Installation der Arduino-Entwicklungsumgebung ist damit *nicht* mehr notwendig.
 * Für die C++-Entwicklung:
   * [***C/C++** by Microsoft*](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
   * [***Makefile Tools** by Microsoft*](https://marketplace.visualstudio.com/items?itemName=ms-vscode.makefile-tools)
@@ -65,6 +53,30 @@ Ich verwende Visual Studio Code (VSCode) als Entwicklungsumgebung mit folgenen E
   * [***GitLens - Git supercharged** by GitKraken*](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
   * [***Git History** by Don Jayamanne*](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)
 
+### Git
+Für die Versionsverwaltung. Die Installation auf dem Mac erfolgt mittels Homebrew, das natürlich installiert sein muss. https://www.visual-paradigm.com
+```shell
+brew install git
+```
+
+Auf [**Github**](https://github.com/CHarraeus) existiert ein entsprechendes Repository, das alle für das Projekt notwendigen Dateien enthält.
+
+**Hinweise**
+* *main* (bzw. veraltet *master*) enthält zu jedem Zeitpunkt die neueste, lauffähige Version des ganzen Repository.
+* Die Weiterentwicklung findet in ausschließlich in *Branches* statt.
+* Minimale Einstellungen
+  ```console
+  $ git config --global user.name "Vorname Nachname"
+  $ git config --global user.email vorname.nachname@example.com
+  $ git config --global init.defaultBranch main
+  ```
+
+Link zur [GIT-Doku](https://git-scm.com/book/de/v2).
+
+
+### C++-Compiler
+Für die Entwicklung der Softwareteile, die auf dem Arduino laufen wird die VSCode-Erweiterung ***PlatformIO IDE*** (siehe oben) verwendet. Für die Entwicklung des X-Plane-Interfaces (, das auf dem Flugsimulations-PC läuft), wird der ***GNU C++***-Compiler bzw. ***CLANG*** verwendet.
+@todo: noch zu ergänzen: welcher compiler genau? Compiler-Konfiguration? etc.
 ### Doxygen
 Für das Generieren von Sourcecode-Doku. Die Installation auf dem Mac erfolgt mittels Homebrew, das natürlich installiert sein muss. Siehe auch hier: https://www.doxygen.nl
 ```shell
@@ -78,14 +90,6 @@ Wird u.A. von den VSCode-Erweiterungen benötigt. Siehe unten. Die Installation 
 ```shell
 brew install pandoc
 ```
-
-### Git
-Für die Versionsverwaltung. Die Installation auf dem Mac erfolgt mittels Homebrew, das natürlich installiert sein muss. https://www.visual-paradigm.com
-```shell
-brew install git
-```
-
-Auf [**Github**](https://github.com/CHarraeus) existiert ein entsprechendes Repository, das alle für das Projekt notwendigen Dateien enthält.
 
 ### Visual Paradigm Community Editon
 Für die Erstellung von Diagrammen (insbes. Zustandsdiagrammen) wird die Community-Edition von Visual Paradigm genutzt. Die Installation auf dem Mac erfolgt mittels Homebrew, das natürlich installiert sein muss. https://www.visual-paradigm.com
