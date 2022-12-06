@@ -5,7 +5,7 @@
  * @version 0.1
  * @date 2017-11-17
  *
- * Copyright © 2017 - 2020. All rights reserved.
+ * Copyright © 2017 - 2022. All rights reserved.
  *
  **************************************************************************************************/
 
@@ -116,15 +116,13 @@ void ParserClass::dispatch() {
         // aber zuerst von ClockDavtronM803 gesetzt worden sein.
         // Hierzu muss wahrscheinlich noch eine SetCallbackFunction implementiert werden.
         // callbackEventClock(switchName, eventName); --> Sollte die function ClockDavtronM803.event() aufrufen
-    // } else {
-    //     if (device == "XPDR") {
-            // analog zu "CLOCK"
-            // callbackEventClock(switchName, eventName);
-    //     } else {
-    //         if (device == "XP") {
-                // Daten vom X-Plane sind angekommen
-    //         }
-    //     }
+    // }
+    // if (device == "XPDR") {
+    //     analog zu "CLOCK"
+    //     callbackEventClock(switchName, eventName);
+    // }
+    // if (device == "XP") {
+        // Daten vom X-Plane sind angekommen
     // }
     Serial.println("Hier wird jetzt dispatscht...");
 
