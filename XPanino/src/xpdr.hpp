@@ -5,7 +5,7 @@
  * @version 0.1
  * @date 2017-11-12
  *
- * Copyright © 2017 - 2020. All rights reserved.
+ * Copyright © 2017 - 2022. All rights reserved.
  *
 **************************************************************************************************/
 
@@ -13,12 +13,15 @@
 
 #include <Arduino.h>
 
-// Status-Aufzählungstypen
+/**************************************************************************************************
+ * Status-Aufzählungstpyen
+ *
+ **************************************************************************************************/
 /**
  * @brief Aufzählungstyp für Powerstatus
  *
  */
-enum PowerStatusTyp {POWER_OFF, POWER_ON};
+enum class PowerStatusTyp {POWER_OFF, POWER_ON};
 
 /**
  * @brief Aufzählungstyp für die nur alternativ möglichen Anzeigen.
@@ -46,7 +49,7 @@ enum class TimeModeTyp {
  * @brief Aufzählungstyp für die möglichen Events, die verarbeitet werden müssen.
  *
  */
-enum Event {
+enum class Event {
     BTN_OAT_ON,         // Der Taster OAT/VOLTS wurde gedrückt
     BTN_SEL_ON,         // der Taster SELECT wurde gedrückt
     BTN_SEL_OFF,        // der Taster SELECT wurde wieder losgelassen
@@ -56,31 +59,33 @@ enum Event {
     XP_TEMPERATURE      // Neue Temperatur vom X-Plane empfangen
 };
 
-/**
+/**************************************************************************************************
  * @brief Modell der Uhr Davtron M803
  * @todo Doku ergänzen
  *
- */
+ **************************************************************************************************/
 class ClockDavtronM803 {
 public:
-    void setLocalTime(uint32_t &lt) { localTime = lt; };
-
-    void setFlightTime(uint32_t &ft) { flightTime = ft; };
-
-    void setElapsedTime(uint32_t &et) { elapsedTime = et; };
-
-    void setTimeMode(TimeModeTyp &tm) { timeMode = tm; };
-
-    void setTemperature(int8_t &temp) { temperatureC = temp; };
-
-    void setPowerStatus(PowerStatusTyp &ps) { powerStatus = ps; };
+    void setTimeMode(TimeModeTyp &timeMode);
+    void setLocalTime(uint32_t &localTime);
+    void setUtc(uint32_t &utc);
+    void setFlightTime(uint32_t &flightTime);
+    void setElapsedTime(uint32_t &elapsedTime);
+    void setOatVoltsMode(OatVoltsModeTyp &OatVoltsMode);
+    void setTemperature(int8_t &temperatureC);
+    void setPowerStatus(PowerStatusTyp &powerStatus);
+    void setAltimeter(float &altimeter);
 
     /**
      * @brief Durch die verschiedenen Modi des oberen Displays schalten.
      *
      */
-    void toggleOatVoltMode();
+    void toggleOatVoltsMode();
 
+    /**
+     * @brief Durch die verschiedenen Zeit-Modi des unteren Displays schalten.
+     *
+     */
     void toggleTimeMode();
 
     // Verarbeitet die Tastendrücke und Daten
@@ -89,15 +94,19 @@ public:
     Event event(const String &eventString);
 
 
-    // Die local Time in UTC umrechnen
-    uint32_t utc(uint32_t localTime);
-
 private:
+    const float STD_ALTIMETER_inHg = 29.92;
+
+    TimeModeTyp timeMode{TimeModeTyp::TIME_LT};  ///< Initial wird die lokale Zeit im unteren Display angezeigt.
     uint32_t localTime{0};      ///< Die lokale Zeit im Format 00HHMMSS checken wies vom Flusi kommt
+    uint32_t utc{0};            ///< Die UTC im Format 00HHMMSS checken wies vom Flusi kommt
     uint32_t flightTime{0};     ///< Die Flighttime im Format 00HHMMSS checken wies vom Flusi kommt
     uint32_t elapsedTime{0};    ///< Die elapsed time im Format 00HHMMSS
-    TimeModeTyp timeMode{TimeModeTyp::TIME_LT};  ///< Initial wird die lokale Zeit im unteren Display angezeigt.
-    int8_t temperatureC{0};     ///< Die Temperatur in Grad Celsius  checken wies vom Flus kommt
-    PowerStatusTyp powerStatus{POWER_ON};  ///< Initial ist die Power off. @todo Ändern auf POWER_OFF.
-    OatVoltsModeTyp oatVoltsStatus{OatVoltsModeTyp::OAT_CELSIUS};  ///< Initial wird die Temeperatur in Celsius im oberen Display angezeigt.
+    OatVoltsModeTyp oatVoltsMode = OatVoltsModeTyp::OAT_CELSIUS;  ///< Initial wird die Temeperatur in Celsius im oberen Display angezeigt.
+    int8_t temperatureC{0};     ///< Die Temperatur in Grad Celsius  checken wie's vom Flusi kommt
+    PowerStatusTyp powerStatus = PowerStatusTyp::POWER_OFF;  ///< Initial ist die Power off.
+    float altimeter{STD_ALTIMETER_inHg};     ///< Luftdruck in inHg
+
+    // Altimeter in QNH umrechnen
+    float qnh(float &altimeter);
 };

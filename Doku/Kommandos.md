@@ -18,7 +18,19 @@ Action       | uint8_t (1 Byte)
 Para 1       | @todo ergänzen
 Para 2       | @todo ergänzen
 
+```mermaid
+flowchart LR
+subgraph Kommando
+	direction LR
+	dev([Device]) --> s1((";")) --> act([Action]) --> c2(( ))
+	act --> s2((";")) --> para1(["Parameter 1"]) --> c2
+	para1 --> s3((";")) --> para2(["Parameter 2"]) --> c2	
+end
+```
+
+
 **Beispiele**
+
 Kommandostring | Bedeutung
 :--------------|------------------------
 `X;X;7000`   | Nachricht von X-Plane an Arduino: Im Transponderfeld den Wert "7000" anzeigen. 
