@@ -1,4 +1,4 @@
-/******************************************************************************
+/*********************************************************************************************************//**
  * @file      Switchmatrix.cpp
  * @brief     Implementierung der Klasse @em SwitchMatrix.
  * @details   Keine Details vorhanden
@@ -8,23 +8,16 @@
  *
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
  *
- *
- ******************************************************************************/
+ ************************************************************************************************************/
 
 #include <Arduino.h>
 #include <Switchmatrix.hpp>
 
 
-/******************************************************************************
+/*********************************************************************************************************//**
  * Methoden für SwitchMatrix
  *
- *******************************************************************************/
-
-bool SwitchMatrix::isValidMatrixRow(const uint8_t row) { return ((row >= 0) && (row <= SWITCH_MATRIX_ROWS)); }
-bool SwitchMatrix::isValidMatrixCol(const uint8_t col) { return ((col >= 0) && (col <= SWITCH_MATRIX_COLS)); }
-bool SwitchMatrix::isValidMatrixPos(const uint8_t row, const uint8_t col) {
-    return isValidMatrixRow(row) && isValidMatrixCol(col);
-}
+ ************************************************************************************************************/
 
 void SwitchMatrix::initHardware() {
     /// Alle Matrixzeilen-Pins als Output einstellen und auf HIGH setzen.
@@ -105,7 +98,10 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
 
 
 #ifdef DEBUG
-/******************************************************************************/
+/**
+ * 
+ *
+ */
 void SwitchMatrix::printMatrix() {
     Serial.print("\t\t");
     for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
@@ -126,3 +122,43 @@ void SwitchMatrix::printMatrix() {
     }
 }
 #endif
+
+
+/*********************************************************************************************************//**
+ * ab hier die privaten Methoden
+*************************************************************************************************************/
+
+/**
+ * @brief Prüfen, ob row eine gültige Zeile in der SwitchMatrix ist.
+ *
+ * @param row Zeilennummer für die SwitchMatrix.
+ *
+ * @return true Die Zeilennummer ist gültig.
+ * @return false Die Zeilennummer ist ungültig.
+ */
+bool SwitchMatrix::isValidMatrixRow(const uint8_t row) { return ((row >= 0) && (row <= SWITCH_MATRIX_ROWS)); }
+
+
+/**
+ * @brief Prüfen, ob col eine gültige Spalte in der SwitchMatrix ist.
+ *
+ * @param col Spaltennummer für die SwitchMatrix.
+ *
+ * @return true Die Spaltennummer ist gültig.
+ * @return false Die Spaltennummer ist ungültig.
+ */
+bool SwitchMatrix::isValidMatrixCol(const uint8_t col) { return ((col >= 0) && (col <= SWITCH_MATRIX_COLS)); }
+
+
+/**
+ * @brief Prüfen, ob row und col eine gültige Position in der SwitchMatrix sind.
+ *
+ * @param row Zeilennummer für die SwitchMatrix.
+ * @param col Spaltennummer für die SwitchMatrix.
+ *
+ * @return true Die Position ist gültig.
+ * @return false Die Position ist ungültig.
+ */
+bool SwitchMatrix::isValidMatrixPos(const uint8_t row, const uint8_t col) {
+    return isValidMatrixRow(row) && isValidMatrixCol(col);
+}

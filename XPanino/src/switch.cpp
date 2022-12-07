@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/**
  * @file switch.cpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Implementierung der Klasse @em Switch
@@ -7,14 +7,18 @@
  *
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
  *
-**************************************************************************************************/
+*/
 
 #include <switch.hpp>
 
-const unsigned long LONG_ON = 3000;     ///< Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
+/// Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
+const unsigned long LONG_ON = 3000;
 
 
-/******************************************************************************/
+/**
+ *
+ *
+ */
 void Switch::setOn() {
     status = LOW;
     changed = true;
@@ -25,7 +29,10 @@ void Switch::setOn() {
 }
 
 
-/******************************************************************************/
+/**
+ *
+ *
+ */
 void Switch::setOff() {
     status = HIGH;
     changed = true;
@@ -35,7 +42,10 @@ void Switch::setOff() {
 }
 
 
-/******************************************************************************/
+/**
+ *
+ *
+ */
 void Switch::checkLongOn() {
     longOn = (onTime >= LONG_ON);
     if (longOn && (! longOnSent)) {
@@ -44,13 +54,19 @@ void Switch::checkLongOn() {
 }
 
 
-/******************************************************************************/
+/**
+ *
+ *
+ */
 void Switch::updateOnTime(const unsigned long &newOnTime) {
     onTime = calcTimeDiff(switchPressTime, newOnTime);
 }
 
 
-/******************************************************************************/
+/**
+ *
+ *
+ */
 void Switch::transmitStatus(uint8_t row, uint8_t col) {
     const String SOURCE_XPDR = "X ";
     const String DEVICE_SWITCH = "S ";
@@ -74,9 +90,24 @@ void Switch::transmitStatus(uint8_t row, uint8_t col) {
     #endif
 }
 
-// ab hier beginnen die privaten Methoden
 
-/******************************************************************************/
+/*********************************************************************************************************//**
+ * ab hier die privaten Methoden
+*************************************************************************************************************/
+
+/**
+ * @brief Differenz zweier Zeitstempel berechnen.
+ *
+ * Berechnet die Differenz zweier Zeitstempel und gibt diese als Ergebnis
+ * zurück. Ein eventueller Überlauf (passiert ca. nach 50 Tagen) wird berücksichtigt.
+ *
+ * @param onTime Einschaltzeitstempel in Millisekunden, z.B. millis().\n
+ *               Dieser Parameter ist i.d.R. der ältere Zeitstempel.
+ * @param offTime Ausschaltzeitstempel in Millisekunden, z.B. millis().\n
+ *                Dieser Parameter ist i.d.R. der neuere Zeitstempel.
+ *
+ * @return unsigned long Zeitdifferenz in Millisekunden
+ */
 unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned long &offTime) {
     const unsigned long maxLong = 4294967295;  /** @todo besser sizeOf(unsigned long) nehmen */
     // Einschaltzeit ausrechnen. millis() kann überlaufen; das muss berücksichtigt werden
@@ -90,7 +121,15 @@ unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned l
     return maxLong - onTime + offTime;
 }
 
-/******************************************************************************/
+
+/**
+ * @brief Entprellen der Schalter per Sofware.
+ *
+ * Siehe Pina Merkert: Fliegender Frederick, c't 22/2020, S. 152
+ * Hier ist erstmal nur der Code aufgeschrieben - Implementierung und Test stehen noch aus.
+ *
+ * @todo Braucht's das überhaupt?
+ */
 uint8_t debounce(uint8_t &history, uint8_t &newStatus) {
     history = (history << static_cast<uint8_t>(1)) | (newStatus);     // bisherige history mit *aktuell gelesenem* Status aktualisieren
     switch (history){

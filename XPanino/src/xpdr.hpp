@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/**
  * @file xpdr.hpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Interface der Klassen @em Transponder @em ClockDavtronM803 sowie diverse Aufzählungstypen
@@ -7,7 +7,7 @@
  *
  * Copyright © 2017 - 2022. All rights reserved.
  *
-**************************************************************************************************/
+*/
 
 #pragma once
 

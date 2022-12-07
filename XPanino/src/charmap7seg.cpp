@@ -1,23 +1,29 @@
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @file charmap7seg.cpp
  * @author Christian Harraeus (christian@harraeus.de)
- * @brief Interface der Klasse @em LedMatrix und viele Konstanten zur Anzeige.
+ * @brief Interface der Klasse @em Led7SegmentCharMap und viele Konstanten zur Anzeige.
  * @version 0.1
  * @date 2017-11-10
  *
  * Copyright © 2017 - 2022. All rights reserved.
  *
-**************************************************************************************************/
+ ************************************************************************************************************/
 
 #include <Arduino.h>
 #include <charmap7seg.hpp>
 
-/** Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können */
+
+/*********************************************************************************************************//**
+ * @brief Array mit den erlaubten - weil auf 7-Segment-Anzeigen darstellbaren - Zeichen.
+ *
+ * Aus Ressourceneinsparungsgründen wird keine String-Klasse verwendet.
+ */
 const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
 
-/** @brief bitMap enthalten die Bitmuster um die einzelnen Segemente der 7-Segment-Anzeigen für die
- * Anzeige der Ziffern und Buchstaben anzusteuern.
- * bitMap bildet ein 7-Segment-Display mit Dezimalpunkt ab.
+/*********************************************************************************************************//**
+ * @brief bitMap enthalten die Bitmuster um die einzelnen Segemente der 7-Segment-Anzeigen für die
+ *        Anzeige der Ziffern und Buchstaben anzusteuern. bitMap bildet ein 7-Segment-Display mit
+ *        Dezimalpunkt ab.
  *
  *       a
  *    -------
@@ -61,7 +67,8 @@ const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUco
  *    matrix[5] = 0b00000000011000110110110100000000;
  *    matrix[6] = 0b00000000001110010111110100000000;
  *    matrix[7] = 0b00000000001101100000000000010000;
- */
+ *
+ ************************************************************************************************************/
 const uint8_t Led7SegmentCharMap::bitMap[] =  {
         //gfedcba
         0b0111111, ///<  "0": Segmente f, e, d, c, b, a    --> bitMap[0]
@@ -105,8 +112,8 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
     };
 
 
-/** Led7SegmentCharMap::get7SegBitMap
- * @brief BitMap zur Darstellung eines Zeichens auf der 7-Segment-Anzeige ermitteln
+/**
+ *
  */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
     for (unsigned int i = 0; i < strlen(charsAllowed); ++i) {

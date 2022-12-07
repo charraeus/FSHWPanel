@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @file Switchmatrix.hpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Interface der Klasse @em SwitchMatrix
@@ -8,7 +8,7 @@
  * Copyright © 2017 - 2020. All rights reserved.
  *
  * @todo statt <em>if not defined(NDEBUG)</em> besser auf <em>if defined(DEBUG)</em> umstellen.
- **************************************************************************************************/
+ ************************************************************************************************************/
 
 #pragma once
 
@@ -18,21 +18,22 @@
 const bool TRANSMIT_ONLY_CHANGED_SWITCHES = true; ///< nur veränderte Schalter-Status übertragen
 const bool TRANSMIT_ALL_SWITCHES = false;         ///< alle Schalter-Status übertragen, unabhängig ob verändert oder nicht
 
-/******************************************************************************
- * Bildet die Schaltermatrix für ein Avionic-gerät ab.
- ******************************************************************************/
-const unsigned int HW_MATRIX_ROWS_LSB_PIN = 14;    ///< Pin-Nummer des niederstwertigen Pins der Matrixzeilen Y
-const unsigned int HW_MATRIX_ROWS_MSB_PIN = 17;    ///< Pin-Nummer des höchstwertigen Pins der Matrixzeilen Y
-const unsigned int HW_MATRIX_COLS_LSB_PIN = 6;     ///< Pin-Nummer des niederstwertigen Pins der Matrixspalten X
-const unsigned int HW_MATRIX_COLS_MSB_PIN = 13;    ///< Pin-Nummer des höchstwertigen Pins der Matrixspalten X
+/*********************************************************************************************************//**
+ * Konstanten für die Schaltermatrix.
+ ************************************************************************************************************/
+const unsigned int HW_MATRIX_ROWS_LSB_PIN = 14;  ///< Pin-Nummer des niederstwertigen Pins der Matrixzeilen Y
+const unsigned int HW_MATRIX_ROWS_MSB_PIN = 17;  ///< Pin-Nummer des höchstwertigen Pins der Matrixzeilen Y
+const unsigned int HW_MATRIX_COLS_LSB_PIN = 6;   ///< Pin-Nummer des niederstwertigen Pins der Matrixspalten X
+const unsigned int HW_MATRIX_COLS_MSB_PIN = 13;  ///< Pin-Nummer des höchstwertigen Pins der Matrixspalten X
 constexpr uint8_t SWITCH_MATRIX_ROWS = HW_MATRIX_ROWS_MSB_PIN - HW_MATRIX_ROWS_LSB_PIN + 1;  ///< Anzahl Matrixzeilen
 constexpr uint8_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_LSB_PIN + 1;  ///< Anzahl Matrixspalten
 
-/**************************************************************************************************
+
+/*********************************************************************************************************//**
  * @brief Schaltermatrix zur Aufnahme von Schaltern der Klasse @em switch.
  *
  * @todo Schaltermatrixklasse hier noch dokumentieren.
- **************************************************************************************************/
+ ************************************************************************************************************/
 class SwitchMatrix {
 public:
      /**
@@ -82,10 +83,7 @@ private:
     bool changed = false;   ///< Änderungsstatus der gesamten Matrix. Sobald sich ein Schalter ändert, ist @em changed @em true.
     const unsigned int debounceTime = 9;  ///< Zeit in Millisekunden zum Entprellen
 
-    /** Prüfen, ob row eine gültige Zeile in der SwitchMatrix ist */
     inline bool isValidMatrixRow(const uint8_t row);
-    /** Prüfen, ob col eine gültige Spalte in der SwitchMatrix ist*/
     inline bool isValidMatrixCol(const uint8_t col);
-    /** Prüfen, ob row und col eine gültige Position in der SwitchMatrix sind*/
     inline bool isValidMatrixPos(const uint8_t row, const uint8_t col);
 };

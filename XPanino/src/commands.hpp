@@ -1,19 +1,21 @@
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @file commands.hpp
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Kommandocodes für die Kommunikation zwischen Arduino und PC.
  * @version 0.1
  * @date 2020-04-11
- * 
+ *
  * Copyright © 2017 - 2020. All rights reserved.
- * 
- **************************************************************************************************/
+ *
+ ************************************************************************************************************/
 
 #pragma once
 
 #include <Arduino.h>
 
-// --> Arduino: Diese Kommandocodes werden vom PC zum Arduino gesendet
+/*********************************************************************************************************//**
+ * @brief Kommoandocodes
+ ************************************************************************************************************/
 const uint16_t ACK               = 0xFFFF;    ///< Acknowledge - Angeforderte Daten für Parameter Code folgen
 
 const uint16_t RESET_ARDUINO     = 0xFF01;    ///< Arduino neu booten

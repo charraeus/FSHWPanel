@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @file main.cpp
  * @brief Hauptprogramm XPanino.
  * X-Plane-Panel mit Arduino - Proof of concept.
@@ -7,19 +7,19 @@
  * und der Schalter- und Anzeige-Hardware dar.
  * @author Christian Harraeus (christian@harraeus.de)
  * @version 0.2
- **************************************************************************************************/
+ ************************************************************************************************************/
 
-/// Headerdateien der Objekte includen
+// Headerdateien der Objekte includen
 #include <Switchmatrix.hpp>
 #include <ledmatrix.hpp>
 #include <parser.hpp>
 #include <xpdr.hpp>
 //#include <commands.hpp>
 
-/// Makros für serielle Schnittstelle definieren
+// Makros für serielle Schnittstelle definieren
 #define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
 
-/// Objekte anlegen
+// Objekte anlegen
 LedMatrix leds;             ///< LedMatrix anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 ParserClass parser;         ///< Parser-Objekt anlegen
@@ -28,10 +28,10 @@ BufferClass inBuffer;       ///< Eingabepuffer anlegen
 ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
 
 
-/******************************************************************************
- * @brief Zeichen liegt an der seriellen Schnittstelle vor.
+/*********************************************************************************************************//**
+ * @brief Event: Zeichen liegt an der seriellen Schnittstelle vor.
  *
- ******************************************************************************/
+ ************************************************************************************************************/
 void serialEvent() {
     while (Serial.available() > 0) {
         char inChar = char(Serial.read());
@@ -54,13 +54,15 @@ void serialEvent() {
 }
 
 
-/******************************************************************************
+/*********************************************************************************************************//**
  * @brief Initialisierungen des Arduino durchführen.
  *
- * @todo Dokumentation hier ergänzen und Doxygen-Test-Doku 'rausnehmen.
- ******************************************************************************/
+ * Hier werden die einzelnen Displays, 7-Segment-Anzeigen und LEDs angelegt und deren Position definiert
+ * sowie die Hardware initialisiert und initial abgefragt bzw. gesetzt.
+ *
+ ************************************************************************************************************/
 void setup() {
-    /// Serielle Schnittstelle initialisieren
+    // Serielle Schnittstelle initialisieren
     if (Serial) {
         Serial.begin(_SERIAL_BAUDRATE, SERIAL_8N1);
         // wait for serial port to connect. Needed for native USB
@@ -134,10 +136,10 @@ void setup() {
     #endif
 }
 
-/******************************************************************************
+/*********************************************************************************************************//**
  * @brief Lfd.\ Verarbeitung im loop().
  *
- ******************************************************************************/
+ ************************************************************************************************************/
 void loop() {
     switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
     switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten

@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @file parser.hpp
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Interface der Klassen @em ParserClass und @em BufferClass.
@@ -7,7 +7,7 @@
  *
  * Copyright © 2017 - 2022. All rights reserved.
  *
- **************************************************************************************************/
+ ************************************************************************************************************/
 
 #pragma once
 
@@ -18,12 +18,12 @@ const uint8_t MAX_BUFFER_LENGTH = 50;   ///< Der Buffer kann max. 49 Zeichen zzg
 const uint8_t MAX_PARA_LENGTH = 15;     ///< Max. Länge der geparsten Kommandoparameter.
 
 
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle.
  *
  * Aus Ressoureneinsparungsgründen werden die C-Strings verwendet (und nicht <String.h>)
  *
- ***************************************************************************************************/
+ ************************************************************************************************************/
 class BufferClass {
 public:
     /** get
@@ -31,14 +31,14 @@ public:
      *
      * @return char* Zeichenpuffer
      */
-    char *get() { return buffer; }
+    inline char *get() { return buffer; }
 
 
     /** addChar
      * @brief Zeichen an das Ende des Zeichenpuffers anhängen.
      *
      * @param inChar Das anzuhängende Zeichen.
-     * @return @em 1: erfolgreich durchgeführt.
+     * @return @em 1: erfolgreich durchgeführt.\n
      *         @em 0: Fehler aufgetreten. Wahrscheinlich, weil buffer voll ist.
      */
     uint8_t addChar(char inChar);
@@ -54,10 +54,10 @@ public:
     /** isEmpty
      * @brief Prüfung, ob der Zeichenpuffer leer ist.
      *
-     * @return @em true     Der Zeichenpuffer ist leer.
+     * @return @em true     Der Zeichenpuffer ist leer.\n
      * @return @em false    Der Zeichenpuffer ist nicht leer.
      */
-    bool isEmpty() { return strlen(buffer) == 0; }
+    inline bool isEmpty() { return strlen(buffer) == 0; }
 
 private:
     char buffer[MAX_BUFFER_LENGTH]{'\0'};  ///< Zeichenpuffer der Länge _BUFFER_LENGTH
@@ -65,14 +65,15 @@ private:
 };
 
 
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @brief Vom Flugsimulator kommenden Kommandstring parsen und zerlegen.
  *
- ***************************************************************************************************/
+ ************************************************************************************************************/
 class ParserClass {
 public:
-    /** parseString
+    /**
      * @brief Den vom Flugsimulator erhaltenen String parsen und in 4 Parameter zerlegen.
+     *
      * Im vom Flugsimulator enthaltenen String werden folgende Informationen erwartet,
      * jeweils getrennt durch ein Blank. Es müssen immer diese 4 Parameter übertragen werden:
      * - device     - Device, dass ein Ereignis hat
@@ -87,7 +88,7 @@ public:
      *
      * @param inBuffer Enthält die eingelesenen Zeichen, die von der seriellen Schnittstelle gelesen wurden.
      *                 Der inBuffer wird dabei zerstört.
-     * @return @em true  Parsen wurde fehlerfrei abgeschlossen.
+     * @return @em true  Parsen wurde fehlerfrei abgeschlossen.\n
      *         @em false Fehler beim Parsen aufgetreten.
      */
     bool parseString(char *inBuffer);
@@ -102,12 +103,5 @@ private:
     char devEvent[MAX_PARA_LENGTH] = "";   ///< Ereignis, das aufgetreten ist, z.B. "Schalter angeschaltet".
     char parameter1[MAX_PARA_LENGTH] = "";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
     char parameter2[MAX_PARA_LENGTH] = "";    ///< Parameter zum Ereignis, z.B. die Schalterbezeichnung.
-
-    /** dispatch
-     * @brief Prüfung, ob der Zeichenpuffer leer ist.
-     *
-     * @return @em true     Der Zeichenpuffer ist leer.
-     * @return @em false    Der Zeichenpuffer ist nicht leer.
-     */
     void dispatch();    ///< Dispatcher aufrufen. @todo Dispatcher in eine eigene Klasse auslagern.
 };

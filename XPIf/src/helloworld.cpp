@@ -1,4 +1,4 @@
-/**
+/*********************************************************************************************************//**
  * @file helloworld.cpp
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Testprogramm
@@ -7,7 +7,7 @@
  * 
  * Copyright © 2017 - 2020. All rights reserved.
  * 
- */
+ ************************************************************************************************************/
 
 #include <iostream>
 #include <vector>
@@ -15,10 +15,14 @@
 
 using namespace std;
 
+/*********************************************************************************************************//**
+ * @brief Hauptprogramm
+ * 
+ * @return int 
+ */
 int main()
 {
     vector<string> msg {"Hello", "C++", "World", "from", "VS Code", "and the C++ extension!"};
-
     for (const string& word : msg)
     {
         cout << word << " ";

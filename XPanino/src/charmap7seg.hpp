@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/*********************************************************************************************************//**
  * @file charmap7seg.hpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Stellt Bitmuster für die Anzeige von Zeichen auf 7-Segment-Anzeigen bereit.
@@ -7,7 +7,7 @@
  *
  * Copyright © 2022 - .... All rights reserved.
  *
- **************************************************************************************************/
+ ************************************************************************************************************/
 
 #pragma once
 
@@ -19,8 +19,9 @@ const uint8_t CHAR_2_DASH_VERT = 37;            ///< Zeichen "||"
 const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
 
 
-/** Konstanten für die Bitmuster für die Anzeige der Werte auf den 7-Segment-Anzeigen
- * charMap bildet ein 7-Segment-Display mit Dezimalpunkt ab.
+/*********************************************************************************************************//**
+ * @brief Bildet ein 7-Segment-Display mit Dezimalpunkt ab und liefert Bitmuster
+ *        für die Anzeige der Werte auf den 7-Segment-Anzeigen.
  *
  *       a
  *    -------
@@ -77,16 +78,18 @@ const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
  * werden diese Buchstaben durch drei waagerechte Striche dargestellt.
  * Dies betrifft K, M und N.
  *
- */
+ ************************************************************************************************************/
 class Led7SegmentCharMap {
 public:
-    /** BitMap zur Darstellung auf der 7-Segment-Anzeige für outChar ermitteln */
+    /**
+     * @brief BitMap zur Darstellung auf der 7-Segment-Anzeige für outChar ermitteln.
+     *
+     * @param outChar Zeichen, das ausgegeben werden soll.
+     * @return uint8_t Bitmap, durch die das Zeichen auf der 7-Seg.-Anzeige dargestellt wird.
+     */
     uint8_t get7SegBitMap(char outChar) const;
 
 private:
-    /** Bitmap-Tabelle mit den Bitmustern für die Anzeige von Zeichen auf 7-Segment-Anzeigen */
-    static const uint8_t bitMap[];
-    /** Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können */
-//    static const String charsAllowed;
-    static const char *charsAllowed;
+    static const uint8_t bitMap[];      ///< Bitmap-Tabelle mit den Bitmustern
+    static const char* charsAllowed;    ///< Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können
 };

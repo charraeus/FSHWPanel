@@ -1,4 +1,4 @@
-/**************************************************************************************************
+/**
  * @file xpdr.cpp
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Implementierung der Klasse @em ClockDavtronM803
@@ -7,7 +7,7 @@
  *
  * Copyright © 2017 - 2020. All rights reserved.
  *
- **************************************************************************************************/
+*/
 
 #include <xpdr.hpp>
 
