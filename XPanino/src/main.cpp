@@ -7,6 +7,8 @@
  * und der Schalter- und Anzeige-Hardware dar.
  * @author Christian Harraeus (christian@harraeus.de)
  * @version 0.2
+ *
+ * @todo Doxygen-Dokumentation anschauen und aktualieren, vereinheitlichen usw.
  ************************************************************************************************************/
 
 // Headerdateien der Objekte includen

@@ -27,7 +27,7 @@ const unsigned int BLINK_VERSATZ = 447;     ///< Versatz für die Startzeiten de
  ************************************************************************************************************/
 
 /**
- * @brief Konstruktor - Die Länge der Hell- und Dunkelphase initialisieren
+ * 
  */
 SpeedClass::SpeedClass(const unsigned long int brightTime, const unsigned long int darkTime) {
     this->brightTime = brightTime;
@@ -40,7 +40,7 @@ SpeedClass::SpeedClass(const unsigned long int brightTime, const unsigned long i
  ************************************************************************************************************/
 
 /**
- * @brief Konstruktor - die Matrizen etc. initialisieren
+ *
  */
 LedMatrix::LedMatrix() {
     /// Die Matrizen initalisieren
@@ -142,10 +142,8 @@ void LedMatrix::writeToHardware() {
 
 
 /**
- * @brief Prüfen, ob LED an der Position (@em row, @em col) in der Led Matrix angeschaltet ist.
  *
- * @param pos row und col  Die Nummer der Zeile und Spalte in der LedMatrix.
- * @return @em false Die LED ist ausgeschaltet.
+ *
  */
 bool LedMatrix::isLedOn(const LedMatrixPos pos) {
     if (isValidRowCol(pos)) {
@@ -156,8 +154,8 @@ bool LedMatrix::isLedOn(const LedMatrixPos pos) {
 
 
 /**
- * LED einschalten, d.h.\ das entsprechende Bit in der LedMatrix an der
- * Position (@em row , @em col) setzen.
+ *
+ *
  */
 int LedMatrix::ledOn(const LedMatrixPos pos) {
     if (isValidRowCol(pos)) {
@@ -169,8 +167,8 @@ int LedMatrix::ledOn(const LedMatrixPos pos) {
 
 
 /**
- * LED ausschalten, d.h.\ das entsprechende Bit in der LedMatrix an der
- * Position (@em row, @em col) löschen.
+ *
+ *
  */
 int LedMatrix::ledOff(const LedMatrixPos pos) {
     if (isValidRowCol(pos)) {
@@ -182,10 +180,8 @@ int LedMatrix::ledOff(const LedMatrixPos pos) {
 
 
 /**
- * @brief Das Blinken der LED umschalten
  *
- * @param pos row und col der LED
- * @return Status
+ *
  */
 int LedMatrix::ledToggle(const LedMatrixPos pos) {
     if ((pos.row >= LED_ROWS) || (pos.col >= LED_COLS)) {
@@ -201,11 +197,8 @@ int LedMatrix::ledToggle(const LedMatrixPos pos) {
 
 
 /**
- * @brief Das Blinken der LED einschalten
  *
- * @param pos row und col der LED
- * @param blinkspeed Blink-Geschwindigkeitsklasse
- * @return Status
+ *
  */
 int LedMatrix::ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
     if (isValidRowCol(pos) && isValidBlinkSpeed(blinkSpeed)) {
@@ -222,10 +215,8 @@ int LedMatrix::ledBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
 
 
 /**
- * @brief Das Blinken der LED ausschalten
  *
- * @param pos row und col der LED
- * @return
+ *
  */
 int LedMatrix::ledBlinkOff(const LedMatrixPos pos, const uint8_t blinkSpeed) {
     if (isValidRowCol(pos) && isValidBlinkSpeed(blinkSpeed)) {
@@ -241,10 +232,8 @@ int LedMatrix::ledBlinkOff(const LedMatrixPos pos, const uint8_t blinkSpeed) {
 
 
 /**
- * @brief Prüfen, ob die Led blinkt
  *
- * @param [IN] pos row und col der LED
- * @return
+ *
  */
 int LedMatrix::isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
 
@@ -261,12 +250,8 @@ int LedMatrix::isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
 
 
 /**
- * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
  *
- * @param pos row und col0 der 7-Segment-Anzeige
- * @param charBitMap Bitmap, die auf dieser 7-Segment-Anzeige angezeigt werden soll
- * @param dpOn @em true um den Dezimalpunkt einzuschalten
- *             @em false um den Dezimalpunkt auszuschalten
+ *
  */
 int LedMatrix::set7SegValue(const LedMatrixPos pos, const uint8_t charBitMap, const bool dpOn) {
     // prüfen, ob insbes. alle 8 cols, die für ein 7-Segement-Display benötigt werden, innerhalb
@@ -289,9 +274,8 @@ int LedMatrix::set7SegValue(const LedMatrixPos pos, const uint8_t charBitMap, co
 
 
 /**
- * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
  *
- * @param pos row und col0 der 7-Segment-Anzeige
+ *
  */
 int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts einschalten
@@ -321,9 +305,8 @@ int LedMatrix::set7SegBlinkOn(const LedMatrixPos pos, const bool dpBlink, const 
 
 
 /**
- * @brief Die eingeschalteten Segmente einer 7-Segment-Anzeige blicken lassen
  *
- * @param [IN] pos row und col0 der 7-Segment-Anzeige
+ *
  */
 int LedMatrix::set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink, const uint8_t blinkSpeed) {
     // Blinken der 7-Segment-Anzeige und ggf. auch des Dezimalpunkts ausschalten
@@ -353,9 +336,8 @@ int LedMatrix::set7SegBlinkOff(const LedMatrixPos pos, const bool dpBlink, const
 
 
 /**
- * @brief Die Anzahl der 7-Segment-Anzeigen, die das Display-Feld bilden, festlegen
  *
- * @param matrixPos row und col0 der LED-Matrix
+ *
  */
 void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7SegmentId,
                                    const LedMatrixPos &matrixPos) {
@@ -368,7 +350,8 @@ void LedMatrix::defineDisplayField(const uint8_t &fieldId, const uint8_t &led7Se
 
 
 /**
- * @brief Einen String auf einem Display-Feld ausgeben
+ *
+ *
  */
 void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
     bool dpOn = false;         // Flag, ob Dezimalpunkt im akt. 7-Segment-Display angezeigt wird
@@ -413,6 +396,7 @@ void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
  * heißt, @em row und @em col ist jeweils in [0..LED_ROWS -1 bzw.\ 0..LED_COLS - 1]
  *
  * @param pos row und col Die Nummer der Zeile und Spalte in der LedMatrix.
+ *
  * @return @em true Sowohl @em row als auch @em col sind gültig, d.h. innerhalb der Arraygrenzen.
  * @return @em false @em row oder @em col liegen außerhalb der Arraygrenzen.
  */
