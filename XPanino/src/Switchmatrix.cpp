@@ -12,6 +12,7 @@
 
 #include <Arduino.h>
 #include <Switchmatrix.hpp>
+#include <parser.hpp>
 
 
 /*********************************************************************************************************//**
@@ -82,14 +83,14 @@ void SwitchMatrix::scanSwitchPins() {
  *                              Schaltern übermitteln
  *                    @em false: den Status aller Schalter übermitteln
  */
-void SwitchMatrix::transmitStatus(const bool changedOnly) {
-   for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
+void SwitchMatrix::transmitStatus(const bool changedOnly, EventListClass eventList) {
+    for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
             if (changedOnly && switchMatrix[row][col].isChanged()) {
-                switchMatrix[row][col].transmitStatus(row, col);
+                switchMatrix[row][col].transmitStatus(row, col);        // Methode eines einzelnen Switches
             } else {
                 if (! changedOnly) {
-                    switchMatrix[row][col].transmitStatus(row, col);
+                    switchMatrix[row][col].transmitStatus(row, col) + String(row);
                 }
             }
         }
@@ -99,11 +100,12 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
 
 #ifdef DEBUG
 /**
- * 
+ *
  *
  */
 void SwitchMatrix::printMatrix() {
-    Serial.print("\t\t");
+    Serial.println();
+    Serial.print("\t");
     for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
         Serial.print("Col "); Serial.print(col); Serial.print("\t");
     }

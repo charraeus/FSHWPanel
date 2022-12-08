@@ -11,10 +11,10 @@ Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostr
 1. Para 1: 1. Parameter zur Aktion, d.h. die Nutzdaten (optional),
 1. Para 2: 2. Parameter zur Aktion, d.h. die Nutzdaten (optional).
 
-Kommandoteil | Datentyp @todo: noch anpassen 
+Kommandoteil | Datentyp @todo: noch anpassen
 -------------|--------------------------
 Device       | char / uint8_t
-Action       | uint8_t (1 Byte)
+Event        | char*
 Para 1       | @todo ergänzen
 Para 2       | @todo ergänzen
 
@@ -22,9 +22,9 @@ Para 2       | @todo ergänzen
 flowchart LR
 subgraph Kommando
 	direction LR
-	dev([Device]) --> s1((";")) --> act([Action]) --> c2(( ))
-	act --> s2((";")) --> para1(["Parameter 1"]) --> c2
-	para1 --> s3((";")) --> para2(["Parameter 2"]) --> c2	
+	dev([Device]) --> s1((";")) --> ev([Event]) --> c2(( ))
+	ev --> s2((";")) --> para1(["Parameter 1"]) --> c2
+	para1 --> s3((";")) --> para2(["Parameter 2"]) --> c2
 end
 ```
 
@@ -33,9 +33,9 @@ end
 
 Kommandostring | Bedeutung
 :--------------|------------------------
-`X;X;7000`   | Nachricht von X-Plane an Arduino: Im Transponderfeld den Wert "7000" anzeigen. 
-`X;C; 20.3`   | Nachricht von X-Plane an Arduino: Im O.A.T.-Feld den Wert " 20.3" anzeigen. Der @ steht für ein Blank. Dieser Sonderfall ist nötig, damit das parsen einfacher wird (Blanks trennen die einzelnen Bestandteile des Kommandostrings) 
-`S;ON;2;3` | Nachricht vom Transponder: Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurd eingeschaltet (**ON**). 
+`X;X;7000`     | Nachricht von X-Plane an Arduino: Im Transponderfeld den Wert "7000" anzeigen.
+`X;C; 20.3`    | Nachricht von X-Plane an Arduino: Im O.A.T.-Feld den Wert " 20.3" anzeigen. Der @ steht für ein Blank. Dieser Sonderfall ist nötig, damit das parsen einfacher wird (Blanks trennen die einzelnen Bestandteile des Kommandostrings)
+`S;ON;2;3`     | Nachricht vom Transponder: Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurd eingeschaltet (**ON**).
 | |
 
 Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
@@ -56,29 +56,28 @@ Ein Device definiert das "Gerät", von dem die nachfolgende Action ausgeführt w
 |        |                    |                                                 |
 | D      | DEVICE_DATA = "D " | Daten, z.B. die am Arduino eingestellte Uhrzeit |
 
-### Definierte Actions
+### Definierte Events
 
- Action |Const        | Beschreibung                                               | Parameter&nbsp;1<br/>Typ | Parameter&nbsp;2<br/>Typ | Parameter-Beschreibung
---------|------------------|------------------------------------------------------------|---------------|-----------------------|-----------------------
- ON |SWITCH_ON = "ON" | (Schalter) wurde eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
- LON |SWITCH_LON = "LON" | (Schalter) ist lange eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
- OFF |SWITCH_OFF = "OFF" | (Schalter) ist ausgeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix 
-  |  |  | ||
- X      | XPDR_CODE = "X"   | XPDR-Code anzeigen                         | Transponder-Code<br/>String | - | 4-stellig 
- L      | XPDR_FL = "F" | Flightlevel für Transponder                                | Flightlevel<br/>String | - | 3-stellig 
- LT | M803_LT = "LT"    | Aktuelle Uhrzeit (Local)                                   | Uhrzeit<br/>String          | - | Uhrzeit HHMMSS
- UT     | M803_UT = "UT"   | Aktuelle Uhrzeit (UTC)                                     | Uhrzeit<br/>String | - | Uhrzeit HHMMSS
- ET | M803_ET = "E"   | Elapsed Time                                               | ?             | | Vergangene Zeit HHMMSS
- FT | M803_FT = "FT"    | Flight Time                                                | ?             | | Flight Time in HHMMSS
- V      | M803_VOLTS = "V"  | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht? | ?             | | Spannung in Volt
- Q      | M803_QNH = "Q" | Aktuelles QNH des X-Plane-Wetters                          | ?             | | 4-stellig 
- A      | M803_ALT = "A"    | Aktuelles Altimeter-Setting in inHg                        | ?             ||
- C      | M803_OATC = "C"   | OAT in °C                                                  | ?             | | OAT in Celsius
- F      | M803_OATF = "F"   | OAT in Fahrenheit                                          | ? | | OAT in Fahrenheit
+ Event  |Const               | Beschreibung                                               | Parameter&nbsp;1<br/>Typ | Parameter&nbsp;2<br/>Typ | Parameter-Beschreibung
+--------|--------------------|------------------------------------------------------------|--------------------|---|-----------------------
+ ON     | SWITCH_ON = "ON"   | (Schalter) wurde eingeschaltet     | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix
+ LON    | SWITCH_LON = "LON" | (Schalter) ist lange eingeschaltet | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix
+ OFF    | SWITCH_OFF = "OFF" | (Schalter) ist ausgeschaltet       | Row<br/>uint8_t | Col<br/>uint8_t | Position (row, col) in der Schaltermatrix
+ X      | XPDR_CODE = "X"    | XPDR-Code anzeigen                         | Transponder-Code<br/>String        | - | 4-stellig
+ L      | XPDR_FL = "F" .    | Flightlevel für Transponder                                | Flightlevel<br/>String | - | 3-stellig
+ LT     | M803_LT = "LT"     | Aktuelle Uhrzeit (Local)                                   | Uhrzeit<br/>String | - | Uhrzeit HHMMSS
+ UT     | M803_UT = "UT"     | Aktuelle Uhrzeit (UTC)                                     | Uhrzeit<br/>String | - | Uhrzeit HHMMSS
+ ET     | M803_ET = "E"      | Elapsed Time                                               | ?                  |   | Vergangene Zeit HHMMSS
+ FT     | M803_FT = "FT"     | Flight Time                                                | ?                  |   | Flight Time in HHMMSS
+ V      | M803_VOLTS = "V"   | Spannung in Volt - eigentlich EMF, aber hat der Flusi nicht? | ?                |   | Spannung in Volt
+ Q      | M803_QNH = "Q"     | Aktuelles QNH des X-Plane-Wetters                          | ?                  |   | 4-stellig
+ A      | M803_ALT = "A"     | Aktuelles Altimeter-Setting in inHg                        | ?                  |   |
+ C      | M803_OATC = "C"    | OAT in °C                                                  | ?                  |   | OAT in Celsius
+ F      | M803_OATF = "F"    | OAT in Fahrenheit                                          | ?                  |   | OAT in Fahrenheit
 
 ## Steuerkommandos für den Arduino
 
-| const-Name      | Action | Beschreibung                                               | Parameter-Typ | Parameter-Beschreibung |
+| const-Name      | Event  | Beschreibung                                               | Parameter-Typ | Parameter-Beschreibung |
 | --------------- | ------ | ---------------------------------------------------------- | ------------- | ---------------------- |
 | ACK             | 0xFFFF | Acknowledge - Angeforderte Daten für Parameter Code folgen |               |                        |
 | RESET_ARDUINO   | 0xFF01 | Arduino neu booten                                         | -             |                        |
@@ -86,7 +85,7 @@ Ein Device definiert das "Gerät", von dem die nachfolgende Action ausgeführt w
 
 Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
 
-### Actions und X-Plane-Datarefs
+### Events und X-Plane-Datarefs
 
 Action            | X-Plane-Dataref                                                                                 | X-Plane-Typ | r/w
 ------------------|-------------------------------------------------------------------------------------------------|-------------|----
@@ -105,7 +104,7 @@ Vom Arduino zum PC gesendete Actions
 
 @todo noch weiter ergänzen und updaten!!
 
-const-Name       | Action | Beschreibung                          | Parameter-Typ            | Parameter-Beschreibung
+const-Name       | Event  | Beschreibung                          | Parameter-Typ            | Parameter-Beschreibung
 -----------------|--------|---------------------------------------|--------------------------|-----------------------
 SWITCH_ON        | 0x1101 | Schalter/Taster eingeschaltet         | uint8_t row, uint8_t col | Row und Col in der Schaltermatrix
 SWITCH_LON       | 0x1102 | Schalter/Taster lange eingeschaltet   | uint8_t row, uint8_t col | Row und Col in der Schaltermatrix

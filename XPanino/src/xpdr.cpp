@@ -1,13 +1,12 @@
-/**
+/*********************************************************************************************************//**
  * @file xpdr.cpp
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Implementierung der Klasse @em ClockDavtronM803
- * @version 0.1
- * @date 2017-11-17
+ * @version 0.2
+ * @date 2022-12-08
  *
- * Copyright © 2017 - 2020. All rights reserved.
- *
-*/
+ * Copyright © 2017 - 2022. All rights reserved.
+ ************************************************************************************************************/
 
 #include <xpdr.hpp>
 
@@ -20,7 +19,7 @@ const String eventStrings[NO_OF_EVENT_STRINGS] = {
 };
 
 /**************************************************************************************************
- * ClockDavtronM803 Klassenmethoden
+ * ClockDavtronM803 - public Methoden
  *
  **************************************************************************************************/
 
@@ -61,24 +60,8 @@ void ClockDavtronM803::toggleTimeMode() {
 
 
 /**************************************************************************************************/
-void ClockDavtronM803::process() {
+void ClockDavtronM803::process(const EventClass* event, SwitchMatrix &switchMatrix, LedMatrix &ledMatrix) {
 
-};
-
-
-/**************************************************************************************************/
-Event ClockDavtronM803::event(const String &eventString) {
-    Serial.print("CLOCK hat ein Event erhalten: "); Serial.println(eventString);
-    Event ereignis = Event::BTN_SEL_ON;
-
-//    // Event zurückgeben
-//    for (uint8_t es = 0; es != NO_OF_EVENT_STRINGS; ++es) {
-//        if (eventName == eventStrings[es]) {
-//            return es;
-//            break;
-//        }
-//    }
-    return ereignis;
 };
 
 

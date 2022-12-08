@@ -65,9 +65,9 @@ void Switch::updateOnTime(const unsigned long &newOnTime) {
 
 /**
  *
- *
+ * @todo: von String auf char* umstellen
  */
-void Switch::transmitStatus(uint8_t row, uint8_t col) {
+String Switch::transmitStatus(uint8_t row, uint8_t col) {
     const String SOURCE_XPDR = "X ";
     const String DEVICE_SWITCH = "S ";
 
@@ -78,18 +78,19 @@ void Switch::transmitStatus(uint8_t row, uint8_t col) {
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
         changed = false;
-       charsToSend += + "LON ";
+        charsToSend += + "LON ";
     } else {
         // Den An-/Aus-Status des Schalters übertragen.
         charsToSend += ((getStatus() == LOW) ? "ON " : "OFF ");
     }
     charsToSend += String(row) + " " + String(col);
     #ifdef DEBUG
-    Serial.println(charsToSend);
+    Serial.print("Switch::transmitStatus: charsToSend="); Serial.println(charsToSend);
     ///@todo Switch::transmitStatus ausprogrammieren.
-    #endif
-}
 
+    #endif
+    return charsToSend;
+}
 
 /*********************************************************************************************************//**
  * ab hier die privaten Methoden

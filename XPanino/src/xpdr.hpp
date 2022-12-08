@@ -1,17 +1,22 @@
-/**
+/*********************************************************************************************************//**
  * @file xpdr.hpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Interface der Klassen @em Transponder @em ClockDavtronM803 sowie diverse Aufzählungstypen
- * @version 0.1
- * @date 2017-11-12
+ * @version 0.2
+ * @date 2022-12-08
  *
  * Copyright © 2017 - 2022. All rights reserved.
- *
-*/
+ ************************************************************************************************************/
 
 #pragma once
 
 #include <Arduino.h>
+#include <parser.hpp>
+#include <Switchmatrix.hpp>
+#include <ledmatrix.hpp>
+
+const char DEVICE_M803[] = "M";
+
 
 /**************************************************************************************************
  * Status-Aufzählungstpyen
@@ -89,10 +94,7 @@ public:
     void toggleTimeMode();
 
     // Verarbeitet die Tastendrücke und Daten
-    void process();
-
-    Event event(const String &eventString);
-
+    void process(const EventClass* event, SwitchMatrix &switchMatrix, LedMatrix &ledMatrix);
 
 private:
     const float STD_ALTIMETER_inHg = 29.92;

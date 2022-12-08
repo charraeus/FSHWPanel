@@ -13,6 +13,7 @@
 #pragma once
 
 #include <switch.hpp>
+#include <parser.hpp>
 
 // Konstanten
 const bool TRANSMIT_ONLY_CHANGED_SWITCHES = true; ///< nur veränderte Schalter-Status übertragen
@@ -65,7 +66,7 @@ public:
      *              @em true ==>  es wird nur der Status der Schalter, die sich seit der letzten Abfrage geändert haben, übertragen.\n
      *              @em false ==> der Status aller Schalter wird übertragen.
      */
-    void transmitStatus(bool changedOnly);
+    void transmitStatus(bool changedOnly, EventListClass eventList);
 
 
     #ifdef DEBUG

@@ -26,8 +26,26 @@ LedMatrix leds;             ///< LedMatrix anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
+EventListClass eventList;   ///< Event
 
-ClockDavtronM803 davtron803;    ///< Uhr anlegen (ClockDavtron M803)
+ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
+
+
+/*********************************************************************************************************//**
+ * @brief Events aus der Eventliste an die devices senden, die sie verarbeiten sollen
+ *
+ ************************************************************************************************************/
+void dispatchEvents() {
+    EventClass* event = eventList.getNextEvent();
+    while (event != nullptr) {
+        if (strcmp(event->device, DEVICE_M803) == 0) { m803.process(event, switches, leds);
+        // } else if (event->device == 'X') { xpdr.process(event); {
+        } else {
+            // kein passenden Device gefunden.
+        }
+    event = eventList.getNextEvent();
+    }
+}
 
 
 /*********************************************************************************************************//**
@@ -47,7 +65,9 @@ void serialEvent() {
                 // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde
                 // kein '\r' bzw. '\n' gelesen, was dann den inBuffer geleert hätte.
                 // Also den Buffer jetzt zum Parsen zum Parser senden.
-                parser.parseString(inBuffer.get());
+                eventList.addEvent(parser.parseString(inBuffer.get()));
+                // eventList.addEvent(parser.parseString("y;t;040;050"));
+                // eventList.listEvents();
                 inBuffer.wipe();
             }
             // alle anderen Zeichen werden ignoriert.
@@ -132,7 +152,7 @@ void setup() {
 
     switches.initHardware();            ///< Die Arduino-Hardware der Schaltermatrix initialisieren.
     switches.scanSwitchPins();          ///< Initiale Schalterstände abfragen und übertragen.
-    switches.transmitStatus(TRANSMIT_ALL_SWITCHES);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
+    switches.transmitStatus(TRANSMIT_ALL_SWITCHES, eventList);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
     #ifdef DEBUG
     switches.printMatrix();
     #endif
@@ -144,8 +164,9 @@ void setup() {
  ************************************************************************************************************/
 void loop() {
     switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
-    switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
+    switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES, eventList);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
+    dispatchEvents();
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
     leds.writeToHardware();     ///< LEDs anzeigen bzw. refreshen
 }
