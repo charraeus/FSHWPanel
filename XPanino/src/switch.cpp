@@ -1,4 +1,4 @@
-/**
+/*********************************************************************************************************//**
  * @file switch.cpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Implementierung der Klasse @em Switch
@@ -6,14 +6,16 @@
  * @date 2020-04-10
  *
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
- *
-*/
+************************************************************************************************************/
 
 #include <switch.hpp>
+#include <parser.hpp>
 
-/// Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
+/// @brief Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
 const unsigned long LONG_ON = 3000;
 
+/// @brief EventListe zum Erzeugen von Schalterevents einbinden.
+extern EventListClass eventList;
 
 /**
  *
@@ -68,25 +70,24 @@ void Switch::updateOnTime(const unsigned long &newOnTime) {
  * @todo: von String auf char* umstellen
  */
 void Switch::transmitStatus(uint8_t row, uint8_t col) {
-    const String SOURCE_XPDR = "X ";
-    const String DEVICE_SWITCH = "S ";
-    String charsToSend = "";
+    const String XPDR_SWITCH = "X S ";
+    String charsToSend;
 
     if ((! longOnSent) && longOn) {
         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
         changed = false;
-        charsToSend = + "LON ";
+        charsToSend = "LON ";
     } else {
         // Den An-/Aus-Status des Schalters übertragen.
         charsToSend = ((getStatus() == LOW) ? "ON " : "OFF ");
     }
-    charsToSend = SOURCE_XPDR + DEVICE_SWITCH + charsToSend + String(row) + " " + String(col);
+    charsToSend = XPDR_SWITCH + charsToSend + String(row) + " " + String(col);
     #ifdef DEBUG
     Serial.print("Switch::transmitStatus: charsToSend="); Serial.print(charsToSend); Serial.println("|");
-    ///@todo Switch::transmitStatus ausprogrammieren.
     #endif
+    ///@todo Switch::transmitStatus ausprogrammieren.
     return;
 }
 
