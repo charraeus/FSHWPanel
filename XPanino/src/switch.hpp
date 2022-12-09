@@ -12,7 +12,6 @@
 #pragma once
 
 #include <Arduino.h>
-#include <parser.hpp>
 
 /*********************************************************************************************************//**
  * @brief Abbildung eines Schalters
@@ -71,7 +70,7 @@ public:
      *
      * @todo hier muss noch der Schalterstatus irgendwie an X-Plane übergeben werden.
      */
-    String transmitStatus(uint8_t row, uint8_t col);
+    void transmitStatus(uint8_t row, uint8_t col);
 
 
     /**

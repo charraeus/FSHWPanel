@@ -152,7 +152,7 @@ void setup() {
 
     switches.initHardware();            ///< Die Arduino-Hardware der Schaltermatrix initialisieren.
     switches.scanSwitchPins();          ///< Initiale Schalterstände abfragen und übertragen.
-    switches.transmitStatus(TRANSMIT_ALL_SWITCHES, eventList);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
+    switches.transmitStatus(TRANSMIT_ALL_SWITCHES);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
     #ifdef DEBUG
     switches.printMatrix();
     #endif
@@ -164,7 +164,7 @@ void setup() {
  ************************************************************************************************************/
 void loop() {
     switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
-    switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES, eventList);    ///< Geänderte Schalterstände verarbeiten
+    switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
     dispatchEvents();
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
