@@ -14,13 +14,12 @@
 /// @brief Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
 const unsigned long LONG_ON = 3000;
 
+
 /// @brief EventListe zum Erzeugen von Schalterevents einbinden.
 extern EventQueueClass eventList;
 
-/**
- *
- *
- */
+
+/// @brief Logischen Schalter auf "eingeschaltet" setzen
 void Switch::setOn() {
     status = LOW;
     changed = true;
@@ -31,10 +30,6 @@ void Switch::setOn() {
 }
 
 
-/**
- *
- *
- */
 void Switch::setOff() {
     status = HIGH;
     changed = true;
@@ -43,11 +38,6 @@ void Switch::setOff() {
     longOn = false;
 }
 
-
-/**
- *
- *
- */
 void Switch::checkLongOn() {
     longOn = (onTime >= LONG_ON);
     if (longOn && (! longOnSent)) {
@@ -56,20 +46,13 @@ void Switch::checkLongOn() {
 }
 
 
-/**
- *
- *
- */
 void Switch::updateOnTime(const unsigned long &newOnTime) {
     onTime = calcTimeDiff(switchPressTime, newOnTime);
 }
 
 
-/**
- *
- * @todo: von String auf char* umstellen
- */
 void Switch::transmitStatus(uint8_t row, uint8_t col) {
+    ///@todo: von String auf char* umstellen
     const String XPDR_SWITCH = "X S ";
     String charsToSend;
 
@@ -91,13 +74,13 @@ void Switch::transmitStatus(uint8_t row, uint8_t col) {
     return;
 }
 
+
 /*********************************************************************************************************//**
  * ab hier die privaten Methoden
 *************************************************************************************************************/
 
 /**
  * @brief Differenz zweier Zeitstempel berechnen.
- *
  * Berechnet die Differenz zweier Zeitstempel und gibt diese als Ergebnis
  * zurück. Ein eventueller Überlauf (passiert ca. nach 50 Tagen) wird berücksichtigt.
  *
@@ -124,7 +107,6 @@ unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned l
 
 /**
  * @brief Entprellen der Schalter per Sofware.
- *
  * Siehe Pina Merkert: Fliegender Frederick, c't 22/2020, S. 152
  * Hier ist erstmal nur der Code aufgeschrieben - Implementierung und Test stehen noch aus.
  *
