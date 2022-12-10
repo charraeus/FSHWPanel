@@ -41,13 +41,13 @@ private:
  * @brief Eventliste - sammelt die noch nicht abgearbeiteten Events
  *
  ************************************************************************************************************/
-class EventListClass {
+class EventQueueClass {
 public:
     /**
      * @brief Konstruktor - Leere Liste anlegen.
      *
      */
-    EventListClass();
+    EventQueueClass();
 
     /**
      * @brief Ein Event an das Ende der Liste anfügen.

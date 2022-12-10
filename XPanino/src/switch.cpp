@@ -15,7 +15,7 @@
 const unsigned long LONG_ON = 3000;
 
 /// @brief EventListe zum Erzeugen von Schalterevents einbinden.
-extern EventListClass eventList;
+extern EventQueueClass eventList;
 
 /**
  *

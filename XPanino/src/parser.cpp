@@ -41,12 +41,12 @@ EventClass* EventClass::getNext() { return this->next; };
  * @brief Eventliste - public Methoden
  *
  ************************************************************************************************************/
-EventListClass::EventListClass() {
+EventQueueClass::EventQueueClass() {
     head = nullptr;
     tail = nullptr;
 };
 
-void EventListClass::addEvent(EventClass* ptrNewEvent) {
+void EventQueueClass::addEvent(EventClass* ptrNewEvent) {
     if (ptrNewEvent != nullptr) {
         // #ifdef DEBUG
         // Serial.print("addEvent A: Device="); Serial.print(ptrNewEvent->device); Serial.println("|");
@@ -78,13 +78,13 @@ void EventListClass::addEvent(EventClass* ptrNewEvent) {
     }
 };
 
-EventClass *EventListClass::getNextEvent() {
+EventClass *EventQueueClass::getNextEvent() {
     EventClass* ptr = head;     // Zeiger auf 1. Element sichern
     head = head->getNext();     // head auf das 2. Element zeigen lassen
     return ptr;                 // Zeiger auf das bisherige 1. Element zurück geben
 };
 
-void EventListClass::deleteEvent() {
+void EventQueueClass::deleteEvent() {
     if (head != nullptr) {
         // Liste ist nicht leer
         EventClass* ptr = head;     // Zeiger auf 1. Element sichern
@@ -94,7 +94,7 @@ void EventListClass::deleteEvent() {
 };
 
 #ifdef DEBUG
-void EventListClass::listEvents() {
+void EventQueueClass::listEvents() {
     EventClass* ptr = head;
     while (ptr != nullptr) {
         Serial.print("Device="); Serial.print(ptr->device); Serial.println("|");

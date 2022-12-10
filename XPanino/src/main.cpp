@@ -26,7 +26,7 @@ LedMatrix leds;             ///< LedMatrix anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
-EventListClass eventList;   ///< Event
+EventQueueClass eventList;   ///< Event
 
 ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
 
