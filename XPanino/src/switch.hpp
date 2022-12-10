@@ -23,100 +23,75 @@
  ************************************************************************************************************/
 class Switch {
 public:
-    /**
-     * @brief Setzt den Status des Schalters auf "on" und setzt den Zeitstempel, wann der Schalter \
-     *        eingeschaltet wurde.
-     *
-     */
+    /// @brief Setzt den Status des Schalters auf "on" und setzt den Zeitstempel, wann der Schalter
+    ///        eingeschaltet wurde.
     void setOn();
 
 
-    /**
-     * @brief Setzt den Status des Schalters auf "off" und berechnet die Zeit, wie lange der \
-     *        Schalter eingeschaltet war.
-     *
-     */
+    /// @brief Setzt den Status des Schalters auf "off" und berechnet die Zeit, wie lange der
+    ///        Schalter eingeschaltet war.
     void setOff();
 
-
-    /**
-     * @brief Prüfen, ob ein Schalter länger als 3 Sekunden eingeschaltet ist.
-     *
-     * Falls ein Schalter länger als 3 Sekunden eingeschaltet ist, wird die @em changed Eigenschaft
-     * des Schalters @em true gesetzt. Zeitdauer ist in der Konstanten @em LONG_ON hinterlegt.
-     */
+    /// @brief Prüfen, ob ein Schalter länger als 3 Sekunden eingeschaltet ist.
     void checkLongOn();
 
 
-    /**
-     * @brief Einschaltzeit berechnen und sichern.
-     *
-     * Schreibt die aktuelle Zeit, die der Schalter eingeschaltet ist, in die Eigenschaft onTime.
-     * @note Diese Methode muss regelmäßig aufgerufen werden.
-     *
-     * @param newOnTime Aktueller Zeitstempel in Millisekunden, z.B. millis()
-     */
+    /// @brief Einschaltzeit berechnen und sichern.
+    ///
+    /// Schreibt die aktuelle Zeit, die der Schalter eingeschaltet ist, in die Eigenschaft onTime.
+    /// @note Diese Methode muss regelmäßig aufgerufen werden.
+    ///
+    /// @param newOnTime Aktueller Zeitstempel in Millisekunden, z.B. millis()
     void updateOnTime(const unsigned long &newOnTime);
 
 
-    /**
-     * @brief Den Status eines Schalters (@em ON oder @em off) übertragen.
-     *
-     * Wenn der Schalter länger als @em LONG_ON Millisekunden an ist, wird zusätzlch - aber
-     * nur einmal - der Status @em LON (für \"long on\") gesendet.
-     *
-     * @return EventClass Das zurückgegebene Event kann mittels Parser wie ein Event,
-     *         das vom X-Plane kommt, verarbeitet werden.
-     *
-     * @todo hier muss noch der Schalterstatus irgendwie an X-Plane übergeben werden.
-     */
+    /// @brief Den Status eines Schalters (@em ON oder @em off) übertragen.
+    ///
+    /// Wenn der Schalter länger als @em LONG_ON Millisekunden an ist, wird zusätzlch - aber
+    /// nur einmal - der Status @em LON (für \"long on\") gesendet.
+    ///
+    /// @return EventClass Das zurückgegebene Event kann mittels Parser wie ein Event,
+    ///         das vom X-Plane kommt, verarbeitet werden.
+    ///
+    /// @todo hier muss noch der Schalterstatus irgendwie an X-Plane übergeben werden.
     void transmitStatus(uint8_t row, uint8_t col);
 
 
-    /**
-     * @brief Fragt ab, ob der Schalter eingeschaltet ist.
-     *
-     * Nach Rückgabe des Status wird die @em changed Eigenschaft auf @em false gesetzt.
-     *
-     * @return Zustand des Schalters. @em true wenn der Schalter eingeschaltet ist.
-     */
-     inline bool isOn() { return getStatus() == 0; }
+    /// @brief Fragt ab, ob der Schalter eingeschaltet ist.
+    ///
+    /// Nach Rückgabe des Status wird die @em changed Eigenschaft auf @em false gesetzt.
+    ///
+    /// @return @em true wenn der Schalter eingeschaltet ist.
+    inline bool isOn() { return getStatus() == 0; }
 
 
-    /**
-     * @brief Gibt den Änderungstatus des Schalters zurück\. Der Änderungsstatus wird \
-     *        Ein-/ Ausschalten verändert.
-     *
-     * @return @em true wenn der Schalterstatus seit der letzten Änderung nicht abgefragt wurde,\n
-     *         sonst @em false.
-     */
+    /// @brief Gibt den Änderungstatus des Schalters zurück\. Der Änderungsstatus wird
+    ///        Ein-/ Ausschalten verändert.
+    ///
+    /// @return @em true wenn der Schalterstatus seit der letzten Änderung nicht abgefragt wurde,\n
+    ///         @em false sonst.
     inline bool isChanged() const { return changed; }
 
 
-     /**
-     * @brief Fragt den Schalterstatus ab und setzt den Änderungsstatus des Schalters zurück.
-     *
-     * Nach Rückgabe des Schalterstatus, wird der Änderungsstatus des Schalters,
-     * d.h. die Eigenschaft @em changed, auf @em false gesetzt.
-     *
-     * @return Schalterstatus @em 0, wenn der Schalter eingeschaltet ist.\n
-     *                        @em 1, wenn der Schalter ausgeschaltet ist.
-     *
-     * @see getStatusNoChange()
-     */
+    /// @brief Fragt den Schalterstatus ab und setzt den Änderungsstatus des Schalters zurück.
+    ///
+    /// Nach Rückgabe des Schalterstatus, wird der Änderungsstatus des Schalters,
+    /// d.h. die Eigenschaft @em changed, auf @em false gesetzt.
+    ///
+    /// @return @em 0, wenn der Schalter eingeschaltet ist.\n
+    ///         @em 1, wenn der Schalter ausgeschaltet ist.
+    ///
+    /// @see getStatusNoChange()
     uint8_t getStatus() { changed = false; return status; }
 
 
-    /**
-     * @brief Fragt den Schalterstatus ab ohne den Änderungsstatus des Schalters zurückzusetzen.
-     *
-     * Der Änderungstatus des Schalters, d.h. die Eigenschaft @em changed, bleibt unverändert.
-     *
-     * @return @em 0, wenn der Schalter eingeschaltet ist.\n
-     *         @em 1, wenn der Schalter ausgeschaltet ist.
-     *
-     * @see getStatus()
-     */
+    /// @brief Fragt den Schalterstatus ab ohne den Änderungsstatus des Schalters zurückzusetzen.
+    /// Der Änderungstatus des Schalters, d.h. die Eigenschaft @em changed, bleibt unverändert.
+    ///
+    /// @return @em 0, wenn der Schalter eingeschaltet ist.\n
+    ///         @em 1, wenn der Schalter ausgeschaltet ist.
+    ///
+    /// @see getStatus()
     uint8_t getStatusNoChange() const { return status; }
 
 private:
