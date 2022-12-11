@@ -1,8 +1,11 @@
+# Library-Dateien
+/lib/XP-SDK-301/Delphi/**
+
 # von Doxygen generierte Doku
 doc/html
 
 # Visual Studio Code Konfiguration
-.vscode/
+/.vscode
 
 # Nachfolgend die Angaben aus einem C++-gitignore-Template: https://github.com/github/gitignore
 # Prerequisites
@@ -32,6 +35,7 @@ doc/html
 *.la
 *.a
 *.lib
+!Win/XPLM*.lib
 
 # Executables
 *.exe
