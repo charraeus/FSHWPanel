@@ -26,7 +26,7 @@ LedMatrix leds;             ///< LedMatrix anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
-EventQueueClass eventList;   ///< Event
+EventQueueClass eventQueue;   ///< Event
 
 ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
 
@@ -36,14 +36,14 @@ ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
  *
  ************************************************************************************************************/
 void dispatchEvents() {
-    EventClass* event = eventList.getNextEvent();
+    EventClass* event = eventQueue.getNextEvent();
     while (event != nullptr) {
         if (strcmp(event->device, DEVICE_M803) == 0) { m803.process(event, switches, leds);
         // } else if (event->device == 'X') { xpdr.process(event); {
         } else {
             // kein passenden Device gefunden.
         }
-    event = eventList.getNextEvent();
+    event = eventQueue.getNextEvent();
     }
 }
 
@@ -65,7 +65,7 @@ void serialEvent() {
                 // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde
                 // kein '\r' bzw. '\n' gelesen, was dann den inBuffer geleert hätte.
                 // Also den Buffer jetzt zum Parsen zum Parser senden.
-                eventList.addEvent(parser.parseString(inBuffer.get()));
+                eventQueue.addEvent(parser.parseString(inBuffer.get()));
                 // eventList.addEvent(parser.parseString("y;t;040;050"));
                 // eventList.listEvents();
                 inBuffer.wipe();

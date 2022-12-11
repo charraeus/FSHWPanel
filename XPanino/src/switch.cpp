@@ -16,7 +16,7 @@ const unsigned long LONG_ON = 3000;
 
 
 /// @brief EventListe zum Erzeugen von Schalterevents einbinden.
-extern EventQueueClass eventList;
+extern EventQueueClass eventQueue;
 
 
 /// @brief Logischen Schalter auf "eingeschaltet" setzen
