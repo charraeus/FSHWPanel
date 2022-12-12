@@ -22,11 +22,11 @@
 #define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
 
 // Objekte anlegen
-LedMatrix leds;             ///< LedMatrix anlegen
-SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
+EventQueueClass eventQueue;   ///< Event
 ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
-EventQueueClass eventQueue;   ///< Event
+LedMatrix leds;             ///< LedMatrix anlegen
+SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 
 ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
 
@@ -97,7 +97,7 @@ void setup() {
         while (Serial.available() > 0) {
             Serial.read();
         }
-        Serial.println("XPanino V0.2 (c) Christian Harraeus, 2020 - 2022.\nLos geht's.");
+        Serial.println(F("XPanino"));
     }
 
     leds.initHardware();                      ///< Arduino-Hardware der LED-Matrix initialisieren.
@@ -155,6 +155,7 @@ void setup() {
     switches.transmitStatus(TRANSMIT_ALL_SWITCHES);     ///< Den aktuellen ein-/aus-Status der Schalter an den PC senden.
     #ifdef DEBUG
     switches.printMatrix();
+    //eventQueue.printQueue();
     #endif
 }
 

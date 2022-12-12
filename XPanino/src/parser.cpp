@@ -3,7 +3,7 @@
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Implementierung der Klasse @em Parser.
  * @version 0.1
- * @date 2017-11-17
+ * @date 2022-12-12
  *
  * Copyright © 2017 - 2022. All rights reserved.
  *
@@ -22,6 +22,14 @@
  *
  ************************************************************************************************************/
 
+/// @brief Konstruktor
+EventClass::EventClass() {
+    next = nullptr;
+    #ifdef DEBUG
+    printEvent();
+    #endif
+}
+
 /**
  * @brief Zeiger auf das nächste Element in der Liste (= Nachfolger) eintragen.
  *
@@ -36,9 +44,20 @@ void EventClass::setNext(EventClass* next) { this->next = next; };
  */
 EventClass* EventClass::getNext() { return this->next; };
 
+void EventClass::printEvent() {
+    #ifdef DEBUG
+    Serial.println(F("---EventClass---"));
+    Serial.print(F("Device=")); Serial.print(device); Serial.println(F("|"));
+    Serial.print(F("Event=")); Serial.print(event); Serial.println(F("|"));
+    Serial.print(F("Parameter1=")); Serial.print(parameter1); Serial.println(F("|"));
+    Serial.print(F("Parameter2=")); Serial.print(parameter2); Serial.println(F("|"));
+    if (next == nullptr) { Serial.println(F("<nullptr>"));
+    } else { Serial.println(F("<pointer>")); }
+    #endif
+}
 
 /*********************************************************************************************************//**
- * @brief Eventliste - public Methoden
+ * @brief EventQueue - public Methoden
  *
  ************************************************************************************************************/
 EventQueueClass::EventQueueClass() {
@@ -48,13 +67,6 @@ EventQueueClass::EventQueueClass() {
 
 void EventQueueClass::addEvent(EventClass* ptrNewEvent) {
     if (ptrNewEvent != nullptr) {
-        // #ifdef DEBUG
-        // Serial.print("addEvent A: Device="); Serial.print(ptrNewEvent->device); Serial.println("|");
-        // Serial.print("addEvent A: Event="); Serial.print(ptrNewEvent->event); Serial.println("|");
-        // Serial.print("addEvent A: Parameter1="); Serial.print(ptrNewEvent->parameter1); Serial.println("|");
-        // Serial.print("addEvent A: Parameter2="); Serial.print(ptrNewEvent->parameter2); Serial.println("|");
-        // #endif
-
         if (tail == nullptr) {
             // Liste ist leer --> newEvent ist das einzige Element
             head = ptrNewEvent;
@@ -66,15 +78,6 @@ void EventQueueClass::addEvent(EventClass* ptrNewEvent) {
                                             // neue letzte Element eintragen
             tail = ptrNewEvent;             // Jetzt zeigt Tail auf das neue letzte Element
         }
-        // #ifdef DEBUG
-        // Serial.print("addEvent E: Device="); Serial.print(head->device); Serial.println("|");
-        // Serial.print("addEvent E: Event="); Serial.print(head->event); Serial.println("|");
-        // Serial.print("addEvent E: Parameter1="); Serial.print(head->parameter1); Serial.println("|");
-        // Serial.print("addEvent E: Parameter2="); Serial.print(head->parameter2); Serial.println("|");
-        // Serial.print("addEvent E: head->next=");
-        // if (head->getNext() == nullptr) { Serial.println("<nullptr>");
-        // } else { Serial.println("<pointer>"); }
-        // #endif
     }
 };
 
@@ -94,16 +97,13 @@ void EventQueueClass::deleteEvent() {
 };
 
 #ifdef DEBUG
-void EventQueueClass::listEvents() {
+void EventQueueClass::printQueue() {
+    Serial.println(F("----Eventqueue----"));
     EventClass* ptr = head;
     while (ptr != nullptr) {
-        Serial.print("Device="); Serial.print(ptr->device); Serial.println("|");
-        Serial.print("Event="); Serial.print(ptr->event); Serial.println("|");
-        Serial.print("Parameter1="); Serial.print(ptr->parameter1); Serial.println("|");
-        Serial.print("Parameter2="); Serial.print(ptr->parameter2); Serial.println("|");
-        if (ptr->getNext() == nullptr) { Serial.println("<nullptr>");
-        } else { Serial.println("<pointer>"); }
+        ptr->printEvent();
         ptr = ptr->getNext();
+        Serial.println(F("---"));
     };
 }
 #endif
@@ -118,13 +118,13 @@ void EventQueueClass::listEvents() {
  * Aus Ressoureneinsparungsgründen werden die C-Strings verwendet (und nicht <String.h>)
  */
 uint8_t BufferClass::addChar(const char inChar) {
-    if (actPos < MAX_BUFFER_LENGTH - 1) {
+    if (actPos < MAX_BUFFER_LENGTH) {
         buffer[actPos] = toupper(inChar);
         actPos += 1;
         buffer[actPos] = '\0';
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 
@@ -165,14 +165,5 @@ EventClass* ParserClass::parseString(char *inBuffer) {
             }
         }
     }
-    #ifdef DEBUG
-    Serial.print("parseString: Device="); Serial.print(ptrEvent->device); Serial.println("|");
-    Serial.print("parseString: Event="); Serial.print(ptrEvent->event); Serial.println("|");
-    Serial.print("parseString: Parameter1="); Serial.print(ptrEvent->parameter1); Serial.println("|");
-    Serial.print("parseString: Parameter2="); Serial.print(ptrEvent->parameter2); Serial.println("|");
-    Serial.print("parseString: ptrEvent->next=");
-    if (ptrEvent->getNext() == nullptr) { Serial.println("<nullptr>");
-    } else { Serial.println("<pointer>"); }
-    #endif
     return ptrEvent;
 }

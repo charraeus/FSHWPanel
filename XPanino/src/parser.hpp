@@ -13,9 +13,11 @@
 
 #include <Arduino.h>
 
-// Einige Konstanten
-const uint8_t MAX_BUFFER_LENGTH = 50;   ///< Der Buffer kann max. 49 Zeichen zzgl. Zeilenende '\0' aufnehmen.
-const uint8_t MAX_PARA_LENGTH = 15;     ///< Max. Länge der geparsten Kommandoparameter.
+// Einige Konstanten für die Stringlängen
+const uint8_t MAX_SRC_DEV_LENGTH = 5;   ///< Max. Länge für je Kommando, Source und Device = 4 zzgl. '\0'.
+const uint8_t MAX_PARA_LENGTH = 7;      ///< Max. Länge der geparsten Kommandoparameter = 6 zzgl. '\0'.
+///< Max. Länge des Buffers ergibt sich aus der Länge der Bestandteile
+constexpr uint8_t MAX_BUFFER_LENGTH = 3 * MAX_SRC_DEV_LENGTH + 2 * MAX_PARA_LENGTH;
 
 
 /*********************************************************************************************************//**
@@ -24,16 +26,18 @@ const uint8_t MAX_PARA_LENGTH = 15;     ///< Max. Länge der geparsten Kommandop
  ************************************************************************************************************/
 class EventClass {
 public:
-    char device[MAX_PARA_LENGTH];       ///< device für das das Event bestimmt ist
-    char event[MAX_PARA_LENGTH];        ///< ausgelöstes Event gem. Doku
-    char parameter1[MAX_PARA_LENGTH];   ///< Daten für das Event
-    char parameter2[MAX_PARA_LENGTH];   ///< Daten für das Event
+    char device[MAX_SRC_DEV_LENGTH] = "";    ///< device für das das Event bestimmt ist
+    char event[MAX_SRC_DEV_LENGTH] = "";     ///< ausgelöstes Event gem. Doku
+    char parameter1[MAX_PARA_LENGTH] = "";   ///< Daten für das Event
+    char parameter2[MAX_PARA_LENGTH] = "";   ///< Daten für das Event
 
+    EventClass();
     void setNext(EventClass* next);
     EventClass* getNext();
+    void printEvent();
 
 private:
-    EventClass* next;         ///< Zeiger auf das nächste Event in der Liste
+    EventClass* next = nullptr;         ///< Zeiger auf das nächste Event in der Liste
 };
 
 
@@ -71,7 +75,7 @@ public:
     void deleteEvent();
 
     #ifdef DEBUG
-    void listEvents();
+    void printQueue();
     #endif
 
 private:
@@ -100,8 +104,8 @@ public:
      * @brief Zeichen an das Ende des Zeichenpuffers anhängen.
      *
      * @param inChar Das anzuhängende Zeichen.
-     * @return @em 1: erfolgreich durchgeführt.\n
-     *         @em 0: Fehler aufgetreten. Wahrscheinlich, weil buffer voll ist.
+     * @return @em 0: erfolgreich durchgeführt.\n
+     *         @em 1: Fehler aufgetreten. Wahrscheinlich, weil buffer voll ist.
      */
     uint8_t addChar(char inChar);
 

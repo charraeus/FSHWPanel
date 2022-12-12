@@ -52,26 +52,22 @@ void Switch::updateOnTime(const unsigned long &newOnTime) {
 
 
 void Switch::transmitStatus(uint8_t row, uint8_t col) {
-    ///@todo: von String auf char* umstellen
-    const String XPDR_SWITCH = "X S ";
-    String charsToSend;
-
+    char charsToSend[MAX_BUFFER_LENGTH] = "S;S;";
+    char charRowCol[MAX_PARA_LENGTH * 2] = "";  // Zwischenspeicher zum Umwandeln int --> c-string
     if ((! longOnSent) && longOn) {
         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
         changed = false;
-        charsToSend = "LON ";
+        strcat(charsToSend, "LON;");
     } else {
         // Den An-/Aus-Status des Schalters übertragen.
-        charsToSend = ((getStatus() == LOW) ? "ON " : "OFF ");
+        strcat(charsToSend, (getStatus() == LOW) ? "ON;" : "OFF;");
     }
-    charsToSend = XPDR_SWITCH + charsToSend + String(row) + " " + String(col);
-    #ifdef DEBUG
-    Serial.print("Switch::transmitStatus: charsToSend="); Serial.print(charsToSend); Serial.println("|");
-    #endif
-    ///@todo Switch::transmitStatus ausprogrammieren.
-    return;
+    snprintf (charRowCol, MAX_PARA_LENGTH * 2, "%u;%u", row, col);
+    strcat(charsToSend, charRowCol);
+    // Ereignis an X-Plane senden
+    Serial.println(charsToSend);
 }
 
 

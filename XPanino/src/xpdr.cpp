@@ -13,7 +13,7 @@
 // Konstanten der möglichen Event-Strings
 const uint8_t NO_OF_EVENT_STRINGS = 6;
 const String eventStrings[NO_OF_EVENT_STRINGS] = {
-    "BTN_OAT ON",
+    "S;S",
     "BTN_SEL ON", "BTN_SEL OFF",
     "BTN_CTL ON", "BTN_CTL LON", "BTN_CTL OFF"
 };
