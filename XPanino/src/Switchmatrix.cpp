@@ -65,9 +65,8 @@ void SwitchMatrix::scanSwitchPins() {
                     switchMatrix[matrixRow][matrixCol].checkLongOn();
                 }
             } else {
-                Serial.print("Error: Invalid switchMatrix position in "
-                    "SwitchMatrix::scanSwitchPins(): row=");
-                Serial.print(row); Serial.print(", col="); Serial.println(col); // NOLINT
+                // Ungültige Position, d.h. row oder col außerhalb der Matrix.
+                Serial.print(F("Error 001"));
             }
         }   /// weiter geht's mit der nächsten Spalte
         digitalWrite(row, HIGH);    /// Row-Pin wieder auf HIGH setzen und damit deaktivieren.
@@ -86,10 +85,8 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
             if (changedOnly && switchMatrix[row][col].isChanged()) {
                 switchMatrix[row][col].transmitStatus(row, col);        // Methode eines einzelnen Switches
-                //Serial.print("SwitchMatrix::transmitStatus1: eventStr="); Serial.print(eventStr); Serial.println("|");
            } else {
                 if (! changedOnly) {
-                    //Serial.print("SwitchMatrix::transmitStatus2: eventStr="); Serial.print(eventStr); Serial.println("|");
                     switchMatrix[row][col].transmitStatus(row, col);
                 }
             }
@@ -97,28 +94,24 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
     }
 }
 
-
 #ifdef DEBUG
-/**
- *
- *
- */
+/// @brief Schaltermatrix auf Terminal ausgeben.
 void SwitchMatrix::printMatrix() {
     Serial.println();
-    Serial.print("\t");
+    Serial.print(F("\t"));
     for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
-        Serial.print("Col "); Serial.print(col); Serial.print("\t");
+        Serial.print(F("Col ")); Serial.print(col); Serial.print(F("\t"));
     }
     Serial.println();
     for (uint8_t col = 0; col <= SWITCH_MATRIX_COLS; col++) {
-        Serial.print("--------");
+        Serial.print(F("--------"));
     }
     Serial.println();
     for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
-        Serial.print("Row "); Serial.print(row); Serial.print(":\t");
+        Serial.print(F("Row ")); Serial.print(row); Serial.print(F(":\t"));
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
-            Serial.print(row); Serial.print(" / "); Serial.print(col);
-            Serial.print("\t");
+            Serial.print(row); Serial.print(F(" / ")); Serial.print(col);
+            Serial.print(F("\t"));
         }
         Serial.println();
     }

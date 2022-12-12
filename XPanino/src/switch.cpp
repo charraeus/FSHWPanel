@@ -52,41 +52,23 @@ void Switch::updateOnTime(const unsigned long &newOnTime) {
 
 
 void Switch::transmitStatus(uint8_t row, uint8_t col) {
-    char charsToSend[MAX_BUFFER_LENGTH] = "X S ";
-    char charRowCol[MAX_PARA_LENGTH * 2] = "";
-    snprintf (charRowCol, MAX_PARA_LENGTH * 2, "%d %d", row, col);
+    char charsToSend[MAX_BUFFER_LENGTH] = "S;S;";
+    char charRowCol[MAX_PARA_LENGTH * 2] = "";  // Zwischenspeicher zum Umwandeln int --> c-string
     if ((! longOnSent) && longOn) {
         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
         changed = false;
-        strcat(charsToSend, "LON ");
+        strcat(charsToSend, "LON;");
     } else {
         // Den An-/Aus-Status des Schalters übertragen.
-        strcat(charsToSend, (getStatus() == LOW) ? "ON " : "OFF ");
+        strcat(charsToSend, (getStatus() == LOW) ? "ON;" : "OFF;");
     }
+    snprintf (charRowCol, MAX_PARA_LENGTH * 2, "%u;%u", row, col);
     strcat(charsToSend, charRowCol);
-    Serial.println(charsToSend);    // Ereignis an X-Plane senden
-    return;
+    // Ereignis an X-Plane senden
+    Serial.println(charsToSend);
 }
-// void Switch::transmitStatus(uint8_t row, uint8_t col) {
-//     ///@todo: von String auf char* umstellen
-//     String charsToSend = "X S ";
-
-//     if ((! longOnSent) && longOn) {
-//         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
-//         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
-//         longOnSent = true;
-//         changed = false;
-//         charsToSend += "LON ";
-//     } else {
-//         // Den An-/Aus-Status des Schalters übertragen.
-//         charsToSend += ((getStatus() == LOW) ? "ON " : "OFF ");
-//     }
-//     charsToSend += String(row) + " " + String(col);
-//     Serial.println(charsToSend);    // Ereignis an X-Plane senden
-//     return;
-// }
 
 
 /*********************************************************************************************************//**

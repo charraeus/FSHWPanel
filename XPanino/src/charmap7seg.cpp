@@ -116,6 +116,10 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
  *
  */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
+    /// @brief (in cpp-Datei) Bitmap zur Anzeige auf der 7-Segment-Anzeige zurückgeben.
+    /// @param outChar
+    /// @todo statt Schleife die Standardfunktion strchr() verwenden.
+    /// @return
     for (unsigned int i = 0; i < strlen(charsAllowed); ++i) {
         if (outChar == charsAllowed[i]) {
             return bitMap[i];
