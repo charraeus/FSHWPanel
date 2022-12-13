@@ -34,8 +34,15 @@ void ClockDavtronM803::setTemperature(int8_t &temperatureC) { this->temperatureC
 void ClockDavtronM803::setPowerStatus(PowerStatusTyp &powerStatus) { this->powerStatus = powerStatus; };
 void ClockDavtronM803::setAltimeter(float &altimeter) { this->altimeter = altimeter; };
 
-/**************************************************************************************************/
-void ClockDavtronM803::toggleOatVoltsMode() {
+/// @todo richtig implementieren; gibt momentan immer "124356" zurück.
+char* ClockDavtronM803::getLocalTimeDigits() {
+    char r[] = {"124356"};
+    char *p = r;
+    return p;
+};
+
+
+OatVoltsModeTyp ClockDavtronM803::toggleOatVoltsMode() {
     int nextMode{static_cast<int>(oatVoltsMode)};
 
     nextMode++;
@@ -44,11 +51,11 @@ void ClockDavtronM803::toggleOatVoltsMode() {
     } else {
         oatVoltsMode = static_cast<OatVoltsModeTyp>(nextMode);
     }
+    return oatVoltsMode;
 };
 
 
-/**************************************************************************************************/
-void ClockDavtronM803::toggleTimeMode() {
+TimeModeTyp ClockDavtronM803::toggleTimeMode() {
     int nextStatus{static_cast<int>(timeMode)};
 
     nextStatus++;
@@ -57,6 +64,7 @@ void ClockDavtronM803::toggleTimeMode() {
     } else {
         timeMode = static_cast<TimeModeTyp>(nextStatus);
     }
+    return timeMode;
 }
 
 

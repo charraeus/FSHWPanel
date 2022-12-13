@@ -75,7 +75,7 @@ enum class m803Event {
  * @todo Doku ergänzen
  *
  **************************************************************************************************/
-class ClockDavtronM803 {
+class ClockDavtronM803 : public Device {
 public:
     void setTimeMode(TimeModeTyp &timeMode);
     void setLocalTime(uint32_t &localTime);
@@ -87,23 +87,23 @@ public:
     void setPowerStatus(PowerStatusTyp &powerStatus);
     void setAltimeter(float &altimeter);
 
-    /**
-     * @brief Durch die verschiedenen Modi des oberen Displays schalten.
-     *
-     */
-    void toggleOatVoltsMode();
+    /// @brief Die lokale Zeit als String abrufen
+    /// @return Lokale Zeit als String zur Anzeige auf 7-Segment-Anzeigen
+    char* getLocalTimeDigits();
 
-    /**
-     * @brief Durch die verschiedenen Zeit-Modi des unteren Displays schalten.
-     *
-     */
-    void toggleTimeMode();
+    /// @brief Durch die verschiedenen Modi des oberen Displays schalten.
+    /// @return Der jetzt aktuelle Status der Anzeige
+    OatVoltsModeTyp toggleOatVoltsMode();
+
+    /// @brief Durch die verschiedenen Zeit-Modi des unteren Displays schalten.
+    /// @return Der jetzt aktuelle Zeitmodus
+    TimeModeTyp toggleTimeMode();
 
     // Verarbeitet die Tastendrücke und Daten
     void process(EventClass event);
 
 private:
-    const float STD_ALTIMETER_inHg = 29.92;
+    const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg
 
     TimeModeTyp timeMode{TimeModeTyp::TIME_LT};  ///< Initial wird die lokale Zeit im unteren Display angezeigt.
     uint32_t localTime{0};      ///< Die lokale Zeit im Format 00HHMMSS checken wies vom Flusi kommt
