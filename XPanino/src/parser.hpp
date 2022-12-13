@@ -126,7 +126,7 @@ public:
     inline bool isEmpty() { return strlen(buffer) == 0; }
 
 private:
-    char buffer[MAX_BUFFER_LENGTH]{'\0'};  ///< Zeichenpuffer der Länge _BUFFER_LENGTH
+    char buffer[MAX_BUFFER_LENGTH] = {"\0"};  ///< Zeichenpuffer der Länge _BUFFER_LENGTH
     unsigned int actPos{0};  ///< aktuelles Ende des Buffers; zeigt auf die Position nach dem letzten Zeichen
 };
 

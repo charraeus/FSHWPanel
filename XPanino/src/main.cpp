@@ -12,9 +12,11 @@
  ************************************************************************************************************/
 
 // Headerdateien der Objekte includen
+#include <dispatcher.hpp>
 #include <Switchmatrix.hpp>
 #include <ledmatrix.hpp>
 #include <parser.hpp>
+#include <m803.hpp>
 #include <xpdr.hpp>
 //#include <commands.hpp>
 
@@ -22,30 +24,15 @@
 #define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
 
 // Objekte anlegen
-EventQueueClass eventQueue;   ///< Event
+DispatcherClass dispatcher; ///< Dispatcher
+EventQueueClass eventQueue; ///< Event
 ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
 LedMatrix leds;             ///< LedMatrix anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
 
 ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
-
-
-/*********************************************************************************************************//**
- * @brief Events aus der Eventliste an die devices senden, die sie verarbeiten sollen
- *
- ************************************************************************************************************/
-void dispatchEvents() {
-    EventClass* event = eventQueue.getNextEvent();
-    while (event != nullptr) {
-        if (strcmp(event->device, DEVICE_M803) == 0) { m803.process(event, switches, leds);
-        // } else if (event->device == 'X') { xpdr.process(event); {
-        } else {
-            // kein passenden Device gefunden.
-        }
-    event = eventQueue.getNextEvent();
-    }
-}
+TransponderKT76C xpdr;      ///< Transponder anlegen
 
 
 /*********************************************************************************************************//**
@@ -167,7 +154,6 @@ void loop() {
     switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
     switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
-    dispatchEvents();
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
     leds.writeToHardware();     ///< LEDs anzeigen bzw. refreshen
 }
