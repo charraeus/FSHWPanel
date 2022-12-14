@@ -14,7 +14,7 @@
 #include <Switchmatrix.hpp>
 #include <ledmatrix.hpp>
 #include <device.hpp>
-#include <parser.hpp>
+#include <buffer.hpp>
 
 const char DEVICE_M803[] = "M803";
 

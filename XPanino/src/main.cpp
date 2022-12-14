@@ -15,7 +15,7 @@
 #include <dispatcher.hpp>
 #include <Switchmatrix.hpp>
 #include <ledmatrix.hpp>
-#include <parser.hpp>
+#include <buffer.hpp>
 #include <m803.hpp>
 #include <xpdr.hpp>
 //#include <commands.hpp>
@@ -26,7 +26,6 @@
 // Objekte anlegen
 DispatcherClass dispatcher; ///< Dispatcher
 EventQueueClass eventQueue; ///< Event
-ParserClass parser;         ///< Parser-Objekt anlegen
 BufferClass inBuffer;       ///< Eingabepuffer anlegen
 LedMatrix leds;             ///< LedMatrix anlegen
 SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
@@ -52,7 +51,7 @@ void serialEvent() {
                 // Zeilenende erkannt und der inBuffer ist nicht leer. D.h., vorher wurde
                 // kein '\r' bzw. '\n' gelesen, was dann den inBuffer geleert hätte.
                 // Also den Buffer jetzt zum Parsen zum Parser senden.
-                eventQueue.addEvent(parser.parseString(inBuffer.get()));
+                eventQueue.addEvent(inBuffer.parseString(inBuffer.get()));
                 // eventList.addEvent(parser.parseString("y;t;040;050"));
                 // eventList.listEvents();
                 inBuffer.wipe();

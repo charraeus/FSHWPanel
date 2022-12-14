@@ -8,15 +8,16 @@
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
 ************************************************************************************************************/
 
+#include <buffer.hpp>
+#include <event.hpp>
 #include <switch.hpp>
-#include <parser.hpp>
 
 /// @brief Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
 const unsigned long LONG_ON = 3000;
 
 
 /// @brief EventListe zum Erzeugen von Schalterevents einbinden.
-extern EventQueueClass eventQueue;
+//extern EventQueueClass eventQueue;
 
 
 /// @brief Logischen Schalter auf "eingeschaltet" setzen
