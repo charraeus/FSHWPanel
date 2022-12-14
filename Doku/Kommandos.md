@@ -1,7 +1,6 @@
 # Kommunikation zwischen Hardware und X-Plane auf dem PC {#Kommunikation}
 
 ## Allgemeiner Aufbau
-
 Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostrings. Ein Kommandostring besteht immer aus 5 verschiedenen Teilen, die im Ganzen als zusammengesetzter String verschickt werden. Die einzelnen Teile sind jeweils durch ein Blank getrennt. Am Ende steht immer ein \<CR> ("\\r") und/oder ein \<LF> ("\\n").
 
 1. Device: Gerät, das angesprochen werden soll, oder von dem Daten kommen,
@@ -9,23 +8,16 @@ Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostr
 1. Para 1: 1. Parameter zur Aktion, d.h. die Nutzdaten (optional),
 1. Para 2: 2. Parameter zur Aktion, d.h. die Nutzdaten (optional).
 
-Kommandoteil | Datentyp @todo: noch anpassen
--------------|--------------------------
-Device       | char / uint8_t
-Event        | char*
-Para 1       | @todo ergänzen
-Para 2       | @todo ergänzen
+|Kommandoteil | Datentyp       |
+|-------------|----------------|
+|Device       | char / uint8_t |
+|Event        | char*          |
+|Para 1       |                |
+|Para 2       |                |
 
-```mermaid
-flowchart LR
-subgraph Kommando
-	direction LR
-	dev([Device]) --> s1((";")) --> ev([Event]) --> c2(( ))
-	ev --> s2((";")) --> para1(["Parameter 1"]) --> c2
-	para1 --> s3((";")) --> para2(["Parameter 2"]) --> c2
-end
-```
+@todo noch anpassen und ergänzen
 
+[![Syntaxdiagramm des Kommandos.][bild-01] Syntaxdiagramm des Kommandos][bild-01]
 
 **Beispiele**
 
@@ -33,10 +25,12 @@ Kommandostring | Bedeutung
 :--------------|------------------------
 `X;X;7000`     | Nachricht von X-Plane an Arduino: Im Transponderfeld den Wert "7000" anzeigen.
 `X;C; 20.3`    | Nachricht von X-Plane an Arduino: Im O.A.T.-Feld den Wert " 20.3" anzeigen. Der @ steht für ein Blank. Dieser Sonderfall ist nötig, damit das parsen einfacher wird (Blanks trennen die einzelnen Bestandteile des Kommandostrings)
-`S;ON;2;3`     | Nachricht vom Transponder: Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurde eingeschaltet (**ON**). 
+`S;ON;2;3`     | Nachricht vom Transponder: Der **S**chalter an der Position row=**2** und col=**3** (in der Schaltermatrix) wurde eingeschaltet (**ON**).
 | |
 
 Für die Entwicklungs- und Testphase werde Buchstaben statt roher Bytes verwendet, da diese im Terminal direkt gelesen werden können.
+
+[bild-01]: ./mermaid/img/kommando-01.svg
 
 ## Geräteübergreifende Infos und Status-Informationen
 
@@ -145,9 +139,7 @@ M803_OATF         | sim/cockpit2/temperature/outside_air_temp_degf, .../outside_
 
 
 
-@todo Vom Arduino zum PC gesendete Actions
-------------------------------------------------------------------
-
+## Vom Arduino zum PC gesendete Actions
 @todo noch weiter ergänzen und updaten!!
 
 const-Name       | Event  | Beschreibung                          | Parameter-Typ            | Parameter-Beschreibung

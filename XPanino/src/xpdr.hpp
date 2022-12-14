@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
  * @file xpdr.hpp
  * @author Christian Harraeus (christian@harraeus.de)
- * @brief Interface der Klassen @em Transponder @em ClockDavtronM803 sowie diverse Aufzählungstypen
+ * @brief Interface der Klassen @em Transponder @em ClockDavtronM803 sowie diverse Aufzählungstypen.
  * @version 0.2
  * @date 2022-12-08
  *
@@ -22,8 +22,9 @@ const char DEVICE_XPDR[] = "XPDR";
  *
  **************************************************************************************************/
 
-/**************************************************************************************************
+/** ************************************************************************************************
  * @brief Modell des Transponders KT76C
+ *
  * @todo Doku ergänzen
  *
  **************************************************************************************************/

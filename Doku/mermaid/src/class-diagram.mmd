@@ -1,0 +1,180 @@
+classDiagram
+    direction LR
+
+    class Serial {
+        <<Built-in>>
+        +serialEvent()
+        +serialAvailable()
+        +read() : char
+    }
+
+    class BufferClass {
+        +get() : char*
+        +addChar(char inChar) : uint8_t
+        +wipe()
+        +bool isEmpty()
+        +parseString(char *inBuffer) : EventClass*
+        -buffer[MAX_BUFFER_LENGTH] : char
+        -actPos : unsigned int
+    }
+
+    class Device {
+        +isBatteryPowerOn() : bool
+        +isAvionics1PowerOn() : bool
+        +isAvionics2PowerOn() : bool
+        -batteryPower : bool
+        -avionics1Power : bool
+        -avionics2Power : bool
+    }
+
+    class ClockDavtronM803 {
+        +getLocalTimeDigits() : char*
+        +toggleOatVoltsMode() : OatVoltsModeTyp
+        +toggleTimeMode() : TimeModeTyp
+        +process(EventClass event)
+        -qnh(float &altimeter) : float
+        -STD_ALTIMETER_inHg : float
+        -timeMode : TimeModeTyp
+        -localTime : uint32_t
+        -utc : uint32_t
+        -flightTime : uint32_t
+        -elapsedTime : uint32_t
+        -oatVoltsMode : OatVoltsModeTyp
+        -temperatureC : unit8_t
+        -powerStatus : PowerStatusTyp
+        -altimeter : float
+    }
+
+    class DispatcherClass {
+        +dispatch(EventClass event)
+    }
+
+    class EventClass {
+        +device[MAX_SRC_DEV_LENGTH] : char
+        +event[MAX_SRC_DEV_LENGTH] : char
+        +parameter1[MAX_PARA_LENGTH] : char
+        +parameter2[MAX_PARA_LENGTH] : char
+        +EventClass()
+        +setNext(EventClass* next)
+        +getNext() : EventClass
+        -EventClass* next
+    }
+
+    class EventQueueClass {
+        +EventQueueClass()
+        +addEvent(EventClass* ptrNewEvent)
+        +getNextEvent() : EventClass*
+        +deleteEvent()
+        -head : EventClass*
+        -tail : EventClass*
+    }
+
+    Serial -- BufferClass
+    BufferClass -- EventClass
+    BufferClass -- EventQueueClass
+
+    EventQueueClass "1" --o "n" EventClass
+    DispatcherClass -- EventClass
+    DispatcherClass -- ClockDavtronM803
+    DispatcherClass -- TransponderKT76C
+    Device "1" --|> "1" ClockDavtronM803
+    Device "1" --|> "1" TransponderKT76C
+
+
+    class TransponderKT76C {
+        +process(EventClass event)
+    }
+
+    class SpeedClass {
+        +SpeedClass(brightTime, darkTime)
+        +getBrightTime() : unsigned long int
+        +getDarkTime() unsigned long int
+        -brightTime : unsigned long it
+        -darkTime : unsigned long int
+    }
+
+    class DisplayField {
+        +led7SegmentRows[MAX_7SEGMENT_UNITS] : uint8_t
+        +led7SegmentCol0s[MAX_7SEGMENT_UNITS] : uint8_t
+        +count7SegmentUnits : uint8_t
+    }
+
+    class LedMatrixPos {
+        +row : uint8_t
+        +col : uint8_t
+    }
+
+    class LedMatrix {
+        +LedMatrix()
+        +initHardware()
+        +writeToHardware()
+        +isLedOn(LedMatrixPos pos) : bool
+        +ledOn(LedMatrixPos pos) : int
+        +ledOff(LedMatrixPos pos) : int
+        +ledToggle(LedMatrixPos pos) : int
+        +ledBlinkOn(LedMatrixPos pos, uint8_t blinkSpeed) : int
+        +ledBlinkOff(LedMatrixPos pos, uint8_t blinkSpeed) : int
+        +isLedBlinkOn(LedMatrixPos pos, uint8_t blinkSpeed) : int
+        +set7SegValue(LedMatrixPos pos, uint8_t charBitMap, bool dpOn)
+        +set7SegBlinkOn(LedMatrixPos pos, bool dpBlink, uint8_t blinkSpeed)
+        +set7SegBlinkOff(LedMatrixPos pos, bool dpBlink, uint8_t blinkSpeed) : int
+        +defineDisplayField(uint8_t &fieldId, uint8_t &led7SegmentId, LedMatrixPos &matrixPos)
+        +display(uint8_t &fieldId, String &outString);
+        -matrix[LED_ROWS] : uint32_t
+        -hwMatrix[LED_ROWS] : uint32_t
+        -displays[MAX_DISPLAY_FIELDS] : DisplayField
+        -charMap : Led7SegmentCharMap
+        -blinkStatus[NO_OF_SPEED_CLASSES][LED_ROWS] : uint32_t
+        -blinkStartTime[NO_OF_SPEED_CLASSES] : unsigned long int
+        -isBlinkDarkPhase[NO_OF_SPEED_CLASSES] : bool
+        -nextBlinkInterval[NO_OF_SPEED_CLASSES] : unsigned long int
+        -isValidRowCol(LedMatrixPos pos) : bool
+        -isValidBlinkSpeed(uint8_t blinkSpeed) : bool
+        -isSomethingToBlink() : bool
+        -doBlink();
+    }
+
+    class Led7SegmentCharMap {
+        +get7SegBitMap(char outChar) : uint8_t
+        -bitMap[] : uint8_t
+        -charsAllowed : char*
+    }
+
+    class SwitchMatrix {
+        +initHardware()
+        +scanSwitchPins()
+        +transmitStatus(bool changedOnly)
+        -switchMatrix[SWITCH_MATRIX_ROWS][SWITCH_MATRIX_COLS] : Switch
+        -changed : bool
+        -debounceTime : unsigned int
+        isValidMatrixRow(const uint8_t row) : bool
+        isValidMatrixCol(const uint8_t col) : bool
+        isValidMatrixPos(const uint8_t row, const uint8_t col) : bool
+    }
+
+    class Switch {
+        +setOn()
+        +setOff()
+        +checkLongOn()
+        +updateOnTime(const unsigned long &newOnTime)
+        +transmitStatus(uint8_t row, uint8_t col)
+        +isOn() : bool
+        +isChanged() : bool
+        +getStatus() : uint8_t
+        +getStatusNoChange() : uint8_t
+        -uint8_t status
+        -longOn : bool
+        -longOnSent : bool
+        -switchPressTime : unsigned long
+        -onTime : unsigned long
+        -changed : bool
+        -uint8_t history
+        -static unsigned long calcTimeDiff(unsigned long &onTime, unsigned long &offTime)
+        -uint8_t debounce(uint8_t &history, uint8_t &newStatus)
+    }
+
+    LedMatrix --> LedMatrixPos
+    LedMatrix "1" --* "n" DisplayField
+    LedMatrix --* SpeedClass
+    LedMatrix --* Led7SegmentCharMap
+    SwitchMatrix --* Switch

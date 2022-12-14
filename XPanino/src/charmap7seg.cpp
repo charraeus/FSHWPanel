@@ -1,4 +1,4 @@
-/*********************************************************************************************************//**
+/***************************************************************************************************
  * @file charmap7seg.cpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Interface der Klasse @em Led7SegmentCharMap und viele Konstanten zur Anzeige.
@@ -7,20 +7,20 @@
  *
  * Copyright © 2017 - 2022. All rights reserved.
  *
- ************************************************************************************************************/
+ **************************************************************************************************/
 
 #include <Arduino.h>
 #include <charmap7seg.hpp>
 
 
-/*********************************************************************************************************//**
+/***************************************************************************************************
  * @brief Array mit den erlaubten - weil auf 7-Segment-Anzeigen darstellbaren - Zeichen.
  *
  * Aus Ressourceneinsparungsgründen wird keine String-Klasse verwendet.
  */
 const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
 
-/*********************************************************************************************************//**
+/***************************************************************************************************
  * @brief bitMap enthalten die Bitmuster um die einzelnen Segemente der 7-Segment-Anzeigen für die
  *        Anzeige der Ziffern und Buchstaben anzusteuern. bitMap bildet ein 7-Segment-Display mit
  *        Dezimalpunkt ab.
@@ -57,6 +57,7 @@ const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUco
  * - Die Minutentrenner-LEDs der Uhr anzeigen
  * - Die LED UT anzeigen
  * vgl. Doku "Belegung der LED-Matrix des 1. IO-Warrior" in Evernote
+ *  ```
  *                most sig. Byte   least sig. Byte
  *                7      07      07      07      0
  *    matrix[0] = 0b00000000010010010011111100010000;
@@ -67,7 +68,7 @@ const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUco
  *    matrix[5] = 0b00000000011000110110110100000000;
  *    matrix[6] = 0b00000000001110010111110100000000;
  *    matrix[7] = 0b00000000001101100000000000010000;
- *
+ * ```
  ************************************************************************************************************/
 const uint8_t Led7SegmentCharMap::bitMap[] =  {
         //gfedcba
@@ -112,14 +113,13 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
     };
 
 
-/**
- *
- */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
     /// @brief (in cpp-Datei) Bitmap zur Anzeige auf der 7-Segment-Anzeige zurückgeben.
     /// @param outChar
+    ///
     /// @todo statt Schleife die Standardfunktion strchr() verwenden.
-    /// @return
+    ///
+    /// @return Bitmap zur Anzeige eines Fehlers
     for (unsigned int i = 0; i < strlen(charsAllowed); ++i) {
         if (outChar == charsAllowed[i]) {
             return bitMap[i];

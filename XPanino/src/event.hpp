@@ -53,7 +53,7 @@ public:
     /**
      * @brief Ein Event an das Ende der Liste anfügen.
      *
-     * @param newEvent Zeiger auf das anzufügende Event
+     * @param ptrNewEvent Zeiger auf das anzufügende Event
      */
     void addEvent(EventClass* ptrNewEvent);
 

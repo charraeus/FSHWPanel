@@ -1,15 +1,15 @@
 /*********************************************************************************************************//**
- * @file xpdr.cpp
+ * @file m803.cpp
  * @author Christian Harraeus <christian@harraeus.de>
- * @brief Implementierung der Klasse @em ClockDavtronM803
+ * @brief Implementierung der Klasse @em ClockDavtronM803.
  * @version 0.2
  * @date 2022-12-08
  *
  * Copyright © 2017 - 2022. All rights reserved.
  ************************************************************************************************************/
 
-#include <m803.hpp>
 #include <device.hpp>
+#include <m803.hpp>
 
 // Konstanten der möglichen Event-Strings
 const uint8_t NO_OF_EVENT_STRINGS = 6;
@@ -68,14 +68,13 @@ TimeModeTyp ClockDavtronM803::toggleTimeMode() {
 }
 
 
-/**************************************************************************************************/
 void ClockDavtronM803::process(const EventClass event) {
 
 };
 
 
 /** qnh
- * @brief Altimeter in Hg in QNH umrechnen
+ * @brief Altimeter in Hg in QNH umrechnen.
  *
  * 29,92 in Hg = 1013,25 hPa
  */

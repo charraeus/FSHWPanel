@@ -8,6 +8,7 @@
  * Copyright © 2017 - 2020. All rights reserved.
  *
  * @todo Müssen die Konstanten global sein?
+ *
  ************************************************************************************************************/
 
 #pragma once
@@ -89,6 +90,7 @@ public:
  * @brief LEDs, die in einer Matrix angeordnet sind.
  *
  * @todo Ausführlichere Doku ergänzen.
+ *
  ************************************************************************************************************/
 class LedMatrix {
 public:

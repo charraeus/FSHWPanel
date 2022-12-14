@@ -8,6 +8,7 @@
  * Copyright © 2017 - 2020. All rights reserved.
  *
  * @todo statt <em>if not defined(NDEBUG)</em> besser auf <em>if defined(DEBUG)</em> umstellen.
+ *
  ************************************************************************************************************/
 
 #pragma once
@@ -33,6 +34,7 @@ constexpr uint8_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_L
  * @brief Schaltermatrix zur Aufnahme von Schaltern der Klasse @em switch.
  *
  * @todo Schaltermatrixklasse hier noch dokumentieren.
+ *
  ************************************************************************************************************/
 class SwitchMatrix {
 public:
@@ -51,19 +53,21 @@ public:
      * Die Schalterstatus werden in der switchMatrix gespeichert.
      * @see Externe Doku: Arduino-Doku
      * @todo Statt \@see den richtigen Doxygen-Verweis auf die Arduino-Doku verwenden.
+     *
      */
     void scanSwitchPins();
 
 
     /**
-     * Den Status aller Schalter in der Matrix ablegen.
+     * @brief Schalterstatus (@em ON, @e OFF, @em LON) übermitteln und
+     *        den Status aller Schalter in der Matrix ablegen.
      *
      * Überträgt den Status der einzelnen Schalter in die Schaltermatrix.
      * Hierzu wird die Methode @em Switch::transmitStatus() des jeweiligen Schalters verwendet.
      *
-     * @param [in]  changedOnly
-     *              @em true ==>  es wird nur der Status der Schalter, die sich seit der letzten Abfrage geändert haben, übertragen.\n
-     *              @em false ==> der Status aller Schalter wird übertragen.
+     * @param changedOnly @em true ==>  nur den Status der Schalter, die sich seit
+     *                                  der letzten Abfrage geändert haben, übertragen.\n
+     *                    @em false ==> den Status aller Schalter übertragen.
      */
     void transmitStatus(bool changedOnly);
 

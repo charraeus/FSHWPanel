@@ -1,0 +1,8 @@
+%% Bild zu Kommandos.md / Allgemeiner Aufbau
+flowchart LR
+subgraph Kommando
+	direction LR
+	dev([Device]) --> s1((";")) --> ev([Event]) --> c2(( ))
+	ev --> s2((";")) --> para1(["Parameter 1"]) --> c2
+	para1 --> s3((";")) --> para2(["Parameter 2"]) --> c2
+end

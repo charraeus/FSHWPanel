@@ -89,7 +89,7 @@ void Switch::transmitStatus(uint8_t row, uint8_t col) {
  * @return unsigned long Zeitdifferenz in Millisekunden
  */
 unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned long &offTime) {
-    const unsigned long maxLong = 4294967295;  /** @todo besser sizeOf(unsigned long) nehmen */
+    const unsigned long maxLong = 4294967295;  /// @todo besser sizeOf(unsigned long) nehmen */
     // Einschaltzeit ausrechnen. millis() kann überlaufen; das muss berücksichtigt werden
     if (offTime >= onTime) {
         // millis() ist nicht übergelaufen (Normalfall)
@@ -108,6 +108,7 @@ unsigned long Switch::calcTimeDiff(const unsigned long &onTime, const unsigned l
  * Hier ist erstmal nur der Code aufgeschrieben - Implementierung und Test stehen noch aus.
  *
  * @todo Braucht's das überhaupt?
+ *
  */
 uint8_t debounce(uint8_t &history, uint8_t &newStatus) {
     history = (history << static_cast<uint8_t>(1)) | (newStatus);     // bisherige history mit *aktuell gelesenem* Status aktualisieren

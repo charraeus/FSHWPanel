@@ -73,13 +73,7 @@ void SwitchMatrix::scanSwitchPins() {
     }   /// weiter geht's mit der nächsten Row
 }
 
-/** SwitchMatrix::transmitStatus
- * @brief Schalterstatus (ON, OFF, LON) übermitteln
- *
- * @param changedOnly @em true: nur den Status von seit letztem Mal geänderten
- *                              Schaltern übermitteln
- *                    @em false: den Status aller Schalter übermitteln
- */
+
 void SwitchMatrix::transmitStatus(const bool changedOnly) {
     for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {

@@ -1,23 +1,27 @@
-/*********************************************************************************************************//**
+/***************************************************************************************************
  * @file m803.hpp
  * @author Christian Harraeus (christian@harraeus.de)
- * @brief Interface der Klassen @em Transponder @em ClockDavtronM803 sowie diverse Aufzählungstypen
+ * @brief Interface der Klasse @em ClockDavtronM803 sowie diverse Aufzählungstypen.
  * @version 0.2
  * @date 2022-12-08
  *
  * Copyright © 2017 - 2022. All rights reserved.
- ************************************************************************************************************/
+ **************************************************************************************************/
 
 #pragma once
 
 #include <Arduino.h>
-#include <Switchmatrix.hpp>
-#include <ledmatrix.hpp>
-#include <device.hpp>
 #include <buffer.hpp>
+#include <device.hpp>
+#include <ledmatrix.hpp>
+#include <Switchmatrix.hpp>
 
-const char DEVICE_M803[] = "M803";
+const char DEVICE_M803[] = "M803";  ///< Kommando, das von X-Plane kommt.
 
+/***************************************************************************************************
+ * @brief Eventklasse - wird wahrscheinlich nicht benötigt.
+ *
+ */
 enum class Event {
     BTN_OAT_ON,         // Der Taster OAT/VOLTS wurde gedrückt
     BTN_SEL_ON,         // der Taster SELECT wurde gedrückt
@@ -29,12 +33,12 @@ enum class Event {
 };
 
 
-/**************************************************************************************************
+/***************************************************************************************************
  * Status-Aufzählungstpyen
  *
  **************************************************************************************************/
 
-/**
+/***************************************************************************************************
  * @brief Aufzählungstyp für die nur alternativ möglichen Anzeigen.
  *
  */
@@ -45,7 +49,7 @@ enum class OatVoltsModeTyp {
     OAT_QNH             ///< Im oberen Display wird das akt. QNH angezeigt.
 };
 
-/**
+/***************************************************************************************************
  * @brief Aufzählungstyp für die verschiedenen Zeitvarianten, die angezeigt werden.
  *
  */
@@ -56,7 +60,7 @@ enum class TimeModeTyp {
     TIME_FT             ///< Flight Time
 };
 
-/**
+/***************************************************************************************************
  * @brief Aufzählungstyp für die möglichen Events, die verarbeitet werden müssen.
  *
  */
@@ -70,11 +74,12 @@ enum class m803Event {
     XP_TEMPERATURE      // Neue Temperatur vom X-Plane empfangen
 };
 
-/**************************************************************************************************
- * @brief Modell der Uhr Davtron M803
+/***************************************************************************************************
+ * @brief Modell der Uhr Davtron M803.
+ *
  * @todo Doku ergänzen
  *
- **************************************************************************************************/
+ */
 class ClockDavtronM803 : public Device {
 public:
     void setTimeMode(TimeModeTyp &timeMode);

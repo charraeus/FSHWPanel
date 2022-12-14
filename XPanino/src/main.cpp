@@ -9,6 +9,7 @@
  * @version 0.2
  *
  * @todo Doxygen-Dokumentation anschauen und aktualieren, vereinheitlichen usw.
+ *
  ************************************************************************************************************/
 
 // Headerdateien der Objekte includen

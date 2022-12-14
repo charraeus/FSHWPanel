@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
- * @file parser.cpp
+ * @file buffer.cpp
  * @author Christian Harraeus <christian@harraeus.de>
- * @brief Implementierung der Klasse @em Parser.
+ * @brief Implementierung der Klasse @em BufferClass.
  * @version 0.1
  * @date 2022-12-12
  *

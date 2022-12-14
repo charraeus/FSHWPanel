@@ -1,4 +1,4 @@
-/*********************************************************************************************************//**
+/***************************************************************************************************
  * @file charmap7seg.hpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Stellt Bitmuster für die Anzeige von Zeichen auf 7-Segment-Anzeigen bereit.
@@ -7,7 +7,7 @@
  *
  * Copyright © 2022 - .... All rights reserved.
  *
- ************************************************************************************************************/
+ **************************************************************************************************/
 
 #pragma once
 
@@ -19,10 +19,11 @@ const uint8_t CHAR_2_DASH_VERT = 37;            ///< Zeichen "||"
 const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
 
 
-/*********************************************************************************************************//**
+/***************************************************************************************************
  * @brief Bildet ein 7-Segment-Display mit Dezimalpunkt ab und liefert Bitmuster
  *        für die Anzeige der Werte auf den 7-Segment-Anzeigen.
  *
+ * ```
  *       a
  *    -------
  *    |     |
@@ -35,25 +36,27 @@ const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
  *    -------
  *       d
  *
+ * ```
  * charMap enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
  * a wird dabei durch das niederstwertige Bit repräsentiert, g durch das höchstwertige Bit.
  *
- * Beispiel:
+ * **Beispiel:**
  * - Auf den 7 Digits des XPDR die Ziffernfolge 0..6 anzeigen
  * - Die Dezimalpunkte im Digit 2 und 6 anzeigen
  * - Die LED R anzeigen
  * - Auf den oberen 4 Digits der Uhr folgende Zeichen anzeigen:
- *   -- Drei waagerechte Striche
- *   -- Minus
- *   -- E und Dezimalpunkt
- *   -- r
+ *   - Drei waagerechte Striche
+ *   - Minus
+ *   - E und Dezimalpunkt
+ *   - r
  * - Auf den unteren 4 Digits der Uhr folgende Zeichen anzeigen:
- *   -- kleines o und Dezimalpunkt
- *   -- F
- *   -- C
- *   -- Zwei senkrechte Striche
+ *   - kleines o und Dezimalpunkt
+ *   - F
+ *   - C
+ *   - Zwei senkrechte Striche
  * - Die Minutentrenner-LEDs der Uhr anzeigen
  * - Die LED UT anzeigen
+ *
  * vgl. Doku "Belegung der LED-Matrix des 1. IO-Warrior" in Evernote
  *          most sig. Byte                least sig. Byte
  *                |                              |
@@ -85,7 +88,7 @@ public:
      * @brief BitMap zur Darstellung auf der 7-Segment-Anzeige für outChar ermitteln.
      *
      * @param outChar Zeichen, das ausgegeben werden soll.
-     * @return uint8_t Bitmap, durch die das Zeichen auf der 7-Seg.-Anzeige dargestellt wird.
+     * @return Bitmap, durch die das Zeichen auf der 7-Seg.-Anzeige dargestellt wird.
      */
     uint8_t get7SegBitMap(char outChar) const;
 

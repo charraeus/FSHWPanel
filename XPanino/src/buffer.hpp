@@ -1,7 +1,7 @@
 /*********************************************************************************************************//**
- * @file parser.hpp
+ * @file buffer.hpp
  * @author Christian Harraeus <christian@harraeus.de>
- * @brief Interface der Klassen @em ParserClass und @em BufferClass.
+ * @brief Interface der Klasse @em BufferClass.
  * @version 0.1
  * @date 2022-12-08
  *
@@ -19,12 +19,12 @@
 constexpr uint8_t MAX_BUFFER_LENGTH = 3 * MAX_SRC_DEV_LENGTH + 2 * MAX_PARA_LENGTH;
 
 
-/*********************************************************************************************************//**
+/***********************************************************************************************//**
  * @brief Puffer für die Ein-/Ausgabe von Zeichen von/an der/die serielle Schnittstelle.
  *
  * Aus Ressoureneinsparungsgründen werden die C-Strings verwendet (und nicht <String.h>)
  *
- ************************************************************************************************************/
+ **************************************************************************************************/
 class BufferClass {
 public:
     /**

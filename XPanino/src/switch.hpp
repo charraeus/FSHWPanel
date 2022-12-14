@@ -50,10 +50,8 @@ public:
     /// Wenn der Schalter länger als @em LONG_ON Millisekunden an ist, wird zusätzlch - aber
     /// nur einmal - der Status @em LON (für \"long on\") gesendet.
     ///
-    /// @return EventClass Das zurückgegebene Event kann mittels Parser wie ein Event,
-    ///         das vom X-Plane kommt, verarbeitet werden.
-    ///
     /// @todo hier muss noch der Schalterstatus irgendwie an X-Plane übergeben werden.
+    ///
     void transmitStatus(uint8_t row, uint8_t col);
 
 
