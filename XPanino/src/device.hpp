@@ -10,9 +10,6 @@
 
 #pragma once
 
-/// @brief Aufzählungstyp für Powerstatus
-enum class PowerStatusTyp {POWER_ON = true, POWER_OFF = false};
-
 /// @brief Device - allgemeine Funktionen für jedes Gerät
 class Device {
 public:
@@ -37,7 +34,7 @@ public:
     bool isPoweravailable();
 
 private:
-    PowerStatusTyp batteryPower;
-    PowerStatusTyp avionics1Power;
-    PowerStatusTyp avionics2Power;
+    bool batteryPower;
+    bool avionics1Power;
+    bool avionics2Power;
 };

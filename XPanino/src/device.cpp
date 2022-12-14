@@ -12,24 +12,24 @@
 
 /// @brief Device - Konstruktor
 Device::Device() {
-    batteryPower = PowerStatusTyp::POWER_ON;
-    avionics1Power = PowerStatusTyp::POWER_ON;
-    avionics2Power = PowerStatusTyp::POWER_ON;
+    batteryPower   = true;
+    avionics1Power = true;
+    avionics2Power = true;
 };
 
 
 inline bool Device::isBatteryPowerOn() {
-    return static_cast<bool>(batteryPower);
+    return batteryPower;
 };
 
 
 inline bool Device::isAvionics1PowerOn() {
-    return static_cast<bool>(avionics1Power);
+    return avionics1Power;
 };
 
 
 inline bool Device::isAvionics2PowerOn() {
-    return static_cast<bool>(avionics2Power);
+    return avionics2Power;
 };
 
 

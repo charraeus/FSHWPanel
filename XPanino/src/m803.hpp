@@ -84,7 +84,7 @@ public:
     void setElapsedTime(uint32_t &elapsedTime);
     void setOatVoltsMode(OatVoltsModeTyp &OatVoltsMode);
     void setTemperature(int8_t &temperatureC);
-    void setPowerStatus(PowerStatusTyp &powerStatus);
+    void setPowerStatus(bool &powerStatus);
     void setAltimeter(float &altimeter);
 
     /// @brief Die lokale Zeit als String abrufen
@@ -112,7 +112,7 @@ private:
     uint32_t elapsedTime{0};    ///< Die elapsed time im Format 00HHMMSS
     OatVoltsModeTyp oatVoltsMode = OatVoltsModeTyp::OAT_CELSIUS;  ///< Initial wird die Temeperatur in Celsius im oberen Display angezeigt.
     int8_t temperatureC{0};     ///< Die Temperatur in Grad Celsius  checken wie's vom Flusi kommt
-    PowerStatusTyp powerStatus = PowerStatusTyp::POWER_OFF;  ///< Initial ist die Power off.
+    bool powerStatus = false;  ///< Initial ist die Power off.
     float altimeter{STD_ALTIMETER_inHg};     ///< Luftdruck in inHg
 
     // Altimeter in QNH umrechnen

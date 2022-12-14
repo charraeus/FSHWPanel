@@ -31,7 +31,7 @@ void ClockDavtronM803::setFlightTime(uint32_t &flightTime) { this->flightTime = 
 void ClockDavtronM803::setElapsedTime(uint32_t &elapsedTime) { this->elapsedTime = elapsedTime; };
 void ClockDavtronM803::setOatVoltsMode(OatVoltsModeTyp &oatVoltsMode) {this->oatVoltsMode = oatVoltsMode; };
 void ClockDavtronM803::setTemperature(int8_t &temperatureC) { this->temperatureC = temperatureC; };
-void ClockDavtronM803::setPowerStatus(PowerStatusTyp &powerStatus) { this->powerStatus = powerStatus; };
+void ClockDavtronM803::setPowerStatus(bool &powerStatus) { this->powerStatus = powerStatus; };
 void ClockDavtronM803::setAltimeter(float &altimeter) { this->altimeter = altimeter; };
 
 /// @todo richtig implementieren; gibt momentan immer "124356" zurück.
