@@ -135,10 +135,10 @@ brew install visual-paradigm-ce
 * [Google Go Style Guide][stg-06]
 * [Google XML Document Format Style Guide][stg-07]
 
-[stg-01]: (https://google.github.io/styleguide/cppguide.html)
-[stg-02]: (https://google.github.io/styleguide/xmlstyle.html)
-[stg-03]: (https://www.python.org/dev/peps/pep-0008/)
-[stg-04]: (https://google.github.io/styleguide/pyguide.html)
-[stg-05]: (https://google.github.io/styleguide/shell.xml)
-[stg-06]: (https://google.github.io/styleguide/go/)
-[stg-07]: (https://google.github.io/styleguide/xmlstyle.html)
+[stg-01]: https://google.github.io/styleguide/cppguide.html
+[stg-02]: https://google.github.io/styleguide/xmlstyle.html
+[stg-03]: https://www.python.org/dev/peps/pep-0008/
+[stg-04]: https://google.github.io/styleguide/pyguide.html
+[stg-05]: https://google.github.io/styleguide/shell.xml
+[stg-06]: https://google.github.io/styleguide/go/
+[stg-07]: https://google.github.io/styleguide/xmlstyle.html
