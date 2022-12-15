@@ -1,4 +1,6 @@
-# Verdrahtungsplan für XPanino Transponder und Uhr {#Verdrahtungsplan}
+# Verdrahtungsplan für XPanino Transponder und Uhr {#verdrahtungsplan}
+
+@tableofcontents
 
 ## Raspberry Pico
 
@@ -15,30 +17,29 @@ Beispielcode für Schaltermatrix mit PIO-Code: <https://github.com/GitJer/Some_R
 | 2            | "OFF" |  "SBY" | "TST"  | "ON"   | "ALT"  |
 | 3            | "OAT" |  "SEL" | "CTRL" | -      | "IDT"  |
 
-### Raspberry Pico <--> FSHWPanel-Transponder (Schalter)
+### Raspberry Pico \<--\> FSHWPanel-Transponder (Schalter)
 
-Schaltplan: *Transponder KT 76C, Uhr Davtron M803 - Anschluss LED und 7-Segment-Anzeigen, Schalter.pdf*
+Schaltplan: *Transponder KT 76C, Uhr Davtron M803 - Anschluss LED und 7-Segment-Anzeigen, Schalter.pdf*.
 
-Pico-PIN    |      | Stecker-PIN | Logische-Bez. | Draht-Farbe
-------------|------|-------------|---------------|------------
-**Schalter:**
-GPxx  Pin   | <--> | Pin  1      | SW-Col 0      | gr
-GPxx  Pin   | <--> | Pin  2      | SW-Col 1      | vi
-GPxx  Pin   | <--> | Pin  3      | SW-Col 2      | bl
-GPxx  Pin   | <--> | Pin  4      | SW-Col 3      | gn
-GPxx  Pin   | <--> | Pin  5      | SW-Col 4      | ge
-GPxx  Pin   | <--> | Pin  6      | SW-Row 0      | or
-GPxx  Pin   | <--> | Pin  7      | SW-Row 1      | rt
-GPxx  Pin   | <--> | Pin  8      | SW-Row 2      | br
-GPxx  Pin   | <--> | Pin  9      | SW-Row 3      | sw
-GPxx  Pin   | <--> | Pin 10      | -             | ws
-**LEDs:**
-GPxx  Pin   | <--> | Pin  1      |       | sw
-GPxx  Pin   | <--> | Pin  2      |       | ws
-GPxx  Pin   | <--> | Pin  3      |       | gr
-GPxx  Pin   | <--> | Pin  4      |       | vi
-GND  Pin    | <--> | Pin 10      | GND           | br
-
+| Pico-PIN    |        | Stecker-PIN | Logische Bez. | Draht-Farbe |
+|-------------|--------|-------------|---------------|-------------|
+| **Schalter:** |||||
+| GPxx  Pin   | \<--\> | Pin  1      | SW-Col 0      | gr          |
+| GPxx  Pin   | \<--\> | Pin  2      | SW-Col 1      | vi          |
+| GPxx  Pin   | \<--\> | Pin  3      | SW-Col 2      | bl          |
+| GPxx  Pin   | \<--\> | Pin  4      | SW-Col 3      | gn          |
+| GPxx  Pin   | \<--\> | Pin  5      | SW-Col 4      | ge          |
+| GPxx  Pin   | \<--\> | Pin  6      | SW-Row 0      | or          |
+| GPxx  Pin   | \<--\> | Pin  7      | SW-Row 1      | rt          |
+| GPxx  Pin   | \<--\> | Pin  8      | SW-Row 2      | br          |
+| GPxx  Pin   | \<--\> | Pin  9      | SW-Row 3      | sw          |
+| GPxx  Pin   | \<--\> | Pin 10      | -             | ws          |
+| **LEDs** |||||
+| GPxx  Pin   | \<--\> | Pin  1      |               | sw          |
+| GPxx  Pin   | \<--\> | Pin  2      |               | ws          |
+| GPxx  Pin   | \<--\> | Pin  3      |               | gr          |
+| GPxx  Pin   | \<--\> | Pin  4      |               | vi          |
+| GND  Pin    | \<--\> | Pin 10      | GND           | br          |
 
 ## Arduino Uno
 

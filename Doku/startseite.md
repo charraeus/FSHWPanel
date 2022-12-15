@@ -1,4 +1,4 @@
-# Hardware für X-Plane {#mainpage}
+# Hardware für X-Plane {#intro}
 
 > Beispiel für gute Dokumentation 
 > in device.hpp und m803.hpp.

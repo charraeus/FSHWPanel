@@ -1,4 +1,6 @@
+# Entwicklungsumgebung {#entwicklungsumgebung}
 
+@tableofcontents
 
 ## Entwicklungsumgebung mit Visual Studio Code
 ### Visual Studio Code
@@ -122,6 +124,7 @@ brew install visual-paradigm-ce
 ```
 
 ## Style-Guides
+
 * C++
   * [Google C++ Style Guide][stg-01]
   * [Google C++ Linter `cpplint`][stg-02]

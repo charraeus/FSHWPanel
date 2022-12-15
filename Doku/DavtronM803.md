@@ -1,23 +1,8 @@
----
-title:  'XPanino'
-subtitle: "Uhr Davtron M803 und Transponder Bendix-King KT 76C"
-subject: Beschreibung der Bedienung und des Aufbaus einer Uhr und eines
-         Transponders für X-Plane
-author: Christian Harraeus
-date: 16. Oktober 2020
-
-description: |
-    This is a long
-    description.
-
-    It consists of two paragraphs
-lang: de-DE
-documentclass: scrartcl
-pagestyle: headings
----
 # Uhr Davtron M803 {#m803_manual} 
 
-## Bedienelemente Davtron M803 {#M803_Bedienelemente}
+@tableofcontents
+
+## Bedienelemente Davtron M803 {#m803_bedienelemente}
 
 Die Frontseite ![Frontplatte][M803Front]
 
@@ -40,7 +25,7 @@ Die Bedienelemente ![Bedienelemente][M803Elemente]
 [M803Front]: Bilder/Davtron-M803-Front-klein.jpg
 [M803Elemente]: Bilder/Davtron-M803-mitNr.jpg
 
-## Funktion und Bedienung {#M803_Bedienung}
+## Funktion und Bedienung {#m803_bedienung}
 
 ### Betrieb
 
@@ -118,9 +103,9 @@ Die Anzeige der einzelnen Werte erfolgt im nachfolgend beschriebenen Format:
 
 Nach Drücken von SELECT für 3 Sekunden zeigen beide Displays (3) und (4) jeweils 88 sowie das Display (6) 88.88 an. Außerdem leuchten alle 6 LEDs (LT, UT, ET, FT und die Trenner-LEDs (5)). Bei Loslassen des Knopfs SELECT wird zur vorherigen Anzeigesituation zurückgekehrt.
 
-# Hardware für die Uhr und den Transponder {#Hardware_M803_KT76C}
+# Hardware für die Uhr und den Transponder {#hardware_m803_kt76c}
 
-## Anordnung der Schalter für Uhr und Transponder in der Schaltermatrix {#M803_KT76C_Schaltermatrix}
+## Anordnung der Schalter für Uhr und Transponder in der Schaltermatrix {#m803_kt76c_schaltermatrix}
 
 
 
@@ -132,29 +117,30 @@ Nach Drücken von SELECT für 3 Sekunden zeigen beide Displays (3) und (4) jewei
 
 **ACHTUNG:** Die Col-Nummer muss noch auf die Gegebenheiten des Anschlusses an den Arduino anstatt an den IOW angepasst werden!
 
-## Verdrahtung Arduino Uno/Micro <--> Schalter der Uhr {#M803_Schalterverdrahtung}
+## Verdrahtung Arduino Uno/Micro <--> Schalter der Uhr {#m803_schalterverdrahtung}
 
-|Arduino-Uno |Arduino-Micro | Stecker-PIN | IOW-Bez.    | Draht-Farbe|
-|------------|--------------|-------------|-------------|------------|
-|Pin A2      |Pin           |  Pin  1     | IOW2-ROWS6  | sw         | umlöten!! und hier korrigieren
-|Pin A3      |Pin           |  Pin  2     | IOW2-ROWS4  | ws         | umlöten!! und hier korrigieren
-|Pin 12      |Pin           |  Pin 10     | IOW2-COL7   | rt         | umlöten!! und hier korrigieren
-|Pin 13      |Pin           |  Pin  9     | IOW2-COL6   | br         | umlöten!! und hier korrigieren
+|Arduino-Uno |Arduino-Micro | Stecker-PIN | IOW-Bez.    | Draht-Farbe|               |
+|------------|--------------|-------------|-------------|------------|---------------|
+|Pin A2      |Pin           |  Pin  1     | IOW2-ROWS6  | sw         | umlöten!! und hier korrigieren |
+|Pin A3      |Pin           |  Pin  2     | IOW2-ROWS4  | ws         | umlöten!! und hier korrigieren |
+|Pin 12      |Pin           |  Pin 10     | IOW2-COL7   | rt         | umlöten!! und hier korrigieren |
+|Pin 13      |Pin           |  Pin  9     | IOW2-COL6   | br         | umlöten!! und hier korrigieren |
 
 Table: Verdrahtung der Uhren-Schalter
 
 Die Spalte Arduino-Uno stellt eine alternative Verdrahtungsmöglichkeit bei Nutzung eines Arduino-Uno dar.
 
-## Verdrahtung Arduino Uno/Micro <--> Schalter des Transponders {#KT76C_Schalterverdrahtung}
+## Verdrahtung Arduino Uno/Micro <--> Schalter des Transponders {#kt76c_schalterverdrahtung}
 
 |Arduino-Uno |Arduino-Micro | Stecker-PIN | IOW-Bez.    | Draht-Farbe|
 |------------|--------------|-------------|-------------|------------|
+|            |              |             |             |            |
 
 Table: Verdrahtung der Transponderschalter
 
-## LEDs und 7-Segmentanzeigen für Uhr und Transponder {#M803_KT76C_LED}
+## LEDs und 7-Segmentanzeigen für Uhr und Transponder {#m803_kt76c_led}
 
-### Anordnung der LEDs für Uhr und Transponder in der LED-Matrix {#M803_KT76C_LEDMatrix}
+### Anordnung der LEDs für Uhr und Transponder in der LED-Matrix {#m803_kt6c_ledmatrix}
 
 |              |**Row 0**   |**Row 1**   |**Row 2** |**Row 3** |**Row 4** |**Row 5** |**Row 6** |**Row 7** |
 |:--------------|:---------------|:---------------|:---------------|:---------------|:---------------|:---------------|:---------------|:---------------|
@@ -183,7 +169,7 @@ Table: 7-Segment-Anzeigen
 
 **ACHTUNG:** Die Col-Nummer muss noch auf die Gegebenheiten des Anschlusses an den Arduino anstatt an den IOW angepasst werden!
 
-### Verdrahtung Arduino Uno/Micro <--> FSHWPanel-LED-Modul (LEDs) {#M803_KT76C_LEDVerdrahtung}
+### Verdrahtung Arduino Uno/Micro <--> FSHWPanel-LED-Modul (LEDs) {#m803_kt76c_ledverdrahtung}
 
 Arduino-Uno | Arduino-Micro | Stecker-PIN | IOW-Bez.      | Draht-Farbe
 ------------|---------------|-------------|---------------|------------

@@ -1,10 +1,16 @@
-# Transponder Bendix-King KT 76C {#KT76C}
+# Transponder Bendix-King KT 76C {#kt76c_manual}
 
-## Bedienelemente {#KT76C_Bedienelemente}
+@tableofcontents
 
-Die Frontseite ![Frontplatte][KT76CFront]
+## Bedienelemente {#kt76c_bedienelemente}
 
-Die Bedienelemente ![Bedienelemente][KT76CElemente]
+### Die Frontseite  
+
+![Bild 1: Die Frontansicht des KT76C][KT76CFront]{html: width=75%, height=75%}
+
+### Die Bedienelemente 
+
+![Bild 2: Die Bedienelemente des KT76C][KT76CElemente]
 
 | Element                              | Bauteil                               | Funktion                                                     |
 | ------------------------------------ | ------------------------------------- | ------------------------------------------------------------ |
@@ -18,10 +24,10 @@ Die Bedienelemente ![Bedienelemente][KT76CElemente]
 | \(8) *ALT-Modus-Anzeige*             | LED, rot, 5mm                         | Anzeige des Betriebsmodus *ALT*. Diese LED leuchtet, wenn der aktuell eingestellte Betriebsmodus *ALT* ist. |
 | \(9) *Reply-Indikator*               | LED, rot, 5mm                         | Die LED blinkt langsam, wenn das Gerät auf eine Abfrage antwortet und leuchtet für 18 Sekunden nach Betätigung der *IDT*-Taste (1). |
 
-[KT76CFront]: Bilder/XPDR-KT76C-V2-Front.jpg
-[KT76CElemente]: Bilder/XPDR-KT76C-V2-mitNr.jpg
+[KT76CFront]: Bilder/XPDR-KT76C-V2-Front.jpg "Bild 1: Die Frontansicht des KT76C"
+[KT76CElemente]: Bilder/XPDR-KT76C-V2-mitNr.jpg "Bild 2: Die Bedienelemente des KT76C"
 
-## Funktion und Bedienung {#KT76C_Bedienung}
+## Funktion und Bedienung {#kt76cbedienung}
 
 ### Betrieb
 

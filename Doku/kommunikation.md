@@ -1,4 +1,4 @@
-# Kommunikation zwischen Hardware und X-Plane auf dem PC {#Kommunikation}
+# Kommunikation zwischen Hardware und X-Plane auf dem PC {#kommunikation}
 
 ## Allgemeiner Aufbau
 Die Kommunikation erfolgt durch wechselseitiges Senden/Empfangen von Kommandostrings. Ein Kommandostring besteht immer aus 5 verschiedenen Teilen, die im Ganzen als zusammengesetzter String verschickt werden. Die einzelnen Teile sind jeweils durch ein Blank getrennt. Am Ende steht immer ein \<CR> ("\\r") und/oder ein \<LF> ("\\n").
