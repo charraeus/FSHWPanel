@@ -5,5 +5,8 @@
     "editor.renderWhitespace": "boundary",
     "editor.trimAutoWhitespace": false,
     "scm.diffDecorationsIgnoreTrimWhitespace": "inherit",
-    "platformio-ide.activateProjectOnTextEditorChange": true
+    "platformio-ide.activateProjectOnTextEditorChange": true,
+    "files.associations": {
+        "*.yaml": "home-assistant"
+    }
 }
