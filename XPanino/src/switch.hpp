@@ -54,6 +54,13 @@ public:
     ///
     void transmitStatus(uint8_t row, uint8_t col);
 
+    /**
+     * @brief Physical transmitssion of the data. This method has to be overwritten in every derived class.
+     *
+     * @param data C-string with the string data to submit.
+     */
+    void transmitData(char *data);
+
 
     /// @brief Fragt ab, ob der Schalter eingeschaltet ist.
     ///

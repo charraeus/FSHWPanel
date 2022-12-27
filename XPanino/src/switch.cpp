@@ -67,8 +67,14 @@ void Switch::transmitStatus(uint8_t row, uint8_t col) {
     }
     snprintf (charRowCol, MAX_PARA_LENGTH * 2, "%u;%u", row, col);
     strcat(charsToSend, charRowCol);
-    // Ereignis an X-Plane senden
-    Serial.println(charsToSend);
+    // Ereignis senden
+    // Diese Methode muss überschrieben werden.
+    transmitData(charsToSend);
+}
+
+
+void Switch::transmitData(char *data) {
+    Serial.println(data);
 }
 
 
