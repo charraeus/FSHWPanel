@@ -39,25 +39,29 @@ enum class Event {
  **************************************************************************************************/
 
 /***************************************************************************************************
- * @brief Aufzählungstyp für die nur alternativ möglichen Anzeigen.
- *
- */
-enum class OatVoltsModeTyp {
-    OAT_VOLTAGE,        ///< Im oberen Display wird die Spannung angezeigt.
-    OAT_FAHRENHEIT,     ///< Im oberen Display wird die Temperatur in Fahrenheit angezeigt.
-    OAT_CELSIUS,        ///< Im oberen Display wird die Temperatur in Celsius angezeigt.
-    OAT_QNH             ///< Im oberen Display wird das akt. QNH angezeigt.
-};
-
-/***************************************************************************************************
  * @brief Aufzählungstyp für die verschiedenen Zeitvarianten, die angezeigt werden.
  *
  */
-enum class TimeModeTyp {
-    TIME_LT,            ///< Local Time
-    TIME_UT,            ///< Universal Time
-    TIME_ET,            ///< Elapsed Time (seit Avionics on)
-    TIME_FT             ///< Flight Time
+enum class ClockModeState {
+    LT,         ///< Local Time
+    UT,         ///< Universal Time
+    ET,         ///< Elapsed Time (seit Avionics on)
+    FT,         ///< Flight Time
+    SET_LT,     ///< Set local time directly at the device
+    SET_UT,     ///< Set UTC directly at the device
+    SET_ET      ///< Set ET directly at the device
+};
+
+/***************************************************************************************************
+ * @brief Aufzählungstyp für die nur alternativ möglichen Anzeigen.
+ *
+ */
+enum class OatVoltsModeState {
+    EMF,            ///< Show EMF Voltage in upper display.
+    FAHRENHEIT,     ///< Show temperature in Fahrenheit in upper display.
+    CELSIUS,        ///< Show temperatur in Celsius upper display.
+    QNH,            ///< Show current QNH in upper Display.
+    ALT             ///< Show current Altimeter in inHG in upper display.
 };
 
 /***************************************************************************************************
@@ -82,44 +86,68 @@ enum class m803Event {
  */
 class ClockDavtronM803 : public Device {
 public:
-    void setTimeMode(TimeModeTyp &timeMode);
+    ClockDavtronM803();
+
+    /**
+     * @brief Switch to next time mode of the lower diplay but skip the SET_xx modes.
+     *
+     * @return ClockModeState The new ClockMode.
+     */
+    ClockModeState toggleClockMode();
+
+
+    /**
+     * @brief Switch to the next mode of the upper display (OAT-VOLTS).
+     *
+     * @return OatVoltsModeState The new OatVolsMode
+     */
+    OatVoltsModeState toggleOatVoltsMode();
+
+
+    void setTimeMode(ClockModeState &timeMode);
     void setLocalTime(uint32_t &localTime);
     void setUtc(uint32_t &utc);
     void setFlightTime(uint32_t &flightTime);
     void setElapsedTime(uint32_t &elapsedTime);
-    void setOatVoltsMode(OatVoltsModeTyp &OatVoltsMode);
+    void setOatVoltsMode(OatVoltsModeState &OatVoltsMode);
     void setTemperature(int8_t &temperatureC);
-    void setPowerStatus(bool &powerStatus);
+    void setPowerState(bool &powerStatus);
     void setAltimeter(float &altimeter);
+
+
+    /**
+     * @brief Display the current values in upper and lower display.
+     *
+     */
+    void show();
+
 
     /// @brief Die lokale Zeit als String abrufen
     /// @return Lokale Zeit als String zur Anzeige auf 7-Segment-Anzeigen
     char* getLocalTimeDigits();
 
-    /// @brief Durch die verschiedenen Modi des oberen Displays schalten.
-    /// @return Der jetzt aktuelle Status der Anzeige
-    OatVoltsModeTyp toggleOatVoltsMode();
-
-    /// @brief Durch die verschiedenen Zeit-Modi des unteren Displays schalten.
-    /// @return Der jetzt aktuelle Zeitmodus
-    TimeModeTyp toggleTimeMode();
-
-    // Verarbeitet die Tastendrücke und Daten
-    void process(const EventClass *event);
 
 private:
     const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg
+    uint8_t upperDisplay;                   ///< Upper display id
+    uint8_t lowerDisplay;                   ///< Lower display id
+    LedMatrixPos LED_TRENNER_1;             ///< Upper divider between hh and mm
+    LedMatrixPos LED_TRENNER_2;             ///< Lower divider between hh and mm
+    LedMatrixPos LED_LT;                    ///< Led for local time
+    LedMatrixPos LED_UT;                    ///< Led for UTC
+    LedMatrixPos LED_ET;                    ///< Led for elapsed time
+    LedMatrixPos LED_FT;                    ///< Led for flight time
+    OatVoltsModeState oatVoltsMode;     ///< Modus/Status des oberen Displays.
+    bool isOatVoltsModeChanged;
+    ClockModeState clockMode;           ///< Modus/Status des unteren Displays.
+    bool isClockModeChanged;
+    uint32_t localTime;                 ///< Die lokale Zeit im Format 00HHMMSS.
+    uint32_t utc;                       ///< Die UTC im Format 00HHMMSS.
+    uint32_t flightTime;                ///< Die Flighttime im Format 00HHMMSS.
+    uint32_t elapsedTime;               ///< Die elapsed time im Format 00HHMMSS.
+    int8_t temperatureC;                ///< Die Temperatur in Grad Celsius.
+    float altimeter;                    ///< Luftdruck in inHg.
 
-    TimeModeTyp timeMode{TimeModeTyp::TIME_LT};  ///< Initial wird die lokale Zeit im unteren Display angezeigt.
-    uint32_t localTime{0};      ///< Die lokale Zeit im Format 00HHMMSS checken wies vom Flusi kommt
-    uint32_t utc{0};            ///< Die UTC im Format 00HHMMSS checken wies vom Flusi kommt
-    uint32_t flightTime{0};     ///< Die Flighttime im Format 00HHMMSS checken wies vom Flusi kommt
-    uint32_t elapsedTime{0};    ///< Die elapsed time im Format 00HHMMSS
-    OatVoltsModeTyp oatVoltsMode = OatVoltsModeTyp::OAT_CELSIUS;  ///< Initial wird die Temeperatur in Celsius im oberen Display angezeigt.
-    int8_t temperatureC{0};     ///< Die Temperatur in Grad Celsius  checken wie's vom Flusi kommt
-    bool powerStatus = false;  ///< Initial ist die Power off.
-    float altimeter{STD_ALTIMETER_inHg};     ///< Luftdruck in inHg
-
-    // Altimeter in QNH umrechnen
-    inline float qnh(float &altimeter);
+    /// Altimeter in QNH umrechnen
+    inline float qnh();
 };

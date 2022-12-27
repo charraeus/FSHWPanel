@@ -10,13 +10,40 @@
 
 #include <device.hpp>
 
-/// @brief Device - Konstruktor
+/**
+ * @brief Construct a new Device:: Device object
+ *
+ */
 Device::Device() {
     batteryPower   = true;
     avionics1Power = true;
     avionics2Power = true;
+    devicePower = true;
+
 };
 
+
+void Device::processEvent(EventClass *event) const {
+    #ifdef DEBUG
+    Serial.println(F("***Device.processEvent()"));
+    if (event != nullptr) {
+        event->printEvent();
+    } else {
+        Serial.println(F("  !!! nullptr statt event angekommen."));
+    }
+    Serial.println(F("***End Device.processEvent()"));
+    #endif
+}
+
+
+bool Device::isDevicePowerAvailable() {
+    return devicePower and isPowerAvailable();
+}
+
+
+void Device::setDevicePower(bool devicePowerSwitchState) {
+    devicePower = devicePowerSwitchState;
+}
 
 inline bool Device::isBatteryPowerOn() {
     return batteryPower;
@@ -33,6 +60,11 @@ inline bool Device::isAvionics2PowerOn() {
 };
 
 
-inline bool Device::isPoweravailable() {
+inline bool Device::isPowerAvailable() {
     return isBatteryPowerOn() and isAvionics1PowerOn();
+}
+
+
+void Device::show() {
+    ;
 }

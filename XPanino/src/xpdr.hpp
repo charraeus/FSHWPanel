@@ -12,6 +12,7 @@
 
 #include <Arduino.h>
 #include <buffer.hpp>
+#include <device.hpp>
 #include <Switchmatrix.hpp>
 #include <ledmatrix.hpp>
 
@@ -28,10 +29,9 @@ const char DEVICE_XPDR[] = "XPDR";
  * @todo Doku ergänzen
  *
  **************************************************************************************************/
-class TransponderKT76C {
+class TransponderKT76C : public Device {
 public:
-    void process(EventClass event);
 
 private:
-
+    int dummy = 0;
 };

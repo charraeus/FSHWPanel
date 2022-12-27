@@ -10,6 +10,9 @@
 
 #pragma once
 
+#include <event.hpp>
+
+
 /***************************************************************************************************
  * @brief @em Device ist die Basisklasse für alle weiteren Geräte.
  *
@@ -26,6 +29,31 @@ public:
      * @brief Constructor.
      */
     Device();
+
+    /**
+     * @brief Verarbeitet die Tastendrücke und Daten.
+     *
+     */
+    void processEvent(EventClass *event) const;
+
+
+    /**
+     * @brief
+     *
+     * @return true   Power is available and the device is switched on.
+     * @return false  Either no power available or the device is switched off.
+     */
+    bool isDevicePowerAvailable();
+
+
+    /**
+     * @brief Set the device power.
+     *
+     * @param devicePowerSwitchState State of device's power switch.
+     *                                 true   The device is switched on.
+     *                                 false  The device is switched off.
+     */
+    void setDevicePower(bool devicePowerSwitchState);
 
 
     /**
@@ -49,6 +77,7 @@ public:
     /**
      * @brief Check, ob Avionics-Strom Bus 2 zur Verfügung steht
      *        bzw. das Gerät eingeschaltet ist.
+     *
      * @return @em true falls Strom am Avionicsbus 2 verfügbar ist, sonst @em false
      *
      */
@@ -57,14 +86,24 @@ public:
 
     /**
      * @brief Check, ob Batterie- und Avionicsstrom (von Bus 1) verfügbar ist.
+     *
      * @return @em true falls Strom verfügbar ist, sonst @em false
      *
      */
-    bool isPoweravailable();
+    bool isPowerAvailable();
+
+
+    /**
+     * @brief This is an abstract method which has to be implemented in every derived class.
+     * @todo als abstrakt und virtuell deklarieren
+     *
+     */
+    void show();
 
 
 private:
-    bool batteryPower;
-    bool avionics1Power;
-    bool avionics2Power;
+    bool batteryPower;      ///< @true : Battery power is available, otherwise @false.
+    bool avionics1Power;    ///< @true : Avionics bus 1 is powered, otherwise @false.
+    bool avionics2Power;    ///< @true : Avionics bus 2 is powered, otherwise @false.
+    bool devicePower;       ///< Power power must be available and the device must be switched on.
 };
