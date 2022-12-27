@@ -61,14 +61,17 @@ public:
      * @brief Das nächste Element aus der Liste holen und das Element aus der Liste löschen.
      * Falls es kein nächstes Element gibt, wird nullptr zurückgegeben.
      *
+     * Der Speicher auf das Element wird nicht freigegeben. Es werden lediglich der @em head Pointer und
+     * der @em tail Pointer aktualisiert.
+     *
      * @return EventClass
      */
-    EventClass *getNextEvent();
+    EventClass *getHeadEvent();
 
     /**
      * @brief Ein Event am Kopf der Liste löschen.
      */
-    void deleteEvent();
+    void deleteHeadEvent(EventClass *event);
 
     #ifdef DEBUG
     void printQueue();

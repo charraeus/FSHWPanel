@@ -105,7 +105,7 @@ public:
     TimeModeTyp toggleTimeMode();
 
     // Verarbeitet die Tastendrücke und Daten
-    void process(EventClass event);
+    void process(const EventClass *event);
 
 private:
     const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg

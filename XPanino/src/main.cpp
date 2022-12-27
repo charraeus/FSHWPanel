@@ -53,9 +53,10 @@ void serialEvent() {
                 // kein '\r' bzw. '\n' gelesen, was dann den inBuffer geleert hätte.
                 // Also den Buffer jetzt zum Parsen zum Parser senden.
                 eventQueue.addEvent(inBuffer.parseString(inBuffer.get()));
-                // eventList.addEvent(parser.parseString("y;t;040;050"));
-                // eventList.listEvents();
                 inBuffer.wipe();
+                #ifdef DEBUG
+                eventQueue.printQueue();
+                #endif
             }
             // alle anderen Zeichen werden ignoriert.
         }
@@ -75,9 +76,7 @@ void setup() {
     if (Serial) {
         Serial.begin(_SERIAL_BAUDRATE, SERIAL_8N1);
         // wait for serial port to connect. Needed for native USB
-        while (!Serial) {
-            ;
-        }
+        while (!Serial);
         // Schreibpuffer leeren
         Serial.flush();
         // Lesepuffer leeren
@@ -147,7 +146,7 @@ void setup() {
 }
 
 /*********************************************************************************************************//**
- * @brief Lfd.\ Verarbeitung im loop().
+ * @brief Lfd. Verarbeitung im loop().
  *
  ************************************************************************************************************/
 void loop() {
@@ -155,5 +154,6 @@ void loop() {
     switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
     //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
     //processLocal()  -  hier finden lokale Verarbeitungen statt, z.B. LED als Schalterreaktion direkt einschalten
+    dispatcher.dispatchAll();   ///< Eventqueue abarbeiten
     leds.writeToHardware();     ///< LEDs anzeigen bzw. refreshen
 }

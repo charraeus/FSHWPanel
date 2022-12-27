@@ -36,7 +36,7 @@ void ClockDavtronM803::setAltimeter(float &altimeter) { this->altimeter = altime
 
 /// @todo richtig implementieren; gibt momentan immer "124356" zurück.
 char* ClockDavtronM803::getLocalTimeDigits() {
-    char r[] = {"124356"};
+    char r[] = {"999999"};
     char *p = r;
     return p;
 };
@@ -68,9 +68,17 @@ TimeModeTyp ClockDavtronM803::toggleTimeMode() {
 }
 
 
-void ClockDavtronM803::process(const EventClass event) {
-
-};
+void ClockDavtronM803::process(const EventClass *event) {
+    #ifdef DEBUG
+    Serial.println(F("***ClockDavtronM803.process()"));
+    if (event != nullptr) {
+        event->printEvent();
+    } else {
+        Serial.println(F("  !!! nullptr statt event angekommen."));
+    }
+    Serial.println(F("***End ClockDavtronM803.process()"));
+    #endif
+}
 
 
 /** qnh

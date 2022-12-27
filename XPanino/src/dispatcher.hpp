@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <buffer.hpp>
+#include <event.hpp>
 #include <m803.hpp>
 #include <xpdr.hpp>
 
@@ -18,8 +18,24 @@ extern ClockDavtronM803 m803;
 extern TransponderKT76C xpdr;
 extern EventQueueClass eventQueue;
 
-/// @brief dispatchen
+
+/***************************************************************************************************
+ * @brief dispatchen
+ *
+ */
 class DispatcherClass {
 public:
-    void dispatch(EventClass event);
+    /**
+     * @brief dispatch a specific event.
+     *
+     * @param event Event to dispatch.
+     */
+    void dispatch(EventClass *event) const;
+
+
+    /**
+     * @brief dispatch all events in the event queue.
+     *
+     */
+    void dispatchAll();
 };

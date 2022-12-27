@@ -10,7 +10,6 @@
  ************************************************************************************************************/
 
 #include <event.hpp>
-
 #include <buffer.hpp>   /// @todo dieses #include kann 'raus?
 
 /*********************************************************************************************************//**
@@ -25,13 +24,13 @@
  *
  ************************************************************************************************************/
 
-/// @brief Konstruktor
+/**
+ * @brief Konstruktor
+ */
 EventClass::EventClass() {
     next = nullptr;
-    #ifdef DEBUG
-    printEvent();
-    #endif
 }
+
 
 /**
  * @brief Zeiger auf das nächste Element in der Liste (= Nachfolger) eintragen.
@@ -40,6 +39,7 @@ EventClass::EventClass() {
  */
 void EventClass::setNext(EventClass* next) { this->next = next; };
 
+
 /**
  * @brief Zeiger auf das nächste Element in der Liste zurückgeben
  *
@@ -47,9 +47,10 @@ void EventClass::setNext(EventClass* next) { this->next = next; };
  */
 EventClass* EventClass::getNext() { return this->next; };
 
+
 void EventClass::printEvent() {
     #ifdef DEBUG
-    Serial.println(F("---EventClass---"));
+    Serial.println(F("---EventClass.printEvent()---"));
     Serial.print(F("Device=")); Serial.print(device); Serial.println(F("|"));
     Serial.print(F("Event=")); Serial.print(event); Serial.println(F("|"));
     Serial.print(F("Parameter1=")); Serial.print(parameter1); Serial.println(F("|"));
@@ -59,14 +60,20 @@ void EventClass::printEvent() {
     #endif
 }
 
+
 /*********************************************************************************************************//**
  * @brief EventQueue - public Methoden
  *
  ************************************************************************************************************/
+
+/**
+ * @brief Konstruktor
+ */
 EventQueueClass::EventQueueClass() {
     head = nullptr;
     tail = nullptr;
 };
+
 
 void EventQueueClass::addEvent(EventClass* ptrNewEvent) {
     if (ptrNewEvent != nullptr) {
@@ -84,20 +91,25 @@ void EventQueueClass::addEvent(EventClass* ptrNewEvent) {
     }
 };
 
-EventClass *EventQueueClass::getNextEvent() {
-    EventClass* ptr = head;     // Zeiger auf 1. Element sichern
-    head = head->getNext();     // head auf das 2. Element zeigen lassen
-    return ptr;                 // Zeiger auf das bisherige 1. Element zurück geben
+
+EventClass *EventQueueClass::getHeadEvent() {
+    EventClass* ptr = head;         // Zeiger auf 1. Element sichern
+    if (ptr != nullptr) {
+        head = ptr->getNext();     // head auf das 2. Element zeigen lassen
+        if (head == nullptr) {      // Falls es kein 2. Element gibt, gibt es auch kein letztes Element
+            tail = nullptr;
+        }
+    }
+    return ptr;                     // Zeiger auf das bisherige 1. Element zurück geben
 };
 
-void EventQueueClass::deleteEvent() {
-    if (head != nullptr) {
-        // Liste ist nicht leer
-        EventClass* ptr = head;     // Zeiger auf 1. Element sichern
-        head = head->getNext();     // head auf das 2. Element zeigen lassen
-        delete(ptr);                // Das bisherige 1. Element löschen
+
+void EventQueueClass::deleteHeadEvent(EventClass *event) {
+    if (event != nullptr) {
+        delete(event);                // Das bisherige 1. Element löschen
     }
 };
+
 
 #ifdef DEBUG
 void EventQueueClass::printQueue() {
@@ -106,7 +118,7 @@ void EventQueueClass::printQueue() {
     while (ptr != nullptr) {
         ptr->printEvent();
         ptr = ptr->getNext();
-        Serial.println(F("---"));
     };
+    Serial.println(F("----End Eventqueue----"));
 }
 #endif
