@@ -1,4 +1,4 @@
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * @file      Switchmatrix.cpp
  * @brief     Implementierung der Klasse @em SwitchMatrix.
  * @details   Keine Details vorhanden
@@ -13,7 +13,7 @@
 #include <Arduino.h>
 #include <Switchmatrix.hpp>
 
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * Methoden für SwitchMatrix
  *
  ************************************************************************************************************/
@@ -79,7 +79,7 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
             if (changedOnly && switchMatrix[row][col].isChanged()) {
                 switchMatrix[row][col].transmitStatus(row, col);        // Methode eines einzelnen Switches
-           } else {
+            } else {
                 if (! changedOnly) {
                     switchMatrix[row][col].transmitStatus(row, col);
                 }
@@ -113,7 +113,7 @@ void SwitchMatrix::printMatrix() {
 #endif
 
 
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * ab hier die privaten Methoden
 *************************************************************************************************************/
 
