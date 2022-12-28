@@ -29,7 +29,7 @@ void Device::processEvent(EventClass *event) const {
     if (event != nullptr) {
         event->printEvent();
     } else {
-        Serial.println(F("  !!! nullptr statt event angekommen."));
+        Serial.println(F("Err: nullptr statt event angekommen."));
     }
     Serial.println(F("***End Device.processEvent()"));
     #endif

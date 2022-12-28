@@ -45,7 +45,7 @@ ClockDavtronM803::ClockDavtronM803() {
     leds.defineDisplayField(upperDisplay, 1, {1, 16});  ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 16 bis 23.
     leds.defineDisplayField(upperDisplay, 2, {2, 16});  ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 16 bis 23.
     leds.defineDisplayField(upperDisplay, 3, {3, 16});  ///< Die 4. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 16 bis 23.
-    leds.display(upperDisplay, "    ");
+    leds.display(upperDisplay, "LOAd");
 
     ///< Define the lower display and show a default value.
     lowerDisplay = 1;
@@ -53,7 +53,7 @@ ClockDavtronM803::ClockDavtronM803() {
     leds.defineDisplayField(lowerDisplay, 1, {5, 16});        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 16 bis 23: Einerstelle der Stunde.
     leds.defineDisplayField(lowerDisplay, 2, {6, 16});        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 16 bis 23: Zehnerstelle der Minute.
     leds.defineDisplayField(lowerDisplay, 3, {7, 16});        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 7 und den Cols 16 bis 23: Einerstelle der Minute.
-    leds.display(lowerDisplay, "    ");
+    leds.display(lowerDisplay, "9999");
 
     ///< Define the leds which do not belong to a displayField.
     LED_TRENNER_1 = {0, 4};         ///< Der obere Stunden-Minuten-Trenner liegt auf Row=0 und Col=4.
@@ -78,6 +78,7 @@ ClockModeState ClockDavtronM803::toggleClockMode() {
     } else {
         clockMode = ClockModeState::ET;
     }
+    isClockModeChanged = true;
     return clockMode;
 }
 
@@ -90,6 +91,7 @@ OatVoltsModeState ClockDavtronM803::toggleOatVoltsMode() {
     } else {
         oatVoltsMode = static_cast<OatVoltsModeState>(OatVoltsModeState::EMF);
     }
+    isOatVoltsModeChanged = true;
     return oatVoltsMode;
 };
 
@@ -105,84 +107,118 @@ void ClockDavtronM803::setAltimeter(float &altimeter) { this->altimeter = altime
 
 
 void ClockDavtronM803::show() {
-    if (isOatVoltsModeChanged) {
-        switch (oatVoltsMode) {
-            case OatVoltsModeState::EMF        : {
-                        leds.display(upperDisplay, "EMF.");
-                        break;
+    if (isDevicePowerAvailable()) {
+        if (isOatVoltsModeChanged) {
+            switch (oatVoltsMode) {
+                case OatVoltsModeState::EMF        : {
+                            leds.display(upperDisplay, "EMF.");
+                            break;
+                }
+                case OatVoltsModeState::FAHRENHEIT : {
+                            String s = static_cast<String>(int(temperatureF()));
+                            if (s.length() == 2) {
+                                s =+ " F";
+                            } else if (s.length() == 3) {
+                                s =+ "F";
+                            }
+                            leds.display(upperDisplay, s.substring(0, min(4, s.length())));
+                            break;
+                }
+                case OatVoltsModeState::CELSIUS    : {
+                            String s = static_cast<String>(temperatureC);
+                            if (s.length() == 1) {
+                                s = " " + s;
+                            }
+                            if (s.length() == 2) {
+                                s =+ "°C";
+                            } else if (s.length() == 3) {
+                                s =+ "°";
+                            }
+                            leds.display(upperDisplay, s.substring(0, min(4, s.length())));
+                            break;
+                }
+                case OatVoltsModeState::QNH        : {
+                            String s = static_cast<String>(qnh());
+                            leds.display(upperDisplay, s.substring(0, min(4, s.length())));
+                            break;
+                }
+                case OatVoltsModeState::ALT        : {
+                            String s = static_cast<String>(altimeter);
+                            leds.display(upperDisplay, s.substring(0, min(5, s.length())));
+                            break;
+                }
+                default : {
+                    // this must not ever happen!
+                    leds.display(upperDisplay, "Err ");
+                }
             }
-            case OatVoltsModeState::FAHRENHEIT : {
-                        leds.display(upperDisplay, "19 F");
-                        break;
-            }
-            case OatVoltsModeState::CELSIUS    : {
-                        leds.display(upperDisplay, "25°C");
-                        break;
-            }
-            case OatVoltsModeState::QNH        : {
-                        leds.display(upperDisplay, (static_cast<String>(qnh()).substring(0, 4)));
-                        break;
-            }
-            case OatVoltsModeState::ALT        : {
-                        leds.display(upperDisplay, static_cast<String>(altimeter));
-                        break;
-            }
-            default : {
-                // this must not ever happen!
-                leds.display(upperDisplay, "Err");
-            }
+            isOatVoltsModeChanged = false;
         }
-        isOatVoltsModeChanged = false;
-    }
-    if (isClockModeChanged) {
-        switch (clockMode) {
-            case ClockModeState::LT : {
-                        leds.display(lowerDisplay, (static_cast<String>(localTime)).substring(0, 4));
-                        leds.ledOn(LED_LT);
-                        leds.ledOn(LED_TRENNER_1);
-                        leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
-                        leds.ledOn(LED_TRENNER_2);
-                        leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                        break;
+        if (isClockModeChanged) {
+            switch (clockMode) {
+                case ClockModeState::LT : {
+                            String s = static_cast<String>(localTime);
+                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                            leds.ledOff(LED_ET);
+                            leds.ledOn(LED_LT);
+                            leds.ledOn(LED_TRENNER_1);
+                            leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
+                            leds.ledOn(LED_TRENNER_2);
+                            leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
+                            break;
+                }
+                case ClockModeState::UT : {
+                            String s = static_cast<String>(utc);
+                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                            leds.ledOff(LED_LT);
+                            leds.ledOn(LED_UT);
+                            leds.ledOn(LED_TRENNER_1);
+                            leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
+                            leds.ledOn(LED_TRENNER_2);
+                            leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
+                            break;
+                }
+                case ClockModeState::FT : {
+                            String s = static_cast<String>(flightTime);
+                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                            leds.ledOff(LED_UT);
+                            leds.ledOn(LED_FT);
+                            leds.ledOn(LED_TRENNER_1);
+                            leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
+                            leds.ledOn(LED_TRENNER_2);
+                            leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
+                            break;
+                }
+                case ClockModeState::ET : {
+                            String s = static_cast<String>(elapsedTime);
+                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                            leds.ledOff(LED_FT);
+                            leds.ledOn(LED_ET);
+                            leds.ledOn(LED_TRENNER_1);
+                            leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
+                            leds.ledOn(LED_TRENNER_2);
+                            leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
+                            break;
+                }
+                default : {
+                    // this must not ever happen!
+                    leds.display(lowerDisplay, "Err");
+                    leds.ledOff(LED_TRENNER_1);
+                    leds.ledOff(LED_TRENNER_2);
+                }
             }
-            case ClockModeState::UT : {
-                        leds.display(lowerDisplay, (static_cast<String>(utc)).substring(0, 4));
-                        leds.ledOff(LED_LT);
-                        leds.ledOn(LED_UT);
-                        leds.ledOn(LED_TRENNER_1);
-                        leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
-                        leds.ledOn(LED_TRENNER_2);
-                        leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                        break;
-            }
-            case ClockModeState::ET : {
-                        leds.display(lowerDisplay, "ET00");
-                        leds.ledOff(LED_UT);
-                        leds.ledOff(LED_ET);
-                        leds.ledOn(LED_TRENNER_1);
-                        leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
-                        leds.ledOn(LED_TRENNER_2);
-                        leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                        break;
-            }
-            case ClockModeState::FT : {
-                        leds.display(lowerDisplay, "FT00");
-                        leds.ledOff(LED_ET);
-                        leds.ledOff(LED_UT);
-                        leds.ledOn(LED_TRENNER_1);
-                        leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
-                        leds.ledOn(LED_TRENNER_2);
-                        leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                        break;
-            }
-            default : {
-                // this must not ever happen!
-                leds.display(lowerDisplay, "Err");
-                leds.ledOff(LED_TRENNER_1);
-                leds.ledOff(LED_TRENNER_2);
-            }
+            isClockModeChanged = false;
         }
-        isClockModeChanged = false;
+    } else {
+        // Device power is not available => switch off all leds
+        leds.display(upperDisplay, "    ");
+        leds.display(lowerDisplay, "    ");
+        leds.ledOff(LED_TRENNER_1);
+        leds.ledOff(LED_TRENNER_2);
+        leds.ledOff(LED_LT);
+        leds.ledOff(LED_UT);
+        leds.ledOff(LED_FT);
+        leds.ledOff(LED_ET);
     }
 }
 
@@ -196,12 +232,24 @@ char* ClockDavtronM803::getLocalTimeDigits() {
 
 
 /** qnh
- * @brief Altimeter in Hg in QNH umrechnen.
+ * @brief Altimeter inHg in QNH umrechnen.
+ *
+ * @return float Calculated QNH.
  *
  * 29,92 in Hg = 1013,25 hPa
  */
 float ClockDavtronM803::qnh() {
-    const float STD_QNH_hPa = 1013.25;
+    const float STD_QNH_hPa = 1013.25;      ///< Standardluftdruck in Hektopascal
 
     return STD_QNH_hPa / STD_ALTIMETER_inHg * altimeter;
+}
+
+
+/**
+ * @brief Calculate Fahrenheit from Celsius.
+ *
+ * @return float Calculated temperature in Fahrenheit.
+ */
+float ClockDavtronM803::temperatureF() {
+    return temperatureC * 33.8;
 }

@@ -17,6 +17,8 @@
  * @brief Array mit den erlaubten - weil auf 7-Segment-Anzeigen darstellbaren - Zeichen.
  *
  * Aus Ressourceneinsparungsgründen wird keine String-Klasse verwendet.
+ *
+ * @todo: Die Anzeige des letzten Zeichens funktioniert nicht. Das Zeichen wird nicht erkannt. Siehe Methode 'get7SegBitMap'
  */
 const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
 
@@ -113,18 +115,23 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
     };
 
 
+/**
+ * @brief (in cpp-Datei) Bitmap zur Anzeige auf der 7-Segment-Anzeige zurückgeben.
+ *
+ * @param outChar
+ * @return uint8_t
+ *
+ * @todo statt Schleife die Standardfunktion strchr() verwenden.
+ * @todo Fehler: statt "_" wird die Fehlerbitmap zurückgegeben.
+ *
+ */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
-    /// @brief (in cpp-Datei) Bitmap zur Anzeige auf der 7-Segment-Anzeige zurückgeben.
-    /// @param outChar
-    ///
-    /// @todo statt Schleife die Standardfunktion strchr() verwenden.
-    ///
-    /// @return Bitmap zur Anzeige eines Fehlers
-    for (unsigned int i = 0; i < strlen(charsAllowed); ++i) {
+    for (size_t i = 0; i < strlen(charsAllowed); i++) {
         if (outChar == charsAllowed[i]) {
             return bitMap[i];
         }
     }
     // wenn man hier landet, wurde kein erlaubtes Zeichen gefunden --> Fehlerbitmap zurück geben
+    // Serial.println(F("get7SegBitMap: Nix gefunden. Fehlerausgang."));
     return bitMap[CHAR_ERROR];
 }

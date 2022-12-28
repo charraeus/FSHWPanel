@@ -13,6 +13,7 @@
 
 #include <Arduino.h>
 
+
 /** charMap-Index-Konstanten für die Anzeige von Sonderzeichen auf den 7-Segment-Anzeigen */
 const uint8_t CHAR_3_DASH_HORIZ = 36;           ///< Zeichen Drei "-" übereinander
 const uint8_t CHAR_2_DASH_VERT = 37;            ///< Zeichen "||"

@@ -128,7 +128,6 @@ public:
 
 
 private:
-    const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg
     uint8_t upperDisplay;                   ///< Upper display id
     uint8_t lowerDisplay;                   ///< Lower display id
     LedMatrixPos LED_TRENNER_1;             ///< Upper divider between hh and mm
@@ -138,16 +137,20 @@ private:
     LedMatrixPos LED_ET;                    ///< Led for elapsed time
     LedMatrixPos LED_FT;                    ///< Led for flight time
     OatVoltsModeState oatVoltsMode;     ///< Modus/Status des oberen Displays.
-    bool isOatVoltsModeChanged;
+    bool isOatVoltsModeChanged;         ///< @em true if mode is changed, otherwise @em false
     ClockModeState clockMode;           ///< Modus/Status des unteren Displays.
-    bool isClockModeChanged;
+    bool isClockModeChanged;            ///< @em true if mode is changed, otherwise @em false
     uint32_t localTime;                 ///< Die lokale Zeit im Format 00HHMMSS.
     uint32_t utc;                       ///< Die UTC im Format 00HHMMSS.
     uint32_t flightTime;                ///< Die Flighttime im Format 00HHMMSS.
     uint32_t elapsedTime;               ///< Die elapsed time im Format 00HHMMSS.
     int8_t temperatureC;                ///< Die Temperatur in Grad Celsius.
     float altimeter;                    ///< Luftdruck in inHg.
+    const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg
 
-    /// Altimeter in QNH umrechnen
+    ///< Altimeter in QNH umrechnen
     inline float qnh();
+
+    /// @brief Calculate temperature in Fahrenheit from Celsius.
+    float temperatureF();
 };

@@ -19,20 +19,23 @@
 #include <buffer.hpp>
 #include <m803.hpp>
 #include <xpdr.hpp>
+// #include <xplane.hpp>
 //#include <commands.hpp>
 
 // Makros für serielle Schnittstelle definieren
 #define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
 
 // Objekte anlegen
-DispatcherClass dispatcher; ///< Dispatcher
-EventQueueClass eventQueue; ///< Event
-BufferClass inBuffer;       ///< Eingabepuffer anlegen
-LedMatrix leds;             ///< LedMatrix anlegen
-SwitchMatrix switches;      ///< Schaltermatrix - SwitchMatrix - anlegen
+DispatcherClass dispatcher; ///< Create and initialise dispatcher object
+EventQueueClass eventQueue; ///< Create and initialise event queue object
+BufferClass inBuffer;       ///< Create and initialise buffer object
+LedMatrix leds;             ///< Create and initialise the led matrix object
+SwitchMatrix switches;      ///< Create and initialise the switch matrix object
 
-ClockDavtronM803 m803;      ///< Uhr anlegen (ClockDavtron M803)
-TransponderKT76C xpdr;      ///< Transponder anlegen
+ClockDavtronM803 m803;      ///< Create and initialise the clock object
+TransponderKT76C xpdr;      ///< Create and initialise the transponder object
+
+// XPlaneClass xPlane;         ///< Create and initialise the X-Plane object to connect to X-Plane
 
 
 /*********************************************************************************************************//**
@@ -42,7 +45,7 @@ TransponderKT76C xpdr;      ///< Transponder anlegen
 void serialEvent() {
     while (Serial.available() > 0) {
         char inChar = char(Serial.read());
-        // prüfen auf gültige Zeichen.
+        // Check for valid characters.
         // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
         // gültig sind: Space, '_' und alle alfanumerischen Zeichen
         if (isAlphaNumeric(inChar) || (isPunct(inChar)) || (inChar == ' ') || (inChar == '_')) {
@@ -58,7 +61,7 @@ void serialEvent() {
                 eventQueue.printQueue();
                 #endif
             }
-            // alle anderen Zeichen werden ignoriert.
+            // All other characters are ignored.
         }
     }
 }
@@ -92,7 +95,7 @@ void setup() {
     leds.defineDisplayField(FL, 0, {0, 8});         ///< Die 1. 7-Segment-Anzeige liegt auf der Row 0 und den Cols 8 bis 15: Hunderterstelle.
     leds.defineDisplayField(FL, 1, {1, 8});         ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 8 bis 15: Zehnerstelle .
     leds.defineDisplayField(FL, 2, {2, 8});         ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 8 bis 15: Einerstelle.
-    leds.display(FL, "0.20");
+    leds.display(FL, "-.FL");
     leds.set7SegBlinkOn({0, 8}, true, BLINK_NORMAL);
 
     const uint8_t SQUAWK = 3;
@@ -100,7 +103,7 @@ void setup() {
     leds.defineDisplayField(SQUAWK, 1, {4, 8});        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 4 und den Cols 8 bis 15: Hunderterstelle.
     leds.defineDisplayField(SQUAWK, 2, {5, 8});        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 8 bis 15: Zehnerstelle.
     leds.defineDisplayField(SQUAWK, 3, {6, 8});        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 8 bis 15: Einerstelle.
-    leds.display(SQUAWK, "7000");
+    leds.display(SQUAWK, "LOAd");
 
     const LedMatrixPos LED_ALT{6, 4};       ///< Die LED "ALT" liegt auf Row=2 und Col=4.leds.ledOn(LED_ALT);
     leds.ledOn(LED_ALT);
@@ -124,7 +127,7 @@ void setup() {
 void loop() {
     switches.scanSwitchPins();  ///< Hardware-Schalter abfragen
     switches.transmitStatus(TRANSMIT_ONLY_CHANGED_SWITCHES);    ///< Geänderte Schalterstände verarbeiten
-    //readXplane()  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
+    //XPlane.readData();  -  Daten vom X-Plane einlesen (besser als Interrupt realisieren)
     dispatcher.dispatchAll();   ///< Eventqueue abarbeiten
     m803.show();
     //xpdr.show();
