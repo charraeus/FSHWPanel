@@ -25,17 +25,54 @@
 // Makros für serielle Schnittstelle definieren
 #define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
 
+
+// Own SwitchMatrix class with specific switch events
+class MySwitchMatrix : public SwitchMatrix {
+public:
+    /**
+     * @brief Physical transmission of the data and dispatch the switch event.
+     *
+     * @param row Row in switch matrix.
+     * @param col Column in switch matrix.
+     * @param switchState State of the switch identified by row and col.\n
+     *                      @em 0: Switch is off.\n
+     *                      @em 1: Switch is on.\n
+     *                      @em 2: Switch is long on.
+     */
+    virtual void transmit(uint8_t &row, uint8_t &col, uint8_t switchState) override;
+};
+
 // Objekte anlegen
 DispatcherClass dispatcher; ///< Create and initialise dispatcher object
 EventQueueClass eventQueue; ///< Create and initialise event queue object
 BufferClass inBuffer;       ///< Create and initialise buffer object
 LedMatrix leds;             ///< Create and initialise the led matrix object
-SwitchMatrix switches;      ///< Create and initialise the switch matrix object
+MySwitchMatrix switches;    ///< Create and initialise the switch matrix object
 
 ClockDavtronM803 m803;      ///< Create and initialise the clock object
 TransponderKT76C xpdr;      ///< Create and initialise the transponder object
 
 // XPlaneClass xPlane;         ///< Create and initialise the X-Plane object to connect to X-Plane
+
+
+void MySwitchMatrix::transmit(uint8_t &row, uint8_t &col, uint8_t switchState) {
+    SwitchMatrix::transmit(row, col, switchState);
+    /// Write data to serial port
+    // c-string with data to be sent (e.g. via the serial port)
+    char charsToSend[MAX_BUFFER_LENGTH] = "S;S;";
+    // add switch name
+    strcat(charsToSend, dispatcher.getSwitchName(row, col));
+    // set charsToSend according to value of data
+    if (switchState == 2) {
+        strcat(charsToSend, ";LON");
+    } else {
+        strcat(charsToSend, ((switchState == 1) ? ";ON;" : ";OFF;"));
+    }
+    Serial.println(charsToSend);
+
+    /// Finally dispatch the switch event
+    dispatcher.dispatchSwitchEvents(row, col, switchState);
+}
 
 
 /*********************************************************************************************************//**

@@ -8,8 +8,6 @@
  * Copyright © 2017 - 2020 Christian Harraeus. All rights reserved.
 ************************************************************************************************************/
 
-#include <buffer.hpp>
-#include <event.hpp>
 #include <switch.hpp>
 
 /// @brief Dauer, ab wann ein Schalter lange eingeschaltet ist (3000 Millisekunden)
@@ -49,47 +47,22 @@ void Switch::updateOnTime(const unsigned long &newOnTime) {
 }
 
 
-void Switch::transmitStatus(uint8_t &row, uint8_t &col) {
+uint8_t Switch::getStatus() {
     // switchState = 0: Switch is off
     // switchState = 1: Switch is on
     // switchState = 2: Switch is long on
     uint8_t switchState = 0;
+    changed = false;
     if ((! longOnSent) && longOn) {
         // wenn der Schalter lang gedrückt ist und dieser Lang-Gedrückt-Status noch
         // nicht übertragen wurde, den Status "LON" (Long on) übertragen.
         longOnSent = true;
-        changed = false;
         switchState = 2;
     } else {
         // Den An- (1) / Aus- (0) Status des Schalters übertragen.
-        switchState = ((getStatus() == LOW) ? 1 : 0);
+        switchState = (status == LOW ? 1 : 0);
     }
-    // Ereignis senden
-    // Diese Methode muss überschrieben werden.
-    transmit(row, col, switchState);
-}
-
-
-void Switch::transmit(uint8_t &row, uint8_t &col, uint8_t &switchState) {
-    // switchState = 0: Switch is off
-    // switchState = 1: Switch is on
-    // switchState = 2: Switch is long on
-
-    // c-string with data to be sent (e.g. via the serial port)
-    char charsToSend[MAX_BUFFER_LENGTH] = "S;S;";
-
-    // temp memory for typecast int --> c-string
-    char charRowCol[MAX_PARA_LENGTH * 2] = "";
-
-    // set charsToSend according to value of data
-    if (switchState == 2) {
-        strcat(charsToSend, "LON;");
-    } else {
-        strcat(charsToSend, ((switchState == 1) ? "ON;" : "OFF;"));
-    }
-    snprintf (charRowCol, MAX_PARA_LENGTH * 2, "%u;%u", row, col);
-    strcat(charsToSend, charRowCol);
-    Serial.println(charsToSend);
+    return switchState;
 }
 
 

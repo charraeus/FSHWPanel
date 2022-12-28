@@ -1,4 +1,4 @@
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * @file Switchmatrix.hpp
  * @author Christian Harraeus (christian@harraeus.de)
  * @brief Interface der Klasse @em SwitchMatrix
@@ -15,11 +15,16 @@
 
 #include <switch.hpp>
 
-// Konstanten
+/*************************************************************************************************************
+ * Konstanten
+ */
 const bool TRANSMIT_ONLY_CHANGED_SWITCHES = true; ///< nur veränderte Schalter-Status übertragen
 const bool TRANSMIT_ALL_SWITCHES = false;         ///< alle Schalter-Status übertragen, unabhängig ob verändert oder nicht
+const uint8_t SWITCH_ON = 1;
+const uint8_t SWITCH_OFF = 0;
+const uint8_t SWITCH_LON = 2;
 
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * Konstanten für die Schaltermatrix.
  ************************************************************************************************************/
 const unsigned int HW_MATRIX_ROWS_LSB_PIN = 14;  ///< Pin-Nummer des niederstwertigen Pins der Matrixzeilen Y
@@ -30,7 +35,7 @@ constexpr uint8_t SWITCH_MATRIX_ROWS = HW_MATRIX_ROWS_MSB_PIN - HW_MATRIX_ROWS_L
 constexpr uint8_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_LSB_PIN + 1;  ///< Anzahl Matrixspalten
 
 
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * @brief Schaltermatrix zur Aufnahme von Schaltern der Klasse @em switch.
  *
  * @todo Schaltermatrixklasse hier noch dokumentieren.
@@ -63,13 +68,25 @@ public:
      *        den Status aller Schalter in der Matrix ablegen.
      *
      * Überträgt den Status der einzelnen Schalter in die Schaltermatrix.
-     * Hierzu wird die Methode @em Switch::transmitStatus() des jeweiligen Schalters verwendet.
      *
      * @param changedOnly @em true ==>  nur den Status der Schalter, die sich seit
      *                                  der letzten Abfrage geändert haben, übertragen.\n
      *                    @em false ==> den Status aller Schalter übertragen.
      */
     void transmitStatus(bool changedOnly);
+
+
+    /**
+     * @brief Physical transmitssion of the data. This method has to be overwritten in every derived class.
+     *
+     * @param row Row of switch in the switch matrix.
+     * @param col Column of switch in the switch matrix.
+     * @param switchState C-string with the string data to submit:
+     *                      switchState = @em 0: Switch is @em off
+     *                      switchState = @em 1: Switch is @em on
+     *                      switchState = @em 2: Switch is @em long on
+     */
+    virtual void transmit(uint8_t &row, uint8_t &col, uint8_t switchState);
 
 
     #ifdef DEBUG

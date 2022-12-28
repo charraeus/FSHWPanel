@@ -102,8 +102,8 @@ public:
 
 
 private:
-    bool batteryPower;      ///< @true : Battery power is available, otherwise @false.
-    bool avionics1Power;    ///< @true : Avionics bus 1 is powered, otherwise @false.
-    bool avionics2Power;    ///< @true : Avionics bus 2 is powered, otherwise @false.
+    bool batteryPower;      ///< @em true : Battery power is available, otherwise @em false.
+    bool avionics1Power;    ///< @em true : Avionics bus 1 is powered, otherwise @em false.
+    bool avionics2Power;    ///< @em true : Avionics bus 2 is powered, otherwise @em false.
     bool devicePower;       ///< Power power must be available and the device must be switched on.
 };

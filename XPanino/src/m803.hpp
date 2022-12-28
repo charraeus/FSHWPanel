@@ -16,27 +16,14 @@
 #include <ledmatrix.hpp>
 #include <Switchmatrix.hpp>
 
-const char DEVICE_M803[] = "M803";  ///< Kommando, das von X-Plane kommt.
-
 /***************************************************************************************************
- * @brief Eventklasse - wird wahrscheinlich nicht benötigt.
- *
+ *  Konstantendefinitionen
  */
-enum class Event {
-    BTN_OAT_ON,         // Der Taster OAT/VOLTS wurde gedrückt
-    BTN_SEL_ON,         // der Taster SELECT wurde gedrückt
-    BTN_SEL_OFF,        // der Taster SELECT wurde wieder losgelassen
-    BTN_CTL_ON,         // der Taster CONTROL wurde gedrückt
-    BTN_CTL_LON,        // der Taster CONTROL wurde mindestens 3 Sekunden lang gedrückt
-    XP_TIME,            // Neue Uhrzeit vom X-Plane empfangen
-    XP_TEMPERATURE      // Neue Temperatur vom X-Plane empfangen
-};
+const char DEVICE_M803[] = "M803";  ///< Kommando, das von X-Plane kommt.
+const uint8_t CLOCK_BTN_OAT = 0;
+const uint8_t CLOCK_BTN_SEL = 1;
+const uint8_t CLOCK_BTN_CTL = 2;
 
-
-/***************************************************************************************************
- * Status-Aufzählungstpyen
- *
- **************************************************************************************************/
 
 /***************************************************************************************************
  * @brief Aufzählungstyp für die verschiedenen Zeitvarianten, die angezeigt werden.
@@ -64,19 +51,6 @@ enum class OatVoltsModeState {
     ALT             ///< Show current Altimeter in inHG in upper display.
 };
 
-/***************************************************************************************************
- * @brief Aufzählungstyp für die möglichen Events, die verarbeitet werden müssen.
- *
- */
-enum class m803Event {
-    BTN_OAT_ON,         // Der Taster OAT/VOLTS wurde gedrückt
-    BTN_SEL_ON,         // der Taster SELECT wurde gedrückt
-    BTN_SEL_OFF,        // der Taster SELECT wurde wieder losgelassen
-    BTN_CTL_ON,         // der Taster CONTROL wurde gedrückt
-    BTN_CTL_LON,        // der Taster CONTROL wurde mindestens 3 Sekunden lang gedrückt
-    XP_TIME,            // Neue Uhrzeit vom X-Plane empfangen
-    XP_TEMPERATURE      // Neue Temperatur vom X-Plane empfangen
-};
 
 /***************************************************************************************************
  * @brief Modell der Uhr Davtron M803.
@@ -104,7 +78,15 @@ public:
     OatVoltsModeState toggleOatVoltsMode();
 
 
-    void setTimeMode(ClockModeState &timeMode);
+    /**
+     * @brief Set the Switch Event object
+     *
+     * @param switchId Id of the switch according to the table @em switchId in @em dispatcher.hpp.
+     * @param switchStatus Status of the switch.
+     */
+    void setSwitchEvent(const uint8_t switchId, const uint8_t switchStatus);
+
+
     void setLocalTime(uint32_t &localTime);
     void setUtc(uint32_t &utc);
     void setFlightTime(uint32_t &flightTime);
@@ -145,6 +127,7 @@ private:
     uint32_t flightTime;                ///< Die Flighttime im Format 00HHMMSS.
     uint32_t elapsedTime;               ///< Die elapsed time im Format 00HHMMSS.
     int8_t temperatureC;                ///< Die Temperatur in Grad Celsius.
+    float emfVoltage;                   ///< The EMF-Voltage
     float altimeter;                    ///< Luftdruck in inHg.
     const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg
 
@@ -153,4 +136,7 @@ private:
 
     /// @brief Calculate temperature in Fahrenheit from Celsius.
     float temperatureF();
+
+    /// @brief Format the temperature to not more than 3 digits.
+    String formatTemperature(const float &temp);
 };

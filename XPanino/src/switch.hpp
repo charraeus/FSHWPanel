@@ -55,31 +55,19 @@ public:
 
 
     /**
-     * @brief Den Status eines Schalters (@em ON oder @em off) übertragen. Dabei wird die Eigenschaft
-     *        @em changed des Schalters auf @false gesetzt.
+     * @brief Den Status eines Schalters (@em ON oder @em off) übertragen. Dabei wird der Änderungsstatus,
+     *        d.h. die Eigenschaft @em changed des Schalters auf @em false gesetzt.
      *
      * Wenn der Schalter länger als @em LONG_ON Millisekunden an ist, wird zusätzlich -- aber
-     * nur einmal -- der Status @em LON (für \"long on\") gesendet.
+     * nur einmal -- der Status @em LON (für "long on") gesendet.
      *
-     * Wenn das Ausgabeformat geändert werden soll, muss eine von der Klasse @em Switch abgeleitete, neue
-     * Klasse erstellt werden, und dort die Methode @transmit überschrieben werden.
+     * @return uint8_t Status of the switch:
+     *                      Status = 0: Switch is off
+     *                      Status = 1: Switch is on
+     *                      Status = 2: Switch is long on
      *
-     * @see Methode @transmit
      */
-    void transmitStatus(uint8_t &row, uint8_t &col);
-
-
-    /**
-     * @brief Physical transmitssion of the data. This method has to be overwritten in every derived class.
-     *
-     * @param row Row of switch in the switch matrix
-     * @param col Column of switch in the switch matrix
-     * @param switchState C-string with the string data to submit:
-     *                      switchState = 0: Switch is off
-     *                      switchState = 1: Switch is on
-     *                      switchState = 2: Switch is long on
-     */
-    void transmit(uint8_t &row, uint8_t &col, uint8_t &switchState);
+    uint8_t getStatus();
 
 
     /**
@@ -89,7 +77,7 @@ public:
      *
      * @return @em true wenn der Schalter eingeschaltet ist.
      */
-    inline bool isOn() { return getStatus() == 0; }
+    inline bool isOn() { return status == LOW; }
 
 
     /**
@@ -100,20 +88,6 @@ public:
      *         @em false sonst.
      */
     inline bool isChanged() const { return changed; }
-
-
-    /**
-     * @brief Fragt den Schalterstatus ab und setzt den Änderungsstatus des Schalters zurück.
-     *
-     * Nach Rückgabe des Schalterstatus, wird der Änderungsstatus des Schalters,
-     * d.h. die Eigenschaft @em changed, auf @em false gesetzt.
-     *
-     * @return @em 0, wenn der Schalter eingeschaltet ist.\n
-     *         @em 1, wenn der Schalter ausgeschaltet ist.
-     *
-     * @see getStatusNoChange()
-     */
-    uint8_t getStatus() { changed = false; return status; }
 
 
     /**

@@ -11,6 +11,7 @@
  ************************************************************************************************************/
 
 #include <Arduino.h>
+#include <buffer.hpp>
 #include <Switchmatrix.hpp>
 
 /*************************************************************************************************************
@@ -78,15 +79,40 @@ void SwitchMatrix::transmitStatus(const bool changedOnly) {
     for (uint8_t row = 0; row < SWITCH_MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < SWITCH_MATRIX_COLS; col++) {
             if (changedOnly && switchMatrix[row][col].isChanged()) {
-                switchMatrix[row][col].transmitStatus(row, col);        // Methode eines einzelnen Switches
+                transmit(row, col, switchMatrix[row][col].getStatus());  // Status eines einzelnen Switches
             } else {
                 if (! changedOnly) {
-                    switchMatrix[row][col].transmitStatus(row, col);
+                    transmit(row, col, switchMatrix[row][col].getStatus());
                 }
             }
         }
     }
 }
+
+
+
+void SwitchMatrix::transmit(uint8_t &row, uint8_t &col, uint8_t switchState) {
+    // switchState = 0: Switch is off
+    // switchState = 1: Switch is on
+    // switchState = 2: Switch is long on
+
+    // c-string with data to be sent (e.g. via the serial port)
+    char charsToSend[MAX_BUFFER_LENGTH] = "S;S;";
+
+    // temp memory for typecast int --> c-string
+    char charRowCol[MAX_PARA_LENGTH * 2] = "";
+
+    // set charsToSend according to value of data
+    if (switchState == 2) {
+        strcat(charsToSend, "LON;");
+    } else {
+        strcat(charsToSend, ((switchState == 1) ? "ON;" : "OFF;"));
+    }
+    snprintf (charRowCol, MAX_PARA_LENGTH * 2, "%u;%u", row, col);
+    strcat(charsToSend, charRowCol);
+    Serial.println(charsToSend);
+}
+
 
 #ifdef DEBUG
 /// @brief Schaltermatrix auf Terminal ausgeben.

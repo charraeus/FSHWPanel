@@ -86,7 +86,7 @@ Die Anzeige der einzelnen Werte erfolgt im nachfolgend beschriebenen Format:
 
 * EMF-Voltage: 99.9E
 * O.A.T. Fahrenheit
-  * wenn > 99F oder < 0F: ±99F
+  * wenn > 99.9F oder < 0F: ±99F
   * sonst: 99.9F
 * O.A.T. Celsius:
   * wenn >= 0°C: 99°C
