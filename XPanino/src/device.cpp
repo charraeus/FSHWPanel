@@ -37,7 +37,7 @@ void Device::processEvent(EventClass *event) const {
 
 
 bool Device::isDevicePowerAvailable() {
-    return devicePower and isPowerAvailable();
+    return devicePower && isPowerAvailable();
 }
 
 
@@ -61,5 +61,5 @@ inline bool Device::isAvionics2PowerOn() {
 
 
 inline bool Device::isPowerAvailable() {
-    return isBatteryPowerOn() and isAvionics1PowerOn();
+    return isBatteryPowerOn() && isAvionics1PowerOn();
 }

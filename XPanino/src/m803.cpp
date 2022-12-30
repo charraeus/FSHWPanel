@@ -27,9 +27,6 @@ extern LedMatrix leds;
 ClockDavtronM803::ClockDavtronM803()
     : Device() {         //< Call Device-Constructor; @todo was ist der Unterschied zu using Device::Device; ?
 
-    temperatureC = -1;             ///< Die Temperatur in Grad Celsius  @todo checken wie's vom Flusi kommt
-    emfVoltage = 99.9;
-    altimeter = STD_ALTIMETER_inHg; ///< Luftdruck in inHg
     oatVoltsMode = OatVoltsModeState::EMF;  ///< Show EMF voltage in upper display.
     isOatVoltsModeChanged = true;
     clockMode = ClockModeState::LT;         ///< Lokale Zeit im unteren Display anzeigen.
@@ -41,7 +38,7 @@ ClockDavtronM803::ClockDavtronM803()
     leds.defineDisplayField(upperDisplay, 1, {1, 16});  ///< Die 2. 7-Segment-Anzeige liegt auf der Row 1 und den Cols 16 bis 23.
     leds.defineDisplayField(upperDisplay, 2, {2, 16});  ///< Die 3. 7-Segment-Anzeige liegt auf der Row 2 und den Cols 16 bis 23.
     leds.defineDisplayField(upperDisplay, 3, {3, 16});  ///< Die 4. 7-Segment-Anzeige liegt auf der Row 3 und den Cols 16 bis 23.
-    leds.display(upperDisplay, "LOAd");
+    leds.display(upperDisplay, "----");
 
     ///< Define the lower display and show a default value.
     lowerDisplay = 1;
@@ -49,7 +46,7 @@ ClockDavtronM803::ClockDavtronM803()
     leds.defineDisplayField(lowerDisplay, 1, {5, 16});        ///< Die 2. 7-Segment-Anzeige liegt auf der Row 5 und den Cols 16 bis 23: Einerstelle der Stunde.
     leds.defineDisplayField(lowerDisplay, 2, {6, 16});        ///< Die 3. 7-Segment-Anzeige liegt auf der Row 6 und den Cols 16 bis 23: Zehnerstelle der Minute.
     leds.defineDisplayField(lowerDisplay, 3, {7, 16});        ///< Die 4. 7-Segment-Anzeige liegt auf der Row 7 und den Cols 16 bis 23: Einerstelle der Minute.
-    leds.display(lowerDisplay, "9999");
+    leds.display(lowerDisplay, "----");
 
     ///< Define the leds which do not belong to a displayField.
     LED_TRENNER_1 = {0, 4};         ///< Der obere Stunden-Minuten-Trenner liegt auf Row=0 und Col=4.
@@ -175,7 +172,7 @@ String ClockDavtronM803::formatTemperature(const float &temp) const {
 void ClockDavtronM803::showUpperDisplay() {
     if (isDevicePowerAvailable()) {
         /// if device power is available show the values on the display
-        if (isOatVoltsModeChanged or isTemperatureChanged or isEMFchanged or isAltimeterChanged) {
+        if (isOatVoltsModeChanged || isTemperatureChanged || isEMFchanged || isAltimeterChanged) {
             switch (oatVoltsMode) {
                 case OatVoltsModeState::EMF        : {
                             String s = static_cast<String>(emfVoltage);
@@ -235,7 +232,7 @@ void ClockDavtronM803::showUpperDisplay() {
 void ClockDavtronM803::showLowerDisplay() {
     if (isDevicePowerAvailable()) {
         /// if device power is available set the leds
-        if (isClockModeChanged or flightTime.isChanged() or elapsedTime.isChanged()) {
+        if (isClockModeChanged || flightTime.isChanged() || elapsedTime.isChanged()) {
             switch (clockMode) {
                 case ClockModeState::LT : {
                         if (isClockModeChanged) {
@@ -246,7 +243,7 @@ void ClockDavtronM803::showLowerDisplay() {
                             leds.ledOn(LED_TRENNER_2);
                             leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
                         }
-                        if (localTime.getHours() != 99) {
+                        if (localTime.getHours(localTime.getTime(false)) != 99) {
                             leds.display(lowerDisplay, localTime.getFormattedTime(false));
                         } else {
                             leds.display(lowerDisplay, "nA-L");
@@ -263,7 +260,7 @@ void ClockDavtronM803::showLowerDisplay() {
                             leds.ledOn(LED_TRENNER_2);
                             leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
                         }
-                        if (utc.getHours() != 99) {
+                        if (utc.getHours(utc.getTime(false)) != 99) {
                             leds.display(lowerDisplay, utc.getFormattedTime(false));
                         } else {
                             leds.display(lowerDisplay, "nA-U");
@@ -284,13 +281,20 @@ void ClockDavtronM803::showLowerDisplay() {
                         if (isClockModeChanged) {
                             leds.ledOff(LED_ET);
                             leds.ledOn(LED_FT);
-                            leds.ledOn(LED_TRENNER_1);
-                            leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
-                            leds.ledOn(LED_TRENNER_2);
-                            leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
+                            if (flightTime.getHours(flightTime.getTime(false)) == 0) {
+                                leds.ledOn(LED_TRENNER_1);
+                                leds.ledBlinkOff(LED_TRENNER_1, BLINK_NORMAL);
+                                leds.ledOn(LED_TRENNER_2);
+                                leds.ledBlinkOff(LED_TRENNER_2, BLINK_NORMAL);
+                            } else {
+                                leds.ledOn(LED_TRENNER_1);
+                                leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
+                                leds.ledOn(LED_TRENNER_2);
+                                leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
+                            }
                         }
                         String timeString = flightTime.getFormattedTime(true);
-                        if (flightTime.getMinutes() < 100) {
+                        if (flightTime.getHours(flightTime.getTime(false)) == 0) {
                             // display minutes and seconds: MMSS
                             leds.display(lowerDisplay, timeString.substring(2, 6));
                         } else {

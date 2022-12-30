@@ -37,12 +37,14 @@ void TimeClass::setTime(const uint32_t &newTime) {
 
 
 void TimeClass::setTime(const uint8_t &hours, const uint8_t &minutes, const uint8_t &seconds) {
-    setTime(seconds + minutes * 100 + hours * 10000);
+    setTime(buildTime(hours, minutes, seconds));
 }
 
 
-uint32_t TimeClass::getTime(){
-    changed = false;
+uint32_t TimeClass::getTime(bool resetChangedStatus) {
+    if (resetChangedStatus) {
+        changed = false;
+    }
     return currentTime;
 }
 
@@ -64,18 +66,23 @@ String TimeClass::getFormattedTime(const bool &withSeconds) {
 }
 
 
-uint8_t TimeClass::getSeconds() {
-    return currentTime % 100;
+inline uint8_t TimeClass::getSeconds(const uint32_t &timeValue) {
+    return timeValue % 100;
 }
 
 
-uint8_t TimeClass::getMinutes() {
-    return (currentTime / 100) % 100;
+uint8_t TimeClass::getMinutes(const uint32_t &timeValue) {
+    return (timeValue / 100) % 100;
 }
 
 
-uint8_t TimeClass::getHours() {
-    return currentTime / 10000;
+uint8_t TimeClass::getHours(const uint32_t &timeValue) {
+    return timeValue / 10000;
+}
+
+
+uint32_t TimeClass::buildTime(const uint8_t &hours, const uint8_t &minutes, const uint8_t &seconds) {
+    return hours * 10000 + minutes * 100 + seconds;
 }
 
 
@@ -99,9 +106,9 @@ bool TimeClass::update() {
  **************************************************************************************************/
 
 uint32_t TimeClass::updateTimeBy1s(const uint32_t &oldTime) {
-    uint8_t seconds = oldTime % 100;            // e.g. 123456 --> seconds = 56
-    uint8_t minutes = (oldTime / 100) % 100;    // e.g. 123456 --> 1234.56 --> 1234 --> minutes = 34
-    uint8_t hours = (oldTime / 10000);          // e.g. 123456 --> 12.3456 --> 12 --> hours = 12
+    uint8_t seconds = getSeconds(oldTime);
+    uint8_t minutes = getMinutes(oldTime);
+    uint8_t hours = getHours(oldTime);
 
     seconds++;
     if (seconds > 59) {
@@ -115,7 +122,7 @@ uint32_t TimeClass::updateTimeBy1s(const uint32_t &oldTime) {
             }
         }
     }
-    return hours * 10000 + minutes * 100 + seconds;
+    return buildTime(hours, minutes, seconds);
 }
 
 
@@ -123,6 +130,33 @@ uint32_t TimeClass::updateTimeBy1s(const uint32_t &oldTime) {
  * FlightTimeClass - public Methoden
  *
  **************************************************************************************************/
+
+uint32_t FlightTimeClass::updateTimeBy1s(const uint32_t &oldTime) {
+    uint8_t seconds = getSeconds(oldTime);
+    uint8_t minutes = getMinutes(oldTime);
+    uint8_t hours = getHours(oldTime);
+
+    seconds++;
+    if (seconds > 59) {
+        seconds = 0;
+        minutes++;
+        if (minutes > 99) {
+            // 100 Minuten in 1 Std. und 40 Minuten umwandeln
+            minutes = 40;
+            hours = 1;
+        } else {
+            if (minutes > 59) {
+                minutes = 0;
+                hours++;
+            }
+            if (hours > 23) {
+                hours = 0;
+            }
+        }
+    }
+    return buildTime(hours, minutes, seconds);
+}
+
 
 // void FlightTimeClass::update() {
 

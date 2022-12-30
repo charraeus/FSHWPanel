@@ -61,6 +61,16 @@ enum class OatVoltsModeState {
  */
 class ClockDavtronM803 : public Device {
 public:
+    // enum ClockModeState {
+    //     LT,         ///< Local Time
+    //     UT,         ///< Universal Time
+    //     ET,         ///< Elapsed Time (seit Avionics on)
+    //     FT,         ///< Flight Time
+    //     SET_LT,     ///< Set local time directly at the device
+    //     SET_UT,     ///< Set UTC directly at the device
+    //     SET_ET      ///< Set ET directly at the device
+    // }; // vgl. https://www.learncpp.com/cpp-tutorial/nested-types-in-classes/
+
     /**
      * @brief Construct a new Clock Davtron M803 object
      *
@@ -110,7 +120,7 @@ private:
     TimeClass localTime {999999};           ///< Die lokale Zeit im Format 00HHMMSS.
     TimeClass utc {999999};                 ///< Die UTC im Format 00HHMMSS.
     TimeClass elapsedTime {0};              ///< Die elapsed time im Format 00HHMMSS.
-    TimeClass flightTime {0};               ///< Die Flighttime im Format 00HHMMSS.
+    FlightTimeClass flightTime {9930};         ///< Die Flighttime im Format 00HHMMSS.
 
     int8_t temperatureC {-1};               ///< Die Temperatur in Grad Celsius.
     bool isTemperatureChanged {true};       ///< @em true if temperatureC has changed, else @em false
