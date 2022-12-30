@@ -63,8 +63,3 @@ inline bool Device::isAvionics2PowerOn() {
 inline bool Device::isPowerAvailable() {
     return isBatteryPowerOn() and isAvionics1PowerOn();
 }
-
-
-void Device::show() {
-    ;
-}

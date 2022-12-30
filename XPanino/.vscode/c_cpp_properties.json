@@ -10,9 +10,9 @@
             "includePath": [
                 "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/include",
                 "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/src",
+                "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/lib/UniversalTimer-1.0.0/src",
                 "/Users/christian/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "/Users/christian/.platformio/packages/framework-arduino-avr/variants/standard",
-                "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/.pio/libdeps/unodebug/Unity/src",
                 "/Users/christian/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "/Users/christian/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "/Users/christian/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -25,9 +25,9 @@
                 "path": [
                     "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/include",
                     "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/src",
+                    "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/lib/UniversalTimer-1.0.0/src",
                     "/Users/christian/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "/Users/christian/.platformio/packages/framework-arduino-avr/variants/standard",
-                    "/Users/christian/Projekte/FSHWPanel/git-repo/XPanino/.pio/libdeps/unodebug/Unity/src",
                     "/Users/christian/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "/Users/christian/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "/Users/christian/.platformio/packages/framework-arduino-avr/libraries/SPI/src",

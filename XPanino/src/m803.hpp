@@ -15,6 +15,7 @@
 #include <device.hpp>
 #include <ledmatrix.hpp>
 #include <Switchmatrix.hpp>
+#include <time.hpp>
 
 /***************************************************************************************************
  *  Konstantendefinitionen
@@ -60,10 +61,15 @@ enum class OatVoltsModeState {
  */
 class ClockDavtronM803 : public Device {
 public:
+    /**
+     * @brief Construct a new Clock Davtron M803 object
+     *
+     */
     ClockDavtronM803();
 
+
     /**
-     * @brief Switch to next time mode of the lower diplay but skip the SET_xx modes.
+     * @brief Switch to next clock mode of the lower diplay but skip the SET_xx modes.
      *
      * @return ClockModeState The new ClockMode.
      */
@@ -87,10 +93,6 @@ public:
     void setSwitchEvent(const uint8_t switchId, const uint8_t switchStatus);
 
 
-    void setLocalTime(uint32_t &localTime);
-    void setUtc(uint32_t &utc);
-    void setFlightTime(uint32_t &flightTime);
-    void setElapsedTime(uint32_t &elapsedTime);
     void setOatVoltsMode(OatVoltsModeState &OatVoltsMode);
     void setTemperature(int8_t &temperatureC);
     void setPowerState(bool &powerStatus);
@@ -98,18 +100,32 @@ public:
 
 
     /**
-     * @brief Display the current values in upper and lower display.
+     * @brief Update data and process events
      *
      */
-    void show();
-
-
-    /// @brief Die lokale Zeit als String abrufen
-    /// @return Lokale Zeit als String zur Anzeige auf 7-Segment-Anzeigen
-    char* getLocalTimeDigits();
+    virtual void updateAndProcess();
 
 
 private:
+    TimeClass localTime {999999};           ///< Die lokale Zeit im Format 00HHMMSS.
+    TimeClass utc {999999};                 ///< Die UTC im Format 00HHMMSS.
+    TimeClass elapsedTime {0};              ///< Die elapsed time im Format 00HHMMSS.
+    TimeClass flightTime {0};               ///< Die Flighttime im Format 00HHMMSS.
+
+    int8_t temperatureC {-1};               ///< Die Temperatur in Grad Celsius.
+    bool isTemperatureChanged {true};       ///< @em true if temperatureC has changed, else @em false
+    float emfVoltage {99.9};                ///< The EMF-Voltage
+    bool isEMFchanged {true};               ///< @em true if EMF voltage has changed, else @em false
+    float altimeter {STD_ALTIMETER_inHg};   ///< Luftdruck in inHg.
+    const float STD_ALTIMETER_inHg {29.92}; ///< Standardluftdruck in inHg
+    bool isAltimeterChanged {true};         ///< @em true if altimeter has changed, else @em false
+
+    OatVoltsModeState oatVoltsMode;         ///< Modus/Status des oberen Displays.
+    bool isOatVoltsModeChanged;             ///< @em true if mode is changed, otherwise @em false
+
+    ClockModeState clockMode;               ///< Modus/Status des unteren Displays.
+    bool isClockModeChanged;                ///< @em true if mode is changed, otherwise @em false
+
     uint8_t upperDisplay;                   ///< Upper display id
     uint8_t lowerDisplay;                   ///< Lower display id
     LedMatrixPos LED_TRENNER_1;             ///< Upper divider between hh and mm
@@ -118,25 +134,37 @@ private:
     LedMatrixPos LED_UT;                    ///< Led for UTC
     LedMatrixPos LED_ET;                    ///< Led for elapsed time
     LedMatrixPos LED_FT;                    ///< Led for flight time
-    OatVoltsModeState oatVoltsMode;     ///< Modus/Status des oberen Displays.
-    bool isOatVoltsModeChanged;         ///< @em true if mode is changed, otherwise @em false
-    ClockModeState clockMode;           ///< Modus/Status des unteren Displays.
-    bool isClockModeChanged;            ///< @em true if mode is changed, otherwise @em false
-    uint32_t localTime;                 ///< Die lokale Zeit im Format 00HHMMSS.
-    uint32_t utc;                       ///< Die UTC im Format 00HHMMSS.
-    uint32_t flightTime;                ///< Die Flighttime im Format 00HHMMSS.
-    uint32_t elapsedTime;               ///< Die elapsed time im Format 00HHMMSS.
-    int8_t temperatureC;                ///< Die Temperatur in Grad Celsius.
-    float emfVoltage;                   ///< The EMF-Voltage
-    float altimeter;                    ///< Luftdruck in inHg.
-    const float STD_ALTIMETER_inHg = 29.92; ///< Standardluftdruck in inHg
 
-    ///< Altimeter in QNH umrechnen
+
+    /**
+     * @brief Calculate QNH from altimeter value
+    */
     inline float qnh();
 
-    /// @brief Calculate temperature in Fahrenheit from Celsius.
+
+    /** @brief Calculate temperature in Fahrenheit from Celsius.
+     *
+     */
     float temperatureF();
 
-    /// @brief Format the temperature to not more than 3 digits.
-    String formatTemperature(const float &temp);
+
+    /** @brief Format the temperature to not more than 3 digits.
+     *
+     */
+    String formatTemperature(const float &temp) const;
+
+
+    /**
+     * @brief Display values on the upper display and switch Leds
+     *
+     */
+    void showUpperDisplay();
+
+
+    /**
+     * @brief Display values on the lower display and switch Leds
+     *
+     */
+
+    void showLowerDisplay();
 };

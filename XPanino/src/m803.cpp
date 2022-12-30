@@ -23,19 +23,17 @@ extern LedMatrix leds;
  *
  **************************************************************************************************/
 
-ClockDavtronM803::ClockDavtronM803() {
-    Device();               ///< Call Device-Constructor;
+
+ClockDavtronM803::ClockDavtronM803()
+    : Device() {         //< Call Device-Constructor; @todo was ist der Unterschied zu using Device::Device; ?
+
+    temperatureC = -1;             ///< Die Temperatur in Grad Celsius  @todo checken wie's vom Flusi kommt
+    emfVoltage = 99.9;
+    altimeter = STD_ALTIMETER_inHg; ///< Luftdruck in inHg
     oatVoltsMode = OatVoltsModeState::EMF;  ///< Show EMF voltage in upper display.
     isOatVoltsModeChanged = true;
     clockMode = ClockModeState::LT;         ///< Lokale Zeit im unteren Display anzeigen.
     isClockModeChanged = true;
-    localTime = 123456;     ///< Die lokale Zeit im Format 00HHMMSS @todo checken wies vom Flusi kommt
-    utc = 012345;                ///< Die UTC im Format 00HHMMSS @todo checken wies vom Flusi kommt
-    flightTime = 0;         ///< Die Flighttime im Format 00HHMMSS @todo checken wies vom Flusi kommt
-    elapsedTime = 0;        ///< Die elapsed time im Format 00HHMMSS
-    temperatureC = 0;       ///< Die Temperatur in Grad Celsius  @todo checken wie's vom Flusi kommt
-    emfVoltage = 99.9;
-    altimeter = STD_ALTIMETER_inHg; ///< Luftdruck in inHg
 
     ///< Define the upper display and show a default value.
     upperDisplay = 0;   ///< Das Display-Feld upperDisplay definieren. Es besteht aus 4 7-Segment-Anzeigen:
@@ -68,6 +66,7 @@ ClockDavtronM803::ClockDavtronM803() {
     leds.ledOff(LED_FT);
 }
 
+
 ClockModeState ClockDavtronM803::toggleClockMode() {
     int currentMode = static_cast<int>(clockMode);
     if (currentMode < static_cast<int>(ClockModeState::FT)) {
@@ -83,7 +82,6 @@ ClockModeState ClockDavtronM803::toggleClockMode() {
 
 OatVoltsModeState ClockDavtronM803::toggleOatVoltsMode() {
     int currentMode{static_cast<int>(oatVoltsMode)};
-    PRINT(currentMode);
     if (currentMode < static_cast<int>(OatVoltsModeState::ALT)) {
         currentMode++;
         oatVoltsMode = static_cast<OatVoltsModeState>(currentMode);
@@ -91,8 +89,7 @@ OatVoltsModeState ClockDavtronM803::toggleOatVoltsMode() {
         oatVoltsMode = static_cast<OatVoltsModeState>(OatVoltsModeState::EMF);
     }
     isOatVoltsModeChanged = true;
-    PRINT(static_cast<int>(oatVoltsMode));
-   return oatVoltsMode;
+    return oatVoltsMode;
 };
 
 
@@ -108,18 +105,77 @@ void ClockDavtronM803::setSwitchEvent(const uint8_t switchId, const uint8_t swit
 }
 
 
-void ClockDavtronM803::setLocalTime(uint32_t &localTime) { this->localTime = localTime; };
-void ClockDavtronM803::setUtc(uint32_t &utc) { this->utc = utc; };
-void ClockDavtronM803::setFlightTime(uint32_t &flightTime) { this->flightTime = flightTime; };
-void ClockDavtronM803::setElapsedTime(uint32_t &elapsedTime) { this->elapsedTime = elapsedTime; };
 void ClockDavtronM803::setOatVoltsMode(OatVoltsModeState &oatVoltsMode) {this->oatVoltsMode = oatVoltsMode; };
 void ClockDavtronM803::setTemperature(int8_t &temperatureC) { this->temperatureC = temperatureC; };
 void ClockDavtronM803::setAltimeter(float &altimeter) { this->altimeter = altimeter; };
 
 
-void ClockDavtronM803::show() {
+void ClockDavtronM803::updateAndProcess() {
+    /// update flight and elapsed time objects
+    flightTime.update();
+    //elapsedTime.update();
+
+    /// show the values and leds
+    showUpperDisplay();
+    showLowerDisplay();
+}
+
+
+/** qnh
+ * @brief Altimeter inHg in QNH umrechnen.
+ * @return float Calculated QNH.
+ *
+ * 29,92 in Hg = 1013,25 hPa
+ */
+float ClockDavtronM803::qnh() {
+    const float STD_QNH_hPa = 1013.25;      ///< Standardluftdruck in Hektopascal
+
+    return STD_QNH_hPa / STD_ALTIMETER_inHg * altimeter;
+}
+
+
+/**
+ * @brief Calculate Fahrenheit from Celsius.
+ * @return float Calculated temperature in Fahrenheit.
+ */
+inline float ClockDavtronM803::temperatureF() {
+    return temperatureC * (9 / 5)+ 32;
+}
+
+
+/**
+ * @brief Format a temperature value to exactly 3 digits. Considers the decimal point if necessary.
+ *
+ * @param temp      Temperature to be formatted.
+ * @return String   Temperature with 3 digits.
+ */
+String ClockDavtronM803::formatTemperature(const float &temp) const {
+    String s = static_cast<String>(temp);
+    // cut the decimal if f > 99.9 or f < 0
+    if (temp > 99.9) {
+        // e. g. 101.23
+        s = s.substring(0, 3);
+    } else if (temp > 9.9) {
+        // e.g. 10.3
+        s = s.substring(0, 4);
+    } else if (temp >= 0) {
+        // e.g. 4.58
+        s = ' ' + s.substring(0, 3);
+    } else if (temp < 0) {
+        // e.g. -6.2
+        s = s.substring(0, 4);
+    } else if (temp < -9) {
+        // e.g. -10.3
+        s = s.substring(0, 3);
+    }
+    return s;
+}
+
+
+void ClockDavtronM803::showUpperDisplay() {
     if (isDevicePowerAvailable()) {
-        if (isOatVoltsModeChanged) {
+        /// if device power is available show the values on the display
+        if (isOatVoltsModeChanged or isTemperatureChanged or isEMFchanged or isAltimeterChanged) {
             switch (oatVoltsMode) {
                 case OatVoltsModeState::EMF        : {
                             String s = static_cast<String>(emfVoltage);
@@ -133,7 +189,6 @@ void ClockDavtronM803::show() {
                 }
                 case OatVoltsModeState::FAHRENHEIT : {
                             String s = formatTemperature(temperatureF());
-                            Serial.print("show F: "); PRINT(s);
                             s += 'F';
                             leds.display(upperDisplay, s);
                             break;
@@ -166,63 +221,94 @@ void ClockDavtronM803::show() {
                 }
             }
             isOatVoltsModeChanged = false;
+            isEMFchanged = false;
+            isTemperatureChanged = false;
+            isAltimeterChanged = false;
         }
-        if (isClockModeChanged) {
+    } else {
+        /// if device power is not available => "switch off" the display
+        leds.display(upperDisplay, "    ");
+    }
+}
+
+
+void ClockDavtronM803::showLowerDisplay() {
+    if (isDevicePowerAvailable()) {
+        /// if device power is available set the leds
+        if (isClockModeChanged or flightTime.isChanged() or elapsedTime.isChanged()) {
             switch (clockMode) {
                 case ClockModeState::LT : {
-                            String s = static_cast<String>(localTime);
-                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                        if (isClockModeChanged) {
                             leds.ledOff(LED_FT);
                             leds.ledOn(LED_LT);
                             leds.ledOn(LED_TRENNER_1);
                             leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
                             leds.ledOn(LED_TRENNER_2);
                             leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                            break;
+                        }
+                        if (localTime.getHours() != 99) {
+                            leds.display(lowerDisplay, localTime.getFormattedTime(false));
+                        } else {
+                            leds.display(lowerDisplay, "nA-L");
+                        }
+
+                        break;
                 }
                 case ClockModeState::UT : {
-                            String s = static_cast<String>(utc);
-                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                        if (isClockModeChanged) {
                             leds.ledOff(LED_LT);
                             leds.ledOn(LED_UT);
                             leds.ledOn(LED_TRENNER_1);
                             leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
                             leds.ledOn(LED_TRENNER_2);
                             leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                            break;
+                        }
+                        if (utc.getHours() != 99) {
+                            leds.display(lowerDisplay, utc.getFormattedTime(false));
+                        } else {
+                            leds.display(lowerDisplay, "nA-U");
+                        }
+                        break;
                 }
                 case ClockModeState::ET : {
-                            String s = static_cast<String>(flightTime);
-                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                        if (isClockModeChanged) {
                             leds.ledOff(LED_UT);
                             leds.ledOn(LED_ET);
                             leds.ledOff(LED_TRENNER_1);
                             leds.ledOff(LED_TRENNER_2);
-                            break;
+                        }
+                        leds.display(lowerDisplay, elapsedTime.getFormattedTime(false));
+                        break;
                 }
                 case ClockModeState::FT : {
-                            String s = static_cast<String>(elapsedTime);
-                            leds.display(lowerDisplay, s.substring(0, min(4, s.length())));
+                        if (isClockModeChanged) {
                             leds.ledOff(LED_ET);
                             leds.ledOn(LED_FT);
                             leds.ledOn(LED_TRENNER_1);
                             leds.ledBlinkOn(LED_TRENNER_1, BLINK_NORMAL);
                             leds.ledOn(LED_TRENNER_2);
                             leds.ledBlinkOn(LED_TRENNER_2, BLINK_NORMAL);
-                            break;
+                        }
+                        String timeString = flightTime.getFormattedTime(true);
+                        if (flightTime.getMinutes() < 100) {
+                            // display minutes and seconds: MMSS
+                            leds.display(lowerDisplay, timeString.substring(2, 6));
+                        } else {
+                            // display hours and minutes: HHMM
+                            leds.display(lowerDisplay, timeString.substring(0, 4));
+                        }
+                    break;
                 }
                 default : {
                     // this must not ever happen!
-                    leds.display(lowerDisplay, "Err");
+                    leds.display(lowerDisplay, "Err ");
                     leds.ledOff(LED_TRENNER_1);
                     leds.ledOff(LED_TRENNER_2);
                 }
             }
-            isClockModeChanged = false;
         }
     } else {
-        // Device power is not available => switch off all leds
-        leds.display(upperDisplay, "    ");
+        /// if device power is not available "switch off" the display and switch off all leds
         leds.display(lowerDisplay, "    ");
         leds.ledOff(LED_TRENNER_1);
         leds.ledOff(LED_TRENNER_2);
@@ -231,59 +317,4 @@ void ClockDavtronM803::show() {
         leds.ledOff(LED_FT);
         leds.ledOff(LED_ET);
     }
-}
-
-
-/// @todo richtig implementieren; gibt momentan immer "124356" zurück.
-char* ClockDavtronM803::getLocalTimeDigits() {
-    char r[] = {"999999"};
-    char *p = r;
-    return p;
-};
-
-
-/** qnh
- * @brief Altimeter inHg in QNH umrechnen.
- *
- * @return float Calculated QNH.
- *
- * 29,92 in Hg = 1013,25 hPa
- */
-float ClockDavtronM803::qnh() {
-    const float STD_QNH_hPa = 1013.25;      ///< Standardluftdruck in Hektopascal
-
-    return STD_QNH_hPa / STD_ALTIMETER_inHg * altimeter;
-}
-
-
-/**
- * @brief Calculate Fahrenheit from Celsius.
- *
- * @return float Calculated temperature in Fahrenheit.
- */
-inline float ClockDavtronM803::temperatureF() {
-    return temperatureC * 9 / 5 + 32;
-}
-
-
-String ClockDavtronM803::formatTemperature(const float &temp) {
-    String s = static_cast<String>(temp);
-    // cut the decimal if f > 99.9 or f < 0
-    if (temp > 99.9) {
-        // e. g. 101.23
-        s = s.substring(0, 3);
-    } else if (temp > 9.9) {
-        // e.g. 10.3
-        s = s.substring(0, 4);
-    } else if (temp >= 0) {
-        // e.g. 4.58
-        s = ' ' + s.substring(0, 3);
-    } else if (temp < 0) {
-        // e.g. -6.2
-        s = s.substring(0, 4);
-    } else if (temp < -9) {
-        // e.g. -10.3
-        s = s.substring(0, 3);
-    }
-    return s;
 }

@@ -34,8 +34,13 @@ public:
      * @brief Verarbeitet die Tastendrücke und Daten.
      *
      */
-    void processEvent(EventClass *event) const;
+    virtual void processEvent(EventClass *event) const;
 
+    /**
+     * @brief Update device data and process events (if any).
+     *        This is an abstract method which has to be implemented in every derived class.
+     */
+    virtual void updateAndProcess() = 0;
 
     /**
      * @brief
@@ -91,14 +96,6 @@ public:
      *
      */
     bool isPowerAvailable();
-
-
-    /**
-     * @brief This is an abstract method which has to be implemented in every derived class.
-     * @todo als abstrakt und virtuell deklarieren
-     *
-     */
-    void show();
 
 
 private:

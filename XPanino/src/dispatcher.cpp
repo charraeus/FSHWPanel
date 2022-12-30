@@ -16,8 +16,8 @@ extern EventQueueClass eventQueue;
 void DispatcherClass::dispatch(EventClass *event) const {
     if (strcmp(event->device, DEVICE_M803) == 0) {
         m803.processEvent(event);
-    } else if (strcmp(event->device, DEVICE_XPDR) == 0) {
-        xpdr.processEvent(event);
+    // } else if (strcmp(event->device, DEVICE_XPDR) == 0) {
+    //     xpdr.processEvent(event);
     } else {
         // kein passendes Device gefunden.
     }

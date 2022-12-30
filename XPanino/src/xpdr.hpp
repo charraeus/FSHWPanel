@@ -32,6 +32,13 @@ const char DEVICE_XPDR[] = "XPDR";
 class TransponderKT76C : public Device {
 public:
 
+
+    /**
+     * @brief Update device data and process events (if any).
+     *        This method must be implemented by all derived classes.
+     */
+    virtual void updateAndProcess();
+
 private:
     int dummy = 0;
 };

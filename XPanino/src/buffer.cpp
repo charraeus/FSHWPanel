@@ -20,7 +20,7 @@
 
 uint8_t BufferClass::addChar(const char inChar) {
     if (actPos < MAX_BUFFER_LENGTH) {
-        buffer[actPos] = toupper(inChar);
+        buffer[actPos] = inChar;
         actPos += 1;
         buffer[actPos] = '\0';
         return 0;
