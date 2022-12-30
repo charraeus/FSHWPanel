@@ -59,6 +59,8 @@ const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
  * - Die LED UT anzeigen
  *
  * vgl. Doku "Belegung der LED-Matrix des 1. IO-Warrior" in Evernote
+ *
+ * ```
  *          most sig. Byte                least sig. Byte
  *                |                              |
  *                v                              v
@@ -71,6 +73,7 @@ const uint8_t CHAR_ERROR = CHAR_3_DASH_HORIZ;   ///< Zeichen für Fehler
  *    matrix[5] = 0b00000000011000110110110100000000;
  *    matrix[6] = 0b00000000001110010111110100000000;
  *    matrix[7] = 0b00000000001101100000000000010000;
+ * ```
  *
  * Die Reihenfolge der Ziffern, Buchstaben und Sonderzeiche entspricht der Reihenfolge
  * in einer ASCII-Tabelle, so dass die Codes aus der ASCII-Tabelle zum Errechnen des
@@ -95,5 +98,5 @@ public:
 
 private:
     static const uint8_t bitMap[];      ///< Bitmap-Tabelle mit den Bitmustern
-    static const char* charsAllowed;    ///< Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können
+    static const String charsAllowed;   ///< Erlaubte Zeichen, die auf 7-Segment-Anzeigen ausgegeben werden können
 };

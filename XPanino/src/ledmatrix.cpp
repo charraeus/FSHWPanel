@@ -1,4 +1,4 @@
-/*********************************************************************************************************//**
+/*************************************************************************************************************
  * @file ledmatrix.cpp
  * @author Christian Harraeus <christian@harraeus.de>
  * @brief Implementierung der Klasse @em LedMatrix.
@@ -27,7 +27,7 @@ const unsigned int BLINK_VERSATZ = 447;     ///< Versatz für die Startzeiten de
  ************************************************************************************************************/
 
 /**
- * 
+ *
  */
 SpeedClass::SpeedClass(const unsigned long int brightTime, const unsigned long int darkTime) {
     this->brightTime = brightTime;
@@ -254,7 +254,7 @@ int LedMatrix::isLedBlinkOn(const LedMatrixPos pos, const uint8_t blinkSpeed) {
  *
  */
 int LedMatrix::set7SegValue(const LedMatrixPos pos, const uint8_t charBitMap, const bool dpOn) {
-    // prüfen, ob insbes. alle 8 cols, die für ein 7-Segement-Display benötigt werden, innerhalb
+    // prüfen, ob insbes. alle 8 cols, die für ein 7-Segment-Display benötigt werden, innerhalb
     // des gültigen Berichs liegen
     if (isValidRowCol(pos) && isValidRowCol({pos.row, static_cast<uint8_t>(pos.col + 7)})) {
         // row und col0 passen
@@ -372,7 +372,7 @@ void LedMatrix::display(const uint8_t &fieldId, const String &outString) {
             // Bitmap für das Zeichen holen;
             charBitMap = charMap.get7SegBitMap(outChar);
             // Prüfen, ob das dem aktuellen Zeichen folgende Zeichen ein Dezimalpunkt ist und Flag entsprechend setzen.
-            if (outString[led7SegmentIndex + 1] == '.') {
+            if (outString.charAt(led7SegmentIndex + 1) == '.') {
                 dpOn = true;    // NOLINT
             } else {
                 dpOn = false;

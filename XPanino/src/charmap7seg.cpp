@@ -12,6 +12,10 @@
 #include <Arduino.h>
 #include <charmap7seg.hpp>
 
+#ifdef DEBUG
+#define PRINT(P) Serial.print(#P);  Serial.print("="); Serial.println(P);
+#endif
+
 
 /***************************************************************************************************
  * @brief Array mit den erlaubten - weil auf 7-Segment-Anzeigen darstellbaren - Zeichen.
@@ -98,7 +102,7 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
         0b0000110, ///<  "I": Wie "1"                      --> bitMap[19]
         0b0001110, ///<  "J": Segmente d, c, b             --> bitMap[20]
         0b0111000, ///<  "L": Segmente f, e, d             --> bitMap[21]
-        0b1001001, ///<  "n": Segmente g, e, c .           --> bitMap[22]
+        0b1010100, ///<  "n": Segmente g, e, c .           --> bitMap[22]
         0b0111111, ///<  "O": Segmente f, e, d, c, b, a    --> bitMap[23]
         0b1110011, ///<  "P": Segmente g, f, e, b, a       --> bitMap[24]
         0b1100111, ///<  "q": Segmente g, f, c, b, a       --> bitMap[25]
@@ -126,6 +130,7 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
     int index = charsAllowed.indexOf(outChar);
     if (index != -1) {
+        if (outChar == '_') { PRINT(index); PRINT(bitMap[index]); }
         return bitMap[index];
     }
     return bitMap[CHAR_ERROR];
