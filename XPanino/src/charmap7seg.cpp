@@ -20,13 +20,14 @@
  *
  * @todo: Die Anzeige des letzten Zeichens funktioniert nicht. Das Zeichen wird nicht erkannt. Siehe Methode 'get7SegBitMap'
  */
-const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
+const String Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUcou-°_";
 
 /***************************************************************************************************
  * @brief bitMap enthalten die Bitmuster um die einzelnen Segemente der 7-Segment-Anzeigen für die
  *        Anzeige der Ziffern und Buchstaben anzusteuern. bitMap bildet ein 7-Segment-Display mit
  *        Dezimalpunkt ab.
  *
+ * ```
  *       a
  *    -------
  *    |     |
@@ -38,6 +39,7 @@ const char *Led7SegmentCharMap::charsAllowed = "0123456789 AbCdEFGHIJLnOPqrSTUco
  *    |     |
  *    -------
  *       d
+ * ```
  *
  * bitMap enthält das Bitmuster, die die Ziffer/den Buchstaben darstellen.
  * a wird dabei durch das niederstwertige Bit repräsentiert, g durch das höchstwertige Bit.
@@ -118,17 +120,13 @@ const uint8_t Led7SegmentCharMap::bitMap[] =  {
 /**
  * @brief (in cpp-Datei) Bitmap zur Anzeige auf der 7-Segment-Anzeige zurückgeben.
  *
- * @todo statt Schleife die Standardfunktion strchr() verwenden.
  * @todo Fehler: statt "_" wird die Fehlerbitmap zurückgegeben.
  *
  */
 uint8_t Led7SegmentCharMap::get7SegBitMap(const char outChar) const {
-    for (size_t i = 0; i < strlen(charsAllowed); i++) {
-        if (outChar == charsAllowed[i]) {
-            return bitMap[i];
-        }
+    int index = charsAllowed.indexOf(outChar);
+    if (index != -1) {
+        return bitMap[index];
     }
-    // wenn man hier landet, wurde kein erlaubtes Zeichen gefunden --> Fehlerbitmap zurück geben
-    // Serial.println(F("get7SegBitMap: Nix gefunden. Fehlerausgang."));
     return bitMap[CHAR_ERROR];
 }
