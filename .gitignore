@@ -1,6 +1,6 @@
 # Entwicklungsumgebung Visual Studio Code
 .pio
-.vscode
+obj
 
 # Von Doxygen generierte Dokumentation
 doc

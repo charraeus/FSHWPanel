@@ -36,7 +36,7 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.cmake-tools"
         },
         {
             "name": "Win32",

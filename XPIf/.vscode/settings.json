@@ -1,5 +1,6 @@
 {
     "C_Cpp.vcFormat.indent.braces": true,
     "C_Cpp.vcFormat.indent.caseLabels": true,
-    "C_Cpp.autocompleteAddParentheses": true
+    "C_Cpp.autocompleteAddParentheses": true,
+    "C_Cpp.loggingLevel": "Warning"
 }
