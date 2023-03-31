@@ -8,7 +8,7 @@
  *
  ***********************************************************************************************************/
 
-#include <dispatcher.hpp>
+#include <dispatcher.cpp>
 
 extern EventQueueClass eventQueue;
 #define PRINT(P) Serial.print(#P);  Serial.print(" ="); Serial.println(P);

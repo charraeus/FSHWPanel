@@ -1,11 +1,11 @@
 /*************************************************************************************************************
- * @file Switchmatrix.hpp
+ * @file switchmatrix.hpp
  * @author Christian Harraeus (christian@harraeus.de)
- * @brief Interface der Klasse @em SwitchMatrix
+ * @brief Interface der @em SwitchMatrix
  * @version 0.1
- * @date 2017-10-29
+ * @date 2023-03-31
  *
- * Copyright © 2017 - 2020. All rights reserved.
+ * Copyright © 2017 - 2023. All rights reserved.
  *
  * @todo statt <em>if not defined(NDEBUG)</em> besser auf <em>if defined(DEBUG)</em> umstellen.
  *
@@ -13,98 +13,20 @@
 
 #pragma once
 
-#include <switch.hpp>
-
 /*************************************************************************************************************
  * Konstanten
  */
 const bool TRANSMIT_ONLY_CHANGED_SWITCHES = true; ///< nur veränderte Schalter-Status übertragen
 const bool TRANSMIT_ALL_SWITCHES = false;         ///< alle Schalter-Status übertragen, unabhängig ob verändert oder nicht
-const uint8_t SWITCH_ON = 1;
-const uint8_t SWITCH_OFF = 0;
-const uint8_t SWITCH_LON = 2;
 
 /*************************************************************************************************************
- * Konstanten für die Schaltermatrix.
+ * Schaltermatrix-Daten
  ************************************************************************************************************/
-const unsigned int HW_MATRIX_ROWS_LSB_PIN = 14;  ///< Pin-Nummer des niederstwertigen Pins der Matrixzeilen Y
-const unsigned int HW_MATRIX_ROWS_MSB_PIN = 17;  ///< Pin-Nummer des höchstwertigen Pins der Matrixzeilen Y
-const unsigned int HW_MATRIX_COLS_LSB_PIN = 6;   ///< Pin-Nummer des niederstwertigen Pins der Matrixspalten X
-const unsigned int HW_MATRIX_COLS_MSB_PIN = 13;  ///< Pin-Nummer des höchstwertigen Pins der Matrixspalten X
-constexpr uint8_t SWITCH_MATRIX_ROWS = HW_MATRIX_ROWS_MSB_PIN - HW_MATRIX_ROWS_LSB_PIN + 1;  ///< Anzahl Matrixzeilen
-constexpr uint8_t SWITCH_MATRIX_COLS = HW_MATRIX_COLS_MSB_PIN - HW_MATRIX_COLS_LSB_PIN + 1;  ///< Anzahl Matrixspalten
+const uint8_t MAX_ROWS = 8;
+uint8_t switchMatrixState[MAX_ROWS];        ///< Aktueller Zustand des Schalters
+uint8_t switchMatrixLastState[MAX_ROWS];    ///< Letzter Zustand des Schalters
+uint8_t switchMatrixChanged[MAX_ROWS];      ///< Geänderte Schalterzustände
 
 
-/*************************************************************************************************************
- * @brief Schaltermatrix zur Aufnahme von Schaltern der Klasse @em switch.
- *
- * @todo Schaltermatrixklasse hier noch dokumentieren.
- *
- ************************************************************************************************************/
-class SwitchMatrix {
-public:
-     /**
-     * @brief Die Hardware, d.h. die Pins, an denen die Schalter angeschlossen sind, initialisieren.
-     *
-     */
-    void initHardware();
-
-
-    /**
-     * Den Status aller Hardware-Schalter in die SwitchMatrix einlesen.
-     *
-     * Die Matrixzeilen (Y) werden nacheinander auf @em LOW gesetzt und dann die
-     * daraus resultierenden Werte der Matrixspalten (X) eingelesen.
-     * Die Schalterstatus werden in der switchMatrix gespeichert.
-     * @see Externe Doku: Arduino-Doku
-     * @todo Statt \@see den richtigen Doxygen-Verweis auf die Arduino-Doku verwenden.
-     *
-     */
-    void scanSwitchPins();
-
-
-    /**
-     * @brief Schalterstatus (@em ON, @e OFF, @em LON) übermitteln und
-     *        den Status aller Schalter in der Matrix ablegen.
-     *
-     * Überträgt den Status der einzelnen Schalter in die Schaltermatrix.
-     *
-     * @param changedOnly @em true ==>  nur den Status der Schalter, die sich seit
-     *                                  der letzten Abfrage geändert haben, übertragen.\n
-     *                    @em false ==> den Status aller Schalter übertragen.
-     */
-    void transmitStatus(bool changedOnly);
-
-
-    /**
-     * @brief Physical transmitssion of the data. This method has to be overwritten in every derived class.
-     *
-     * @param row Row of switch in the switch matrix.
-     * @param col Column of switch in the switch matrix.
-     * @param switchState C-string with the string data to submit:
-     *                      switchState = @em 0: Switch is @em off
-     *                      switchState = @em 1: Switch is @em on
-     *                      switchState = @em 2: Switch is @em long on
-     */
-    virtual void transmit(uint8_t &row, uint8_t &col, uint8_t switchState);
-
-
-    #ifdef DEBUG
-    /**
-     * Alle Schalter in der Matrix ausgeben.
-     *
-     * Gibt Row und Col der Schalter zeilen- und spaltenweise aus.
-     * @note Dient eigentlich nur zum debuggen.
-     */
-    void printMatrix();
-    #endif /* ifdef DEBUG */
-
-private:
-    Switch switchMatrix[SWITCH_MATRIX_ROWS][SWITCH_MATRIX_COLS];    ///< Switchmatrix anlegen.
-    bool changed = false;   ///< Änderungsstatus der gesamten Matrix. Sobald sich ein Schalter ändert, ist @em changed @em true.
-    const unsigned int debounceTime = 9;  ///< Zeit in Millisekunden zum Entprellen
-
-    inline bool isValidMatrixRow(const uint8_t row);
-    inline bool isValidMatrixCol(const uint8_t col);
-    inline bool isValidMatrixPos(const uint8_t row, const uint8_t col);
-};
+void initSwitchMatrix();
+void scanSwitchPins();

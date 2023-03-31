@@ -8,5 +8,6 @@
     "platformio-ide.activateProjectOnTextEditorChange": true,
     "files.associations": {
         "*.yaml": "home-assistant"
-    }
+    },
+    "cmake.configureOnOpen": false
 }
