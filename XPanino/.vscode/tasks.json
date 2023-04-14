@@ -1,14 +1,39 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "PlatformIO",
-			"task": "Build",
-			"problemMatcher": [
-				"$platformio"
-			],
-			"group": "build",
-			"label": "PlatformIO: Build"
-		}
-	]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "PlatformIO",
+            "task": "Build",
+            "problemMatcher": [
+                "$platformio"
+            ],
+            "group": "build",
+            "label": "PlatformIO: Build"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: avr-gcc Aktive Datei kompilieren",
+            "command": "/Users/christian/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-mmcu=atmega328p",
+                ""
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Vom Debugger generierte Aufgabe."
+        }
+    ]
 }

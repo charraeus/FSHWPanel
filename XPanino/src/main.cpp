@@ -15,24 +15,35 @@
  *
  * @todo Doxygen-Dokumentation anschauen und aktualieren, vereinheitlichen usw.
  *
+ * avr-gdp-Debugger auf Hex-zahlen umschalten: set output-radix 16
+ *
  ************************************************************************************************************/
+
+#if defined DEBUG && defined NOT_WITH_SERIAL
+   #include "avr8-stub.h"
+   //#include "app_api.h" // only needed with flash breakpoints
+#endif
 
 // Headerdateien der Objekte includen
 #include <Arduino.h>
-#include "switchmatrix.hpp"
-//#include <avr/io.h>
+#include <switchmatrix.hpp>
+#include <tools.hpp>
 
-// Makros für serielle Schnittstelle definieren
-#define _SERIAL_BAUDRATE 115200     /// NOLINT Baudrate für den seriellen Port. Nur hier ändern!!
+const long SERIAL_BAUDRATE = 57600;     ///< Baudrate für den seriellen Port. Nur hier ändern!!
 
+SwitchMatrixClass switchMatrix;
 
 /*********************************************************************************************************//**
  * @brief Event: Zeichen liegt an der seriellen Schnittstelle vor.
  *
  ************************************************************************************************************/
+#ifndef NOT_WITH_SERIAL
 void serialEvent() {
     while (Serial.available() > 0) {
-        // char inChar = char(Serial.read());
+        char inChar = char(Serial.read());
+        if (inChar == '\n') {
+            inChar = '\r';  // dummy-anweisung damuit der Compiler nicht meckert
+        }
         // Check for valid characters.
         // gültige Zeichen in den Buffer aufnehmen, ungültige Zeichen ignorieren
         // gültig sind: Space, '_' und alle alfanumerischen Zeichen
@@ -53,6 +64,7 @@ void serialEvent() {
         // }
     }
 }
+#endif
 
 
 /*********************************************************************************************************//**
@@ -63,9 +75,17 @@ void serialEvent() {
  *
  ************************************************************************************************************/
 void setup() {
+    #if defined DEBUG && defined NOT_WITH_SERIAL
+    // initialize GDB stub
+    debug_init();
+    #endif
+
+    // Mit aktiviertem gdb stub zum debuggen funktioniert die serielle Schnittstelle nicht
+    // Siehe auch https://github.com/jdolinay/avr_debug/blob/master/avr8-stub/avr8-stub.h
+    #ifndef NOT_WITH_SERIAL
     // Serielle Schnittstelle initialisieren
     if (Serial) {
-        Serial.begin(_SERIAL_BAUDRATE, SERIAL_8N1);
+        Serial.begin(SERIAL_BAUDRATE, SERIAL_8N1);
         // wait for serial port to connect. Needed for native USB
         while (!Serial);
         // Schreibpuffer leeren
@@ -76,15 +96,32 @@ void setup() {
         }
         Serial.println(F("XPanino"));
     }
+    #endif
 
-    // Schaltermatrix initialisieren
-    initSwitchMatrix();
+    // Erst die eingebaute Status-LED als Status-Feedback ein paar mal blinken lassen, dann
+    // die Hardware und I/O-Pins des Arduino initialisieren.
+    // Status-Led hängt an Bit 5 (= PORTB5)
+    DDRB |= _BV(DDB5);       // Port B5 als Output schalten (LOW)
+    PORTB &= ~_BV(PORTB5);   // Pin auf LOW schalten -> Led aus
+    _NOP();
+    for (uint8_t i = 1; i < 9; ++i) {
+        PINB |= _BV(PORTB5);    // Led umschalten (vgl. Datasheet Kap. 14.1)
+        delay(300);
+    }
+
+    // Die Hardware (Ports) der Schaltermatrix initialisieren
+    switchMatrix.initHardware();
+    #if defined DEBUG && defined NOT_WITH_SERIAL
+    breakpoint();
+    #endif
 }
+
 
 /*********************************************************************************************************//**
  * @brief Lfd. Verarbeitung in
  *
  ************************************************************************************************************/
 void loop(){
-    scanSwitchPins();
+    switchMatrix.scanSwitchPins();
+    delay(100);
 }

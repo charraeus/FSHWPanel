@@ -2,81 +2,56 @@
 
 @tableofcontents
 
+## Arduino Uno
+
+Nachfolgend ist der Verdrahtungsplan dargestellt, wie er für die Realisierung des Prototyps, Transponder und Uhr, aufgebaut wurde.
+
+### Schaltermatrix 3 x 8
+
+| Y=Row / X=Col | X=0    | 1     | 2     | 3     | 4     | 5     | 6    | 7     |
+| ------------- | ------ | ----- | ----- | ----- | ----- | ----- | ---- | ----- |
+| Y=0           | "IDT"  | "VFR" | "CLR" | "OFF" | "SBY" | "TST" | "ON" | "ALT" |
+| 1             | "0"    | "1"   | "2"   | "3"   | "4"   | "5"   | "6"  | "7"   |
+| 2             | "CTRL" | "SEL" | "OAT" |       |       |       |      |       |
+
+### Arduino Uno <--> Schalter-Matrix
+
+Diese Zuordnung muss geprüft und neu geschrieben werden, da sie erstmal nicht stimmt.
+
+| Arduino-<br />Pin | Atmega328-<br />Bezeichnung | Stecker-<br />Pin | Signal | Draht-<br />Farbe |
+| ----------------- | --------------------------- | ----------------- | ------ | ----------------- |
+| Pin A0            | PC0                         | Pin 1             | ROW0   | sw                |
+| Pin A1            | PC1                         | Pin 14            | ROW1   | Ws                |
+| Pin 4             | PD4                         | Pin 2             | COL0   | gr                |
+| Pin 5             | PD5                         | Pin 13            | COL1   | vi                |
+| Pin 6             | PD6                         | Pin 3             | COL2   | bl                |
+| Pin 7             | PD7                         | Pin 12            | COL3   | gn                |
+| Pin 8             | PB0                         | Pin 4             | COL4   | ge                |
+| Pin 9             | PB1                         | Pin 11            | COL5   | or                |
+| Pin 10            | PB2                         | Pin 5             | COL6   | rt                |
+| Pin 11            | PB3                         | Pin 10            | COL7   | br                |
+| Pin A2            | PC2                         | Pin 6             | ROW2   | gr                |
+| --                | --                          | Pin 9             | --     | ws                |
+| --                | --                          | Pin 7             | --     | sw                |
+| --                | --                          | Pin 8             | --     | --                |
+
+### LED-Matrix 2 x (8 x 16)
+
+noch zu ergänzen.
+
+### Arduino Uno <--> LED-Matrix
+
+Arduino-<br />Pin |Atmega328-<br />Bezeichnung | Stecker-<br />Pin | Signal | Draht-<br />Farbe 
+------------|-------------|---------------|------------|------------
+Pin A3      |PC3      | Pin 1      |  | sw  
+Pin A4      |PC4      | Pin 10    |  | ws
+Pin A5      |PC5      | Pin 2     |        | gr
+Pin 12      |PB4      | Pin 9     |  | vi
+Pin GND     |GND     | Pin 6     | GND           | br
+
 ## Raspberry Pico
 
 ### Notizen
 
 Beispielcode für Schaltermatrix mit PIO-Code: <https://github.com/GitJer/Some_RPI-Pico_stuff/tree/main/button_matrix_4x4>
 
-### 5 x 4 Schaltermatrix für Transponder und Uhr
-
-|Y=Row / X=Col | X=0   | 1      | 2      | 3      | 4      |
-|--------------|-------|--------|--------|--------|--------|
-| Y=0          | "0"   |  "1"   | "2"    | "3"    | "CLR"  |
-| 1            | "4"   |  "5"   | "6"    | "7"    | "VFR"  |
-| 2            | "OFF" |  "SBY" | "TST"  | "ON"   | "ALT"  |
-| 3            | "OAT" |  "SEL" | "CTRL" | -      | "IDT"  |
-
-### Raspberry Pico \<--\> FSHWPanel-Transponder (Schalter)
-
-Schaltplan: *Transponder KT 76C, Uhr Davtron M803 - Anschluss LED und 7-Segment-Anzeigen, Schalter.pdf*.
-
-| Pico-PIN    |        | Stecker-PIN | Logische Bez. | Draht-Farbe |
-|-------------|--------|-------------|---------------|-------------|
-| **Schalter:** |||||
-| GPxx  Pin   | \<--\> | Pin  1      | SW-Col 0      | gr          |
-| GPxx  Pin   | \<--\> | Pin  2      | SW-Col 1      | vi          |
-| GPxx  Pin   | \<--\> | Pin  3      | SW-Col 2      | bl          |
-| GPxx  Pin   | \<--\> | Pin  4      | SW-Col 3      | gn          |
-| GPxx  Pin   | \<--\> | Pin  5      | SW-Col 4      | ge          |
-| GPxx  Pin   | \<--\> | Pin  6      | SW-Row 0      | or          |
-| GPxx  Pin   | \<--\> | Pin  7      | SW-Row 1      | rt          |
-| GPxx  Pin   | \<--\> | Pin  8      | SW-Row 2      | br          |
-| GPxx  Pin   | \<--\> | Pin  9      | SW-Row 3      | sw          |
-| GPxx  Pin   | \<--\> | Pin 10      | -             | ws          |
-| **LEDs** |||||
-| GPxx  Pin   | \<--\> | Pin  1      |               | sw          |
-| GPxx  Pin   | \<--\> | Pin  2      |               | ws          |
-| GPxx  Pin   | \<--\> | Pin  3      |               | gr          |
-| GPxx  Pin   | \<--\> | Pin  4      |               | vi          |
-| GND  Pin    | \<--\> | Pin 10      | GND           | br          |
-
-## Arduino Uno
-
-**Achtung: Sobald die Transponder-/Uhr-Hardware gemäß den im Schaltplan-PDF blau eingezeichneten Änderungen umgebaut wurde, sind die folgenden Tabellen nicht mehr korrekt.**
-
-Nachfolgend ist der Verdrahtungsplan dargestellt, wie er für die Realisierung des Prototyps, Transponder und Uhr, aufgebaut wurde.
-
-### Arduino Uno <--> FSHWPanel-LED-Modul (LEDs)
-
-Arduino-PIN |      | Stecker-PIN | IOW-Bez.      | Draht-Farbe
-------------|------|-------------|---------------|------------
-Pin  2      | <--> | Pin  1      | IOW1-PORT-1.0 | sw  
-Pin  3      | <--> | Pin  2      | IOW1-PORT-1.1 | ws
-Pin  4      | <--> | Pin  3      | IOW1-PORT-1.3 | gr
-Pin  5      | <--> | Pin  4      | IOW1-PORT-1.4 | vi
-Pin GND     | <--> | Pin 10      | GND           | br
-
-### Arduino Uno <--> FSHWPanel-Transponder (Schalter)
-
-Arduino-PIN |      | Stecker-PIN | IOW-Bez.      | Draht-Farbe
-------------|------|-------------|---------------|------------
-Pin  6      | <--> | Pin  1      | IOW2-COL0     | gr
-Pin  7      | <--> | Pin  2      | IOW2-COL1     | vi
-Pin  8      | <--> | Pin  3      | IOW2-COL2     | bl
-Pin  9      | <--> | Pin  4      | IOW2-COL3     | gn
-Pin 10      | <--> | Pin  5      | IOW2-COL4     | ge
-Pin 11      | <--> | Pin  6      | IOW2-COL5     | or
-Pin 12      | <--> | Pin  7      | IOW2-COL6     | rt
-Pin 13      | <--> | Pin  8      | IOW2-COL7     | br
-Pin A0      | <--> | Pin  9      | IOW2-ROW0     | sw
-Pin A1      | <--> | Pin 10      | IOW2-ROW1     | ws
-
-### Arduino Uno <--> FSHWPanel-Clock (Schalter)
-
-|Arduino-PIN |      | Stecker-PIN | IOW-Bez.    | Draht-Farbe|
-|------------|------|-------------|-------------|------------|
-|Pin A2      | <--> |  Pin  1     | IOW2-ROWS6  | sw         |
-|Pin A3      | <--> |  Pin  2     | IOW2-ROWS4  | ws         |
-|Pin 12      | <--> |  Pin 10     | IOW2-COL7   | rt         |
-|Pin 13      | <--> |  Pin  9     | IOW2-COL6   | br         |
