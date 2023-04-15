@@ -5,6 +5,18 @@
 /*              Author: Peter Dannegger                                 */
 /*                      danni@specs.de                                  */
 /*                                                                      */
+/* Im Array valid_keys[] hat jede Taste ein Bit.                        */
+/*                                                                      */
+/* Ändert sich nun eine Taste, ist valid_keys[] ungleich dem            */
+/* eingelesenen Byte und es muß behandelt werden.                       */
+/*                                                                      */
+/* Wurde noch keine Änderung bearbeitet, ist key_nr = 0 und diese       */
+/* Änderung kann bearbeitet werden.                                     */
+/*                                                                      */
+/* Anders gesagt, falls 2 Tasten sich exakt gleichzeitig ändern (sehr   */
+/* selten, aber nicht unmöglich), wird nur die erste bearbeitet (die    */
+/* andere dann im nächsten Durchlauf).                                  */
+/*                                                                      */
 /************************************************************************/
 /* keyboard Interface:
  * 3 rows x 8 columns: P0.0 - P0.2 * P2
@@ -51,7 +63,7 @@ uchar GetKey( void )		// call with debouncing time (10..200msec)
 
   for( i = 0; i < 3;  ++i ){
 
-    P0 |= ~0x07;
+    P0 |= 0x07;
     P0 &= ROW[i];					// set rows
     column = P2;					// read column
 
@@ -65,14 +77,13 @@ uchar GetKey( void )		// call with debouncing time (10..200msec)
                 if( key != (valid_keys[i] & mask) ){		// key not handled
                     valid_keys[i] = valid_keys[i] & ~mask | key;
                     key_nr = 8 * i + j + 1;			// 0x01 ... 0x18
-
-                        if( key == 0 ){				// low active
-                            n_keys_pressed++;
-                            key_nr |= KEY_PRESS_MASK;			// 0x81 ... 0x98
-                        }else{
-                            n_keys_pressed--;
-                        }
-                break;
+                    if( key == 0 ){				// low active
+                        n_keys_pressed++;
+                        key_nr |= KEY_PRESS_MASK;			// 0x81 ... 0x98
+                    }else{
+                        n_keys_pressed--;
+                    }
+                    break;
                 }
             }
         }
