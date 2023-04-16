@@ -123,5 +123,7 @@ void setup() {
  ************************************************************************************************************/
 void loop(){
     switchMatrix.scanSwitchPins();
-    delay(100);
+
+    PRINTBIN(switchMatrix.matrixRows[0].ButtonPressed(0xff));
+    delay(5);     // alle 5 msec aufrufen
 }

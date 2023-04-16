@@ -25,17 +25,8 @@
  * @brief Ports der Schaltermatrix initialisieren
  *
  ************************************************************************************************************/
-SwitchMatrixClass::SwitchMatrixClass() {
-    // In den Zustandsarrays alle Spalten mit 1 initialisieren, da
-    // eingeschaltete Buttons/Schalter die Portpins auf LOW ziehen.
-    // Ausnahme: Changed ist immer auf 1, falls sich ein Schalterzustand geändert hat
-    for (uint8_t row = 0; row < MAX_ROWS; ++row) {
-        switchMatrixState[row] = 0xff;
-        switchMatrixLastState[row] = 0xff;
-        switchMatrixChanged[row] = 0;
-    }
-}
-
+// SwitchMatrixClass::SwitchMatrixClass() {
+// }
 
 void SwitchMatrixClass::initHardware() {
     // Alle gültigen Matrixzeilen-Pins als Output einstellen --> relevante Bits setzen.
@@ -85,26 +76,26 @@ void SwitchMatrixClass::scanSwitchPins() {
     // Serial.println();
     // #endif
 
-//    uint8_t lastMatrixState = 0;
+    uint8_t columnState = 0xff;
     for (uint8_t row = 0; row < MAX_ROWS; ++row) {
-        switchMatrixLastState[row] = switchMatrixState[row];   // Akt. Status merken
         *ROWS_PORT &= ~_BV(row);               // "row-te" Matrixzeile aktivieren (auf LOW setzen)
         _NOP();     // warten, bis das Signal an PORT D und B stabil ist
         // Den Port auslesen, der den unteren Teil der Matrixspalten enthält
         // und in das untere Halbbyte des MatrixState übertragen
-        switchMatrixState[row] = (*LOWER_COLS_PIN & VALID_LOWER_COLS) >> 4;
+        // Da die nicht relvanten unteren 4 Bit eh weggeschoben werden, brauchts kein &VALID_LOWER_COLS
+        columnState = *LOWER_COLS_PIN >> 4;
         // Den Port auslesen, der den oberen Teil der Matrixspalten enthält
         // und in das obern Halbbyte des MatrixState übertragen
-        switchMatrixState[row] |= (*UPPER_COLS_PIN & VALID_UPPER_COLS) << 4;
-        //switchMatrixState[row] |= *upperColPort & validUpperCols;
+        // Da die nicht relevanten oberen 4 Bit eh weggeschoben werden, brauchts kein &VALID_UPPER_COLS
+        columnState |= *UPPER_COLS_PIN << 4;
         // Die Änderungen im MatrixChanged-Array markieren (bei Änderung zum vorigen Status: Bit setzen)
-        switchMatrixChanged[row] = switchMatrixLastState[row] ^ switchMatrixState[row];
         #if defined DEBUG &&  !defined NOT_WITH_SERIAL
-        if (switchMatrixChanged[row] != 0) {
-            Serial.print("Row="); printBinValue(*ROWS_PORT); Serial.print("  -->  ");
-            Serial.print("Cols="); printBinValue(switchMatrixState[row]); Serial.println();
-        }
+        // if (switchMatrixChanged[row] != 0) {
+            // Serial.print("Row="); printBinValue(*ROWS_PORT); Serial.print("  -->  ");
+            // Serial.print("Cols="); printBinValue(columnState); Serial.println();
+        // }
         #endif
         *ROWS_PORT |= _BV(row);                // Matrixzeile wieder auf HIGH setzen
+        matrixRows[row].ButtonProcess(columnState);     // Die Spalten(änderungen) entprellen
     }
 }

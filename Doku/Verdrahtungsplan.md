@@ -16,7 +16,7 @@ Nachfolgend ist der Verdrahtungsplan dargestellt, wie er für die Realisierung d
 
 ### Arduino Uno <--> Schalter-Matrix
 
-Diese Zuordnung muss geprüft und neu geschrieben werden, da sie erstmal nicht stimmt.
+Diese Zuordnung muss geprüft und neu geschrieben werden, da sie erstmal nicht stimmt. [LICENSE](../../../../Downloads/Button_Debouncer-master/Button_Debouncer-master/LICENSE) 
 
 | Arduino-<br />Pin | Atmega328-<br />Bezeichnung | Stecker-<br />Pin | Signal | Draht-<br />Farbe |
 | ----------------- | --------------------------- | ----------------- | ------ | ----------------- |
